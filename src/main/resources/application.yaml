@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: super_resolution
+  profiles:
+    active: dev
+  main:
+    allow-bean-definition-overriding: true
+  servlet:
+    multipart:
+      max-file-size: 1000MB
+      max-request-size: 1000MB
+
+mybatis:
+  mapper-locations: classpath*:mapper/*.xml
+  configuration:
+    cache-enabled: false
+    lazy-loading-enabled: true
+    use-generated-keys: true
+    aggressive-lazy-loading: false
