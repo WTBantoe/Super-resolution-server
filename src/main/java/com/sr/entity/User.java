@@ -9,17 +9,7 @@ public class User {
 
     private String password;
 
-    private String avatar;
-
     private String telephone;
-
-    private String wechat;
-
-    private String qq;
-
-    private Date lastLoginTime;
-
-    private Long loginCount;
 
     private Date gmtCreate;
 
@@ -49,52 +39,12 @@ public class User {
         this.password = password == null ? null : password.trim();
     }
 
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar == null ? null : avatar.trim();
-    }
-
     public String getTelephone() {
         return telephone;
     }
 
     public void setTelephone(String telephone) {
         this.telephone = telephone == null ? null : telephone.trim();
-    }
-
-    public String getWechat() {
-        return wechat;
-    }
-
-    public void setWechat(String wechat) {
-        this.wechat = wechat == null ? null : wechat.trim();
-    }
-
-    public String getQq() {
-        return qq;
-    }
-
-    public void setQq(String qq) {
-        this.qq = qq == null ? null : qq.trim();
-    }
-
-    public Date getLastLoginTime() {
-        return lastLoginTime;
-    }
-
-    public void setLastLoginTime(Date lastLoginTime) {
-        this.lastLoginTime = lastLoginTime;
-    }
-
-    public Long getLoginCount() {
-        return loginCount;
-    }
-
-    public void setLoginCount(Long loginCount) {
-        this.loginCount = loginCount;
     }
 
     public Date getGmtCreate() {

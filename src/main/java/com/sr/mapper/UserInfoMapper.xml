@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.sr.dao.UserMapper">
-  <resultMap id="BaseResultMap" type="com.sr.entity.User">
+<mapper namespace="com.sr.dao.UserInfoMapper">
+  <resultMap id="BaseResultMap" type="com.sr.entity.UserInfo">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="user_name" jdbcType="VARCHAR" property="userName" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="uid" jdbcType="BIGINT" property="uid" />
+    <result column="sex" jdbcType="INTEGER" property="sex" />
+    <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+    <result column="id_card_number" jdbcType="VARCHAR" property="idCardNumber" />
+    <result column="true_name" jdbcType="VARCHAR" property="trueName" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modify" jdbcType="TIMESTAMP" property="gmtModify" />
   </resultMap>
@@ -68,15 +70,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_name, password, telephone, gmt_create, gmt_modify
+    id, uid, sex, avatar, id_card_number, true_name, gmt_create, gmt_modify
   </sql>
-  <select id="selectByExample" parameterType="com.sr.entity.example.UserExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.sr.entity.example.UserInfoExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from sr_user
+    from sr_user_info
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -87,42 +89,50 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from sr_user
+    from sr_user_info
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from sr_user
+    delete from sr_user_info
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.sr.entity.example.UserExample">
-    delete from sr_user
+  <delete id="deleteByExample" parameterType="com.sr.entity.example.UserInfoExample">
+    delete from sr_user_info
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.sr.entity.User">
+  <insert id="insert" parameterType="com.sr.entity.UserInfo">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into sr_user (user_name, password, telephone, 
-      gmt_create, gmt_modify)
-    values (#{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, 
-      #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModify,jdbcType=TIMESTAMP})
+    insert into sr_user_info (uid, sex, avatar, 
+      id_card_number, true_name, gmt_create, 
+      gmt_modify)
+    values (#{uid,jdbcType=BIGINT}, #{sex,jdbcType=INTEGER}, #{avatar,jdbcType=VARCHAR}, 
+      #{idCardNumber,jdbcType=VARCHAR}, #{trueName,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, 
+      #{gmtModify,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.sr.entity.User">
+  <insert id="insertSelective" parameterType="com.sr.entity.UserInfo">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into sr_user
+    insert into sr_user_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="userName != null">
-        user_name,
+      <if test="uid != null">
+        uid,
       </if>
-      <if test="password != null">
-        password,
+      <if test="sex != null">
+        sex,
       </if>
-      <if test="telephone != null">
-        telephone,
+      <if test="avatar != null">
+        avatar,
+      </if>
+      <if test="idCardNumber != null">
+        id_card_number,
+      </if>
+      <if test="trueName != null">
+        true_name,
       </if>
       <if test="gmtCreate != null">
         gmt_create,
@@ -132,14 +142,20 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="userName != null">
-        #{userName,jdbcType=VARCHAR},
+      <if test="uid != null">
+        #{uid,jdbcType=BIGINT},
       </if>
-      <if test="password != null">
-        #{password,jdbcType=VARCHAR},
+      <if test="sex != null">
+        #{sex,jdbcType=INTEGER},
       </if>
-      <if test="telephone != null">
-        #{telephone,jdbcType=VARCHAR},
+      <if test="avatar != null">
+        #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="idCardNumber != null">
+        #{idCardNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="trueName != null">
+        #{trueName,jdbcType=VARCHAR},
       </if>
       <if test="gmtCreate != null">
         #{gmtCreate,jdbcType=TIMESTAMP},
@@ -149,26 +165,32 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.sr.entity.example.UserExample" resultType="java.lang.Long">
-    select count(*) from sr_user
+  <select id="countByExample" parameterType="com.sr.entity.example.UserInfoExample" resultType="java.lang.Long">
+    select count(*) from sr_user_info
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update sr_user
+    update sr_user_info
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
       </if>
-      <if test="record.userName != null">
-        user_name = #{record.userName,jdbcType=VARCHAR},
+      <if test="record.uid != null">
+        uid = #{record.uid,jdbcType=BIGINT},
       </if>
-      <if test="record.password != null">
-        password = #{record.password,jdbcType=VARCHAR},
+      <if test="record.sex != null">
+        sex = #{record.sex,jdbcType=INTEGER},
       </if>
-      <if test="record.telephone != null">
-        telephone = #{record.telephone,jdbcType=VARCHAR},
+      <if test="record.avatar != null">
+        avatar = #{record.avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="record.idCardNumber != null">
+        id_card_number = #{record.idCardNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.trueName != null">
+        true_name = #{record.trueName,jdbcType=VARCHAR},
       </if>
       <if test="record.gmtCreate != null">
         gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
@@ -182,28 +204,36 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update sr_user
+    update sr_user_info
     set id = #{record.id,jdbcType=BIGINT},
-      user_name = #{record.userName,jdbcType=VARCHAR},
-      password = #{record.password,jdbcType=VARCHAR},
-      telephone = #{record.telephone,jdbcType=VARCHAR},
+      uid = #{record.uid,jdbcType=BIGINT},
+      sex = #{record.sex,jdbcType=INTEGER},
+      avatar = #{record.avatar,jdbcType=VARCHAR},
+      id_card_number = #{record.idCardNumber,jdbcType=VARCHAR},
+      true_name = #{record.trueName,jdbcType=VARCHAR},
       gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
       gmt_modify = #{record.gmtModify,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.sr.entity.User">
-    update sr_user
+  <update id="updateByPrimaryKeySelective" parameterType="com.sr.entity.UserInfo">
+    update sr_user_info
     <set>
-      <if test="userName != null">
-        user_name = #{userName,jdbcType=VARCHAR},
+      <if test="uid != null">
+        uid = #{uid,jdbcType=BIGINT},
       </if>
-      <if test="password != null">
-        password = #{password,jdbcType=VARCHAR},
+      <if test="sex != null">
+        sex = #{sex,jdbcType=INTEGER},
       </if>
-      <if test="telephone != null">
-        telephone = #{telephone,jdbcType=VARCHAR},
+      <if test="avatar != null">
+        avatar = #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="idCardNumber != null">
+        id_card_number = #{idCardNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="trueName != null">
+        true_name = #{trueName,jdbcType=VARCHAR},
       </if>
       <if test="gmtCreate != null">
         gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
@@ -214,11 +244,13 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.sr.entity.User">
-    update sr_user
-    set user_name = #{userName,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR},
-      telephone = #{telephone,jdbcType=VARCHAR},
+  <update id="updateByPrimaryKey" parameterType="com.sr.entity.UserInfo">
+    update sr_user_info
+    set uid = #{uid,jdbcType=BIGINT},
+      sex = #{sex,jdbcType=INTEGER},
+      avatar = #{avatar,jdbcType=VARCHAR},
+      id_card_number = #{idCardNumber,jdbcType=VARCHAR},
+      true_name = #{trueName,jdbcType=VARCHAR},
       gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       gmt_modify = #{gmtModify,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}

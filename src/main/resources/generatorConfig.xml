@@ -34,8 +34,32 @@
                enableUpdateByExample="true">
             <generatedKey column="id" sqlStatement="mysql" identity="true"></generatedKey>
         </table>
+        <table tableName="sr_user_info"
+               domainObjectName="UserInfo"
+               enableCountByExample="true"
+               enableDeleteByExample="true"
+               enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="id" sqlStatement="mysql" identity="true"></generatedKey>
+        </table>
         <table tableName="sr_content_history"
                domainObjectName="History"
+               enableCountByExample="true"
+               enableDeleteByExample="true"
+               enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="id" sqlStatement="mysql" identity="true"></generatedKey>
+        </table>
+        <table tableName="sr_user_auth_third_part"
+               domainObjectName="AuthThirdParty"
+               enableCountByExample="true"
+               enableDeleteByExample="true"
+               enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="id" sqlStatement="mysql" identity="true"></generatedKey>
+        </table>
+        <table tableName="sr_login_info"
+               domainObjectName="LoginInfo"
                enableCountByExample="true"
                enableDeleteByExample="true"
                enableSelectByExample="true"

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.sr.dao.UserMapper">
-  <resultMap id="BaseResultMap" type="com.sr.entity.User">
+<mapper namespace="com.sr.dao.AuthThirdPartyMapper">
+  <resultMap id="BaseResultMap" type="com.sr.entity.AuthThirdParty">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="user_name" jdbcType="VARCHAR" property="userName" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="telephone" jdbcType="VARCHAR" property="telephone" />
+    <result column="uid" jdbcType="BIGINT" property="uid" />
+    <result column="auth_type" jdbcType="INTEGER" property="authType" />
+    <result column="login_token" jdbcType="VARCHAR" property="loginToken" />
+    <result column="expire" jdbcType="TIMESTAMP" property="expire" />
     <result column="gmt_create" jdbcType="TIMESTAMP" property="gmtCreate" />
     <result column="gmt_modify" jdbcType="TIMESTAMP" property="gmtModify" />
   </resultMap>
@@ -68,15 +69,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_name, password, telephone, gmt_create, gmt_modify
+    id, uid, auth_type, login_token, expire, gmt_create, gmt_modify
   </sql>
-  <select id="selectByExample" parameterType="com.sr.entity.example.UserExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.sr.entity.example.AuthThirdPartyExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from sr_user
+    from sr_user_auth_third_part
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -87,42 +88,47 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from sr_user
+    from sr_user_auth_third_part
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from sr_user
+    delete from sr_user_auth_third_part
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.sr.entity.example.UserExample">
-    delete from sr_user
+  <delete id="deleteByExample" parameterType="com.sr.entity.example.AuthThirdPartyExample">
+    delete from sr_user_auth_third_part
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.sr.entity.User">
+  <insert id="insert" parameterType="com.sr.entity.AuthThirdParty">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into sr_user (user_name, password, telephone, 
-      gmt_create, gmt_modify)
-    values (#{userName,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, #{telephone,jdbcType=VARCHAR}, 
-      #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModify,jdbcType=TIMESTAMP})
+    insert into sr_user_auth_third_part (uid, auth_type, login_token, 
+      expire, gmt_create, gmt_modify
+      )
+    values (#{uid,jdbcType=BIGINT}, #{authType,jdbcType=INTEGER}, #{loginToken,jdbcType=VARCHAR}, 
+      #{expire,jdbcType=TIMESTAMP}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModify,jdbcType=TIMESTAMP}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.sr.entity.User">
+  <insert id="insertSelective" parameterType="com.sr.entity.AuthThirdParty">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into sr_user
+    insert into sr_user_auth_third_part
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="userName != null">
-        user_name,
+      <if test="uid != null">
+        uid,
       </if>
-      <if test="password != null">
-        password,
+      <if test="authType != null">
+        auth_type,
       </if>
-      <if test="telephone != null">
-        telephone,
+      <if test="loginToken != null">
+        login_token,
+      </if>
+      <if test="expire != null">
+        expire,
       </if>
       <if test="gmtCreate != null">
         gmt_create,
@@ -132,14 +138,17 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="userName != null">
-        #{userName,jdbcType=VARCHAR},
+      <if test="uid != null">
+        #{uid,jdbcType=BIGINT},
       </if>
-      <if test="password != null">
-        #{password,jdbcType=VARCHAR},
+      <if test="authType != null">
+        #{authType,jdbcType=INTEGER},
       </if>
-      <if test="telephone != null">
-        #{telephone,jdbcType=VARCHAR},
+      <if test="loginToken != null">
+        #{loginToken,jdbcType=VARCHAR},
+      </if>
+      <if test="expire != null">
+        #{expire,jdbcType=TIMESTAMP},
       </if>
       <if test="gmtCreate != null">
         #{gmtCreate,jdbcType=TIMESTAMP},
@@ -149,26 +158,29 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.sr.entity.example.UserExample" resultType="java.lang.Long">
-    select count(*) from sr_user
+  <select id="countByExample" parameterType="com.sr.entity.example.AuthThirdPartyExample" resultType="java.lang.Long">
+    select count(*) from sr_user_auth_third_part
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update sr_user
+    update sr_user_auth_third_part
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
       </if>
-      <if test="record.userName != null">
-        user_name = #{record.userName,jdbcType=VARCHAR},
+      <if test="record.uid != null">
+        uid = #{record.uid,jdbcType=BIGINT},
       </if>
-      <if test="record.password != null">
-        password = #{record.password,jdbcType=VARCHAR},
+      <if test="record.authType != null">
+        auth_type = #{record.authType,jdbcType=INTEGER},
       </if>
-      <if test="record.telephone != null">
-        telephone = #{record.telephone,jdbcType=VARCHAR},
+      <if test="record.loginToken != null">
+        login_token = #{record.loginToken,jdbcType=VARCHAR},
+      </if>
+      <if test="record.expire != null">
+        expire = #{record.expire,jdbcType=TIMESTAMP},
       </if>
       <if test="record.gmtCreate != null">
         gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
@@ -182,28 +194,32 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update sr_user
+    update sr_user_auth_third_part
     set id = #{record.id,jdbcType=BIGINT},
-      user_name = #{record.userName,jdbcType=VARCHAR},
-      password = #{record.password,jdbcType=VARCHAR},
-      telephone = #{record.telephone,jdbcType=VARCHAR},
+      uid = #{record.uid,jdbcType=BIGINT},
+      auth_type = #{record.authType,jdbcType=INTEGER},
+      login_token = #{record.loginToken,jdbcType=VARCHAR},
+      expire = #{record.expire,jdbcType=TIMESTAMP},
       gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
       gmt_modify = #{record.gmtModify,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.sr.entity.User">
-    update sr_user
+  <update id="updateByPrimaryKeySelective" parameterType="com.sr.entity.AuthThirdParty">
+    update sr_user_auth_third_part
     <set>
-      <if test="userName != null">
-        user_name = #{userName,jdbcType=VARCHAR},
+      <if test="uid != null">
+        uid = #{uid,jdbcType=BIGINT},
       </if>
-      <if test="password != null">
-        password = #{password,jdbcType=VARCHAR},
+      <if test="authType != null">
+        auth_type = #{authType,jdbcType=INTEGER},
       </if>
-      <if test="telephone != null">
-        telephone = #{telephone,jdbcType=VARCHAR},
+      <if test="loginToken != null">
+        login_token = #{loginToken,jdbcType=VARCHAR},
+      </if>
+      <if test="expire != null">
+        expire = #{expire,jdbcType=TIMESTAMP},
       </if>
       <if test="gmtCreate != null">
         gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
@@ -214,11 +230,12 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.sr.entity.User">
-    update sr_user
-    set user_name = #{userName,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR},
-      telephone = #{telephone,jdbcType=VARCHAR},
+  <update id="updateByPrimaryKey" parameterType="com.sr.entity.AuthThirdParty">
+    update sr_user_auth_third_part
+    set uid = #{uid,jdbcType=BIGINT},
+      auth_type = #{authType,jdbcType=INTEGER},
+      login_token = #{loginToken,jdbcType=VARCHAR},
+      expire = #{expire,jdbcType=TIMESTAMP},
       gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
       gmt_modify = #{gmtModify,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
