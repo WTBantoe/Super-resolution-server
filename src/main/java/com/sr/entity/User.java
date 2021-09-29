@@ -11,6 +11,10 @@ public class User {
 
     private String telephone;
 
+    private Integer type;
+
+    private Integer status;
+
     private Date gmtCreate;
 
     private Date gmtModify;
@@ -45,6 +49,22 @@ public class User {
 
     public void setTelephone(String telephone) {
         this.telephone = telephone == null ? null : telephone.trim();
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Date getGmtCreate() {
