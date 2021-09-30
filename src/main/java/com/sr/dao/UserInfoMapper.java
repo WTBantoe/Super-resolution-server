@@ -4,7 +4,9 @@ import com.sr.entity.UserInfo;
 import com.sr.entity.example.UserInfoExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface UserInfoMapper {
     long countByExample(UserInfoExample example);
 
