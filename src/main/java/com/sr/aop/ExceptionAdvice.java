@@ -1,7 +1,7 @@
 package com.sr.aop;
 
 import com.sr.exception.StatusException;
-import com.sr.util.ReturnCodeBuilder;
+import com.sr.common.ReturnCodeBuilder;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -49,7 +48,6 @@ public class ExceptionAdvice {
             builder = ReturnCodeBuilder.failedBuilder().message(e.getMessage());
         }
         return builder.url(request.getRequestURL().toString())
-                .build()
                 .buildMap();
     }
 }

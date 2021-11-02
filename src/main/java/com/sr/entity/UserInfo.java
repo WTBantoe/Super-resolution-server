@@ -82,4 +82,18 @@ public class UserInfo {
     public void setGmtModify(Date gmtModify) {
         this.gmtModify = gmtModify;
     }
+
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+                "id=" + id +
+                ", uid=" + uid +
+                ", sex=" + sex +
+                ", avatar='" + avatar + '\'' +
+                ", idCardNumber='" + idCardNumber + '\'' +
+                ", trueName='" + trueName + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModify=" + gmtModify +
+                '}';
+    }
 }

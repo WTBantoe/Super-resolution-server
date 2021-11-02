@@ -91,7 +91,6 @@ public class UserManagerServiceImpl implements UserManagerService {
         return userMapper.selectByExample(userExample);
     }
 
-
     public void buildUserCriteria(User user, UserExample.Criteria criteria){
         if (user.getId() != null) {
             criteria.andIdEqualTo(user.getId());
