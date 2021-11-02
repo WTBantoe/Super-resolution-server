@@ -14,7 +14,9 @@ public enum StatusEnum {
     INVALID_VERIFY_CODE(502,"INVALID_VERIFY_CODE : 验证码错误"),
     USER_NOT_UNIQUE(503,"USER_NOT_UNIQUE : 数据库异常，用户不唯一！"),
     USER_NOT_EXIST(504,"USER_NOT_EXIST : 用户尚未注册!"),
-    USER_ALREADY_EXIST(505,"USER_ALREADY_EXIST : 用户已注册!");
+    USER_ALREADY_EXIST(505,"USER_ALREADY_EXIST : 用户已注册!"),
+    ENTITY_CONVERT_FAIL(506,"ENTITY_CONVERT_FAIL : 实体类转换map失败！"),
+    USER_REGISTER_FAIL(507,"USER_REGISTER_FAIL : 用户注册失败");
 
     int code;
     String description;

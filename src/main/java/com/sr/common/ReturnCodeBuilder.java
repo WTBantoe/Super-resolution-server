@@ -1,4 +1,4 @@
-package com.sr.util;
+package com.sr.common;
 
 import com.sr.enunn.StatusEnum;
 import com.sr.exception.StatusException;
@@ -118,13 +118,13 @@ public class ReturnCodeBuilder {
             return this;
         }
 
-        public ReturnCodeBuilder build () {
+        public Map<String, Object> buildMap () {
             ReturnCodeBuilder returnCodeBuilder = new ReturnCodeBuilder();
             returnCodeBuilder.setStatusCode(this.statusCode);
             returnCodeBuilder.setMessage(this.message);
             returnCodeBuilder.setData(this.data);
             returnCodeBuilder.setUrl(url);
-            return returnCodeBuilder;
+            return returnCodeBuilder.buildMap();
         }
     }
 }

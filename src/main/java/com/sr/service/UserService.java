@@ -11,7 +11,9 @@ import java.util.Map;
  * @Date 2021/9/28 10:47
  */
 public interface UserService {
-    String Login (String telephone, String password);
+    String LoginByTelephoneAndPassword (String telephone, String password);
+
+    String LoginByTelephoneAndVerifyCode (String telephone, String verifyCode);
 
     Map<String,Object> register (User user, UserInfo userInfo, String verifyCode);
 }
