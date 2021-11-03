@@ -1,4 +1,4 @@
-package com.sr.utils;
+package com.sr.common;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;

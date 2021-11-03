@@ -103,7 +103,7 @@ public class UserServiceImpl implements UserService {
         try {
             uid = userMapper.insertSelective(user);
         }catch (Exception e){
-            throw new StatusException(StatusEnum.USER_REGISTER_FAIL);
+            throw new StatusException(StatusEnum.USER_REGISTER_FAILED);
         }
         user.setId((long)uid);
 

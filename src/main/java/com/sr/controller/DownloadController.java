@@ -1,19 +1,19 @@
 package com.sr.controller;
 
+import com.sr.enunn.StatusEnum;
+import com.sr.exception.StatusException;
 import com.sr.service.TransferService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 
-@Controller
+@RestController
 @RequestMapping("/download")
 @Api(tags = {"下载管理"})
 public class DownloadController
@@ -21,17 +21,20 @@ public class DownloadController
     @Autowired
     TransferService transferService;
 
-    @GetMapping("/image")
+    @Value("&{picture.path.processed}")
+    public static String PROCESSED_PICTURE_PATH;
+
+    @Value("&{video.path.processed}")
+    public static String PROCESSED_VIDEO_PATH;
+
+    @GetMapping("/image/single")
     @ApiOperation("处理图片下载")
-    @ResponseBody
     public String downloadImage(@RequestParam(value = "filename") String filename, HttpServletResponse response)
     {
-//        String save_path = "/data/sr/prod/pic/processed";
-        String save_path = "/data/sr/test/pic/processed";
-        File image = new File(save_path + filename);
+        File image = new File(PROCESSED_PICTURE_PATH + filename);
         if (!image.exists())
         {
-            System.out.println("图片未上传！");
+            throw new StatusException(StatusEnum.COULD_NOT_FIND_PROCESSED_PICTURE);
         }
         response.setContentType("application/force-download");
         response.addHeader("Content-Disposition", "attachment;fileName=" + image.getAbsolutePath());
@@ -39,17 +42,14 @@ public class DownloadController
         return "Image Download Success!";
     }
 
-    @GetMapping("/video")
+    @GetMapping("/video/single")
     @ApiOperation("处理视频下载")
-    @ResponseBody
     public String downloadVideo(@RequestParam(value = "filename") String filename, HttpServletResponse response)
     {
-//        String save_path = "/data/sr/prod/vid/processed";
-        String save_path = "/data/sr/test/vid/processed";
-        File video = new File(save_path + filename);
+        File video = new File(PROCESSED_VIDEO_PATH + filename);
         if (!video.exists())
         {
-            System.out.println("视频未上传！");
+            throw new StatusException(StatusEnum.COULD_NOT_FIND_PROCESSED_VIDEO);
         }
         response.setContentType("application/force-download");
         response.addHeader("Content-Disposition", "attachment;fileName=" + video.getAbsolutePath());

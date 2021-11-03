@@ -22,7 +22,7 @@ public class EntityMapConvertor {
             map.remove("class");
             return map;
         } catch (Exception e) {
-            throw new StatusException(StatusEnum.ENTITY_CONVERT_FAIL);
+            throw new StatusException(StatusEnum.ENTITY_CONVERT_FAILED);
         }
     }
 }
