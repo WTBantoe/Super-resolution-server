@@ -26,7 +26,8 @@ public class DownloadController
     @ResponseBody
     public String downloadImage(@RequestParam(value = "filename") String filename, HttpServletResponse response)
     {
-        String save_path = "/projects/super-resolution/image/";
+//        String save_path = "/data/sr/prod/pic/processed";
+        String save_path = "/data/sr/test/pic/processed";
         File image = new File(save_path + filename);
         if (!image.exists())
         {
@@ -43,7 +44,8 @@ public class DownloadController
     @ResponseBody
     public String downloadVideo(@RequestParam(value = "filename") String filename, HttpServletResponse response)
     {
-        String save_path = "/projects/super-resolution/image/";
+//        String save_path = "/data/sr/prod/vid/processed";
+        String save_path = "/data/sr/test/vid/processed";
         File video = new File(save_path + filename);
         if (!video.exists())
         {

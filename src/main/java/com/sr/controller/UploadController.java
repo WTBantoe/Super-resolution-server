@@ -33,7 +33,8 @@ public class UploadController
         }
         String file_name = file.getOriginalFilename();
         String ext_name = file_name.substring(file_name.lastIndexOf("."));
-        String save_path = "/projects/super-resolution/image/";
+//        String save_path = "/data/sr/prod/pic/raw";
+        String save_path = "/data/sr/test/pic/raw";
         file_name = UUID.randomUUID() + ext_name;
         File image = new File(save_path + file_name);
         transferService.uploadFile(file, image);
@@ -52,7 +53,8 @@ public class UploadController
         }
         String file_name = file.getOriginalFilename();
         String ext_name = file_name.substring(file_name.lastIndexOf("."));
-        String save_path = "/projects/super-resolution/video/";
+//        String save_path = "/data/sr/prod/vid/raw";
+        String save_path = "/data/sr/test/vid/raw";
         file_name = UUID.randomUUID() + ext_name;
         File video = new File(save_path + file_name);
         transferService.uploadFile(file, video);
