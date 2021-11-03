@@ -16,7 +16,8 @@ public enum StatusEnum {
     USER_NOT_EXIST(504,"USER_NOT_EXIST : 用户尚未注册!"),
     USER_ALREADY_EXIST(505,"USER_ALREADY_EXIST : 用户已注册!"),
     ENTITY_CONVERT_FAIL(506,"ENTITY_CONVERT_FAIL : 实体类转换map失败！"),
-    USER_REGISTER_FAIL(507,"USER_REGISTER_FAIL : 用户注册失败");
+    USER_REGISTER_FAIL(507,"USER_REGISTER_FAIL : 用户注册失败"),
+    USER_REGISTER_FAIL_WITH_VIP(508,"USER_REGISTER_FAIL_WITH_VIP : 用户注册，创建VIP账户失败");
 
     int code;
     String description;

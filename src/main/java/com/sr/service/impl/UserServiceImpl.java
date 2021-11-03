@@ -4,15 +4,20 @@ import com.sr.common.EntityMapConvertor;
 import com.sr.dao.UserInfoMapper;
 import com.sr.dao.UserMapper;
 import com.sr.entity.User;
-import com.sr.entity.UserInfo;
+import com.sr.entity.Vip;
 import com.sr.entity.builder.UserBuilder;
+import com.sr.entity.builder.VipBuilder;
 import com.sr.entity.dto.UserRegisterDTO;
 import com.sr.enunn.StatusEnum;
+import com.sr.enunn.UserStatusEnum;
+import com.sr.enunn.UserTypeEnum;
+import com.sr.enunn.VipTypeEnum;
 import com.sr.exception.StatusException;
 import com.sr.manager.RedisManager;
 import com.sr.manager.UserManagerService;
 import com.sr.service.UserService;
 import com.sr.common.TelephoneCheck;
+import com.sr.service.VipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +33,8 @@ import java.util.UUID;
 @Service
 public class UserServiceImpl implements UserService {
 
+    public static int USER_FREE_TIMES = 10;
+
     @Autowired
     UserMapper userMapper;
 
@@ -39,6 +46,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     UserInfoMapper userInfoMapper;
+
+    @Autowired
+    VipService vipService;
 
     @Override
     public String LoginByTelephoneAndPassword (String telephone, String password) {
@@ -68,6 +78,9 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    public String LoginByThirdParty (String token) {
+        return null;
+    }
 
     private String SetUserToken(Long uid) {
         String token = UUID.randomUUID().toString().replaceAll("-","");
@@ -75,10 +88,9 @@ public class UserServiceImpl implements UserService {
         return token;
     }
 
-
     @Override
-    @Transactional
-    public Map<String, Object> register (User user, UserInfo userInfo, String verifyCode) {
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> register (User user, String verifyCode) {
         if (!TelephoneCheck.checkTelephoneNumber(user.getTelephone())) {
             throw new StatusException(StatusEnum.INVALID_TELEPHONE_NUMBER);
         }
@@ -86,22 +98,33 @@ public class UserServiceImpl implements UserService {
             throw new StatusException(StatusEnum.INVALID_VERIFY_CODE);
         }
         int uid;
-        int userInfoId;
+        user.setType(UserTypeEnum.USER.getCode());
+        user.setStatus(UserStatusEnum.AVAILABLE.getCode());
         try {
             uid = userMapper.insertSelective(user);
-            userInfoId = userInfoMapper.insertSelective(userInfo);
         }catch (Exception e){
             throw new StatusException(StatusEnum.USER_REGISTER_FAIL);
         }
-        User newUser = userMapper.selectByPrimaryKey((long) uid);
-        UserInfo newUserInfo = userInfoMapper.selectByPrimaryKey((long) userInfoId);
-        UserRegisterDTO userRegisterDTO = new UserRegisterDTO(newUser, newUserInfo);
+        user.setId((long)uid);
+
+        Vip vip = VipBuilder.aVip()
+                .withFreeVipTimes(0)
+                .withFreeTimes(USER_FREE_TIMES)
+                .withUid((long)uid)
+                .withType(VipTypeEnum.COMMON.getCode())
+                .build();
+
+        int vipId;
+        try {
+            vipId = vipService.post(vip);
+        }catch (Exception e) {
+            throw new StatusException(StatusEnum.USER_REGISTER_FAIL_WITH_VIP);
+        }
+
+        vip.setId((long)vipId);
+
+        UserRegisterDTO userRegisterDTO = new UserRegisterDTO(user,vip);
+
         return EntityMapConvertor.entity2Map(userRegisterDTO);
     }
-
-
-    public void LoginByThirdParty (String token) {
-
-    }
-
 }

@@ -2,11 +2,14 @@ package com.sr.enunn;
 
 /**
  * @Author cyh
- * @Date 2021/9/29 11:02
+ * @Date 2021/11/3 17:08
  */
-public enum ThirdPartyLoginTypeEnum {
-    QQ(0,"QQ登录"),
-    WX(1,"微信登录");
+public enum UserStatusEnum {
+    AVAILABLE(0,"可用"),
+    FORBIDDEN(1,"封禁");
+
+    Integer code;
+    String description;
 
     public Integer getCode() {
         return code;
@@ -16,10 +19,7 @@ public enum ThirdPartyLoginTypeEnum {
         return description;
     }
 
-    Integer code;
-    String description;
-
-    ThirdPartyLoginTypeEnum(int code, String description) {
+    UserStatusEnum(int code, String description) {
         this.code = code;
         this.description = description;
     }

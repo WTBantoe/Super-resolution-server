@@ -15,5 +15,7 @@ public interface UserService {
 
     String LoginByTelephoneAndVerifyCode (String telephone, String verifyCode);
 
-    Map<String,Object> register (User user, UserInfo userInfo, String verifyCode);
+    String LoginByThirdParty(String token);
+
+    Map<String,Object> register (User user, String verifyCode);
 }

@@ -102,4 +102,20 @@ public class Vip {
     public void setGmtModify(Date gmtModify) {
         this.gmtModify = gmtModify;
     }
+
+    @Override
+    public String toString() {
+        return "Vip{" +
+                "id=" + id +
+                ", uid=" + uid +
+                ", freeTimes=" + freeTimes +
+                ", freeVipTimes=" + freeVipTimes +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", type=" + type +
+                ", lastRefreshTime=" + lastRefreshTime +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModify=" + gmtModify +
+                '}';
+    }
 }

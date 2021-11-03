@@ -4,7 +4,9 @@ import com.sr.entity.Vip;
 import com.sr.entity.example.VipExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface VipMapper {
     long countByExample(VipExample example);
 

@@ -41,4 +41,28 @@ public class UserController {
                 .addDataValue(map)
                 .buildMap();
     }
+
+    @ApiOperation(
+            value = "注册",
+            notes = "注册"
+    )
+    @RequestMapping(
+            value = "registry",
+            method = RequestMethod.POST
+    )
+    @Transactional(
+            rollbackFor = Exception.class
+    )
+
+    public Map<String, Object> LoginByTelephoneAndPassword (@RequestParam(value = "telephone", required = true) String telephone,
+                                                            @RequestParam(value = "password", required = true) String password,
+                                                            @RequestParam(value = "userName", required = true) String userName,
+                                                            @RequestParam(value = "verifyCode", required = true) String verifyCode){
+        String token = userService.LoginByTelephoneAndPassword(telephone,password);
+        Map<String, Object> map = new HashMap<>();
+        map.put("token", token);
+        return ReturnCodeBuilder.successBuilder()
+                .addDataValue(map)
+                .buildMap();
+    }
 }
