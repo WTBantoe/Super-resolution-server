@@ -2,6 +2,7 @@ package com.sr.entity.dto;
 
 import com.sr.entity.User;
 import com.sr.entity.UserInfo;
+import com.sr.entity.Vip;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,13 +16,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserRegisterDTO {
     private User user;
-    private UserInfo userInfo;
+    private Vip vip;
 
     @Override
     public String toString() {
         return "UserRegisterDTO{" +
                 "user=" + user.toString() +
-                ", userInfo=" + userInfo.toString() +
+                ", vip=" + vip.toString() +
                 '}';
     }
 }

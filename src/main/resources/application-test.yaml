@@ -1,9 +1,9 @@
 server:
-  port: 9007
+  port: 9008
 
 spring:
   datasource:
-    url: jdbc:mysql://sr_mysql:3306/super_resoluiton?useUnicode=true&characterEncoding=UTF-8&useTimezone=true&serverTimezone=GMT%2B8&useSSL=false
+    url: jdbc:mysql://sr_mysql:3306/super_resoluiton_test?useUnicode=true&characterEncoding=UTF-8&useTimezone=true&serverTimezone=GMT%2B8&useSSL=false
     username: root
     password: ftymgt500.1
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -11,7 +11,7 @@ spring:
   redis:
     host: sr_redis
     port: 6379
-    database: 0
+    database: 1
     connect-timeout: 300ms
     timeout: 1000ms
     lettuce:
