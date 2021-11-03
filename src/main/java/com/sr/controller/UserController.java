@@ -2,6 +2,7 @@ package com.sr.controller;
 
 import com.sr.common.ReturnCodeBuilder;
 import com.sr.service.UserService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,8 @@ import java.util.Map;
  * @Author cyh
  * @Date 2021/11/2 16:51
  */
+@RequestMapping("/user")
+@Api(tags = {"用户管理"})
 @RestController
 public class UserController {
     @Autowired

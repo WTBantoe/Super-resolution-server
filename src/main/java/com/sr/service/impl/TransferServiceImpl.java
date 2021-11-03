@@ -1,5 +1,7 @@
 package com.sr.service.impl;
 
+import com.sr.enunn.StatusEnum;
+import com.sr.exception.StatusException;
 import com.sr.service.TransferService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,8 +25,7 @@ public class TransferServiceImpl implements TransferService
         }
         catch (IOException e)
         {
-            e.printStackTrace();
-            System.out.println("文件保存失败！");
+            throw new StatusException(StatusEnum.SAVE_FILE_FAILED);
         }
     }
 
@@ -48,8 +49,7 @@ public class TransferServiceImpl implements TransferService
         }
         catch (Exception e)
         {
-            e.printStackTrace();
-            System.out.print("文件下载失败！");
+            throw new StatusException(StatusEnum.COULD_NOT_DOWNLOAD_PICTURE);
         }
         finally
         {
