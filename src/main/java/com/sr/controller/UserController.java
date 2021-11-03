@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,8 +25,8 @@ public class UserController {
     UserService userService;
 
     @ApiOperation(
-            value = "登录",
-            notes = "登录"
+            value = "手机密码登录",
+            notes = "手机密码登录"
     )
     @RequestMapping(
             value = "login",
@@ -38,6 +40,29 @@ public class UserController {
     public Map<String, Object> LoginByTelephoneAndPassword (@RequestParam(value = "telephone", required = true) String telephone,
                          @RequestParam(value = "password", required = true) String password){
         String token = userService.LoginByTelephoneAndPassword(telephone,password);
+        Map<String, Object> map = new HashMap<>();
+        map.put("token", token);
+        return ReturnCodeBuilder.successBuilder()
+                .addDataValue(map)
+                .buildMap();
+    }
+
+    @ApiOperation(
+            value = "手机验证码登录",
+            notes = "手机验证码登录"
+    )
+    @RequestMapping(
+            value = "login",
+            method = RequestMethod.GET,
+            params = {"telephone", "code"}
+    )
+    @Transactional(
+            rollbackFor = Exception.class
+    )
+
+    public Map<String, Object> LoginByTelephoneAndCode (@RequestParam(value = "telephone", required = true) String telephone,
+                                                            @RequestParam(value = "code", required = true) String code){
+        String token = userService.LoginByTelephoneAndVerifyCode(telephone,code);
         Map<String, Object> map = new HashMap<>();
         map.put("token", token);
         return ReturnCodeBuilder.successBuilder()
@@ -64,6 +89,14 @@ public class UserController {
         String token = userService.LoginByTelephoneAndPassword(telephone,password);
         Map<String, Object> map = new HashMap<>();
         map.put("token", token);
+        return ReturnCodeBuilder.successBuilder()
+                .addDataValue(map)
+                .buildMap();
+    }
+
+    public Map<String, Object> Logout(HttpServletRequest request){
+        Map<String, Object> map = new HashMap<>();
+        map.put("successful", userService.logout(request) ? "登出成功" : "登出失败");
         return ReturnCodeBuilder.successBuilder()
                 .addDataValue(map)
                 .buildMap();
