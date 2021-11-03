@@ -37,7 +37,8 @@ public class UploadController
         file_name = UUID.randomUUID() + ext_name;
         File image = new File(save_path + file_name);
         transferService.uploadFile(file, image);
-        return "Image Upload Success!";
+        System.out.println("Image Upload Success! Saved to " + image.getAbsolutePath());
+        return file_name;
     }
 
     @PostMapping("/video")
@@ -55,6 +56,7 @@ public class UploadController
         file_name = UUID.randomUUID() + ext_name;
         File video = new File(save_path + file_name);
         transferService.uploadFile(file, video);
-        return "Video Upload Success!";
+        System.out.println("Video Upload Success! Saved to" + video.getAbsolutePath());
+        return file_name;
     }
 }

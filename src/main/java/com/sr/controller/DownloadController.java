@@ -33,7 +33,7 @@ public class DownloadController
             System.out.println("图片未上传！");
         }
         response.setContentType("application/force-download");
-        response.addHeader("Content-Disposition", "attachment;fileName=" + image.getPath());
+        response.addHeader("Content-Disposition", "attachment;fileName=" + image.getAbsolutePath());
         transferService.downloadFile(image, response);
         return "Image Download Success!";
     }
@@ -50,7 +50,7 @@ public class DownloadController
             System.out.println("视频未上传！");
         }
         response.setContentType("application/force-download");
-        response.addHeader("Content-Disposition", "attachment;fileName=" + video.getPath());
+        response.addHeader("Content-Disposition", "attachment;fileName=" + video.getAbsolutePath());
         transferService.downloadFile(video, response);
         return "Video Download Success!";
     }
