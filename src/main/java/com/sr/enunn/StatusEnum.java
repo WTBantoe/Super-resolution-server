@@ -26,6 +26,8 @@ public enum StatusEnum {
     VIDEO_NOT_UPLOAD(514,"VIDEO_NOT_UPLOAD : 视频未上传！"),
     COULD_NOT_FIND_PROCESSED_VIDEO(515,"COULD_NOT_FIND_PROCESSED_VIDEO : 找不到处理完的视频！"),
     VERIFY_CODE_FAILED(516,"VERIFY_CODE_FAILED : 校验验证码失败！"),
+    HISTORY_INSERT_FAIL(517,"HISTORY_INSERT_FAIL : 历史记录插入失败！"),
+    TOKEN_EXPIRE(518,"TOKEN_EXPIRE : 用户token过期！"),
     ;
     int code;
     String description;

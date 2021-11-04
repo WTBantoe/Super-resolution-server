@@ -1,6 +1,10 @@
 package com.sr.service;
 
+import com.sr.entity.History;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Author cyh
@@ -8,4 +12,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface HistoryService {
+    List<Map<String, Object>> getUserHistoryListByModifyTimeDESC (Long uid, Long page, Integer pageSize);
+
+    Map<String, Object> post (History history);
+
+    List<Map<String, Object>> postList (List<History> history);
 }

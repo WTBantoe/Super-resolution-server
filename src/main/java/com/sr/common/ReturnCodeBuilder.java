@@ -108,7 +108,7 @@ public class ReturnCodeBuilder {
             return this;
         }
 
-        public Builder addDataValue (Map<String,Object> data) {
+        public Builder addDataValue (Object data) {
             this.data = data;
             return this;
         }
