@@ -7,6 +7,7 @@ import com.sr.entity.example.HistoryExample;
 import com.sr.enunn.StatusEnum;
 import com.sr.exception.StatusException;
 import com.sr.service.HistoryService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,12 +26,15 @@ public class HistoryServiceImpl implements HistoryService {
     HistoryMapper historyMapper;
 
     @Override
-    public List<Map<String, Object>> getUserHistoryListByModifyTimeDESC(Long uid, Long page, Integer pageSize) {
+    public List<Map<String, Object>> getUserHistoryListByModifyTimeDESC(Long uid, Long page, Integer pageSize, String tag) {
         HistoryExample historyExample = new HistoryExample();
         HistoryExample.Criteria criteria = historyExample.createCriteria();
         criteria.andUidEqualTo(uid);
-        historyExample.setOrderByClause("gmt_modify DESC");
+        if (!StringUtils.isEmpty(tag)){
+            criteria.andTagEqualTo(tag);
+        }
 
+        historyExample.setOrderByClause("gmt_modify DESC");
         if (page > 0) {
             Long offset = (page - 1L) * pageSize;
             historyExample.setLimit(pageSize);

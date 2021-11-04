@@ -12,7 +12,7 @@ import java.util.Map;
  */
 @Service
 public interface HistoryService {
-    List<Map<String, Object>> getUserHistoryListByModifyTimeDESC (Long uid, Long page, Integer pageSize);
+    List<Map<String, Object>> getUserHistoryListByModifyTimeDESC (Long uid, Long page, Integer pageSize, String tag);
 
     Map<String, Object> post (History history);
 

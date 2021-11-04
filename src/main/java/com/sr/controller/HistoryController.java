@@ -72,12 +72,14 @@ public class HistoryController {
 
     public Map<String, Object> get (@RequestParam(value = "page", required = true) Long page,
                                     @RequestParam(value = "pageSize", required = true) Integer pageSize,
+                                    @RequestParam(value = "tage", required = false) String tag,
                                     HttpServletRequest httpServletRequest){
         Long uid = httpUtil.getUidByToken(httpUtil.getToken(httpServletRequest));
-        List<Map<String, Object>> mapList = historyService.getUserHistoryListByModifyTimeDESC(uid,page,pageSize);
+        List<Map<String, Object>> mapList = historyService.getUserHistoryListByModifyTimeDESC(uid,page,pageSize,tag);
 
         return ReturnCodeBuilder.successBuilder()
                 .addDataValue(mapList)
                 .buildMap();
     }
+
 }
