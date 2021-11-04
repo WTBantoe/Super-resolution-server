@@ -5,6 +5,7 @@ import com.sr.common.PythonExecutionUtils;
 import org.python.core.PyObject;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 
 public class SRServiceImpl implements SRService
 {
@@ -16,7 +17,19 @@ public class SRServiceImpl implements SRService
     public File imageSuperResolution(File image_path)
     {
         PyObject py_result = PythonExecutionUtils.executePythonFunction("imageSR", image_python_file, image_path.getAbsolutePath());
-        Object result = PythonExecutionUtils.python_class_mapping.inverse().get(py_result.getClass()).cast(py_result);
+        Object result = null;
+        try
+        {
+            result = PythonExecutionUtils.java_class_mapping.get(py_result.getClass()).invoke(py_result);
+        }
+        catch (IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+        catch (InvocationTargetException e)
+        {
+            e.printStackTrace();
+        }
         return new File((String) result);
     }
 
@@ -24,7 +37,19 @@ public class SRServiceImpl implements SRService
     public File videoSuperResolution(File video_path)
     {
         PyObject py_result = PythonExecutionUtils.executePythonFunction("videoSR", video_python_file, video_path.getAbsolutePath());
-        Object result = PythonExecutionUtils.python_class_mapping.inverse().get(py_result.getClass()).cast(py_result);
+        Object result = null;
+        try
+        {
+            result = PythonExecutionUtils.java_class_mapping.get(py_result.getClass()).invoke(py_result);
+        }
+        catch (IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+        catch (InvocationTargetException e)
+        {
+            e.printStackTrace();
+        }
         return new File((String) result);
     }
 }
