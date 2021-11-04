@@ -21,7 +21,11 @@ import com.sr.service.VipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -34,6 +38,10 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     public static int USER_FREE_TIMES = 10;
+
+    public static String REDIS_TOKEN_KEY = "token";
+
+    public static String REDIS_USER_KEY = "user";
 
     @Autowired
     UserMapper userMapper;
@@ -63,28 +71,44 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         List<User> users = userManagerService.selectByUserWithUserNameLike(user);
-        if (users == null) {
+        if (CollectionUtils.isEmpty(users)) {
             throw new StatusException(StatusEnum.USER_NOT_EXIST);
         }
         if (users.size() > 1) {
             throw new StatusException(StatusEnum.USER_NOT_UNIQUE);
         }
-        Long uid = users.get(0).getId();
-        return SetUserToken(uid);
+        return SetUserToken(users.get(0));
     }
 
     @Override
     public String LoginByTelephoneAndVerifyCode(String telephone, String verifyCode) {
-        return null;
+        if (!TelephoneCheck.checkTelephoneNumber(telephone)) {
+            throw new StatusException(StatusEnum.INVALID_TELEPHONE_NUMBER);
+        }
+        User user = UserBuilder.anUser()
+                .withTelephone(telephone)
+                .build();
+        List<User> users = userManagerService.selectByUserWithUserNameLike(user);
+        if (CollectionUtils.isEmpty(users)) {
+            throw new StatusException(StatusEnum.USER_NOT_EXIST);
+        }
+        if (users.size() > 1) {
+            throw new StatusException(StatusEnum.USER_NOT_UNIQUE);
+        }
+        if (!TelephoneCheck.checkTelephoneNumberAndCode(user.getTelephone(),verifyCode)) {
+            throw new StatusException(StatusEnum.INVALID_VERIFY_CODE);
+        }
+        return SetUserToken(users.get(0));
     }
 
     public String LoginByThirdParty (String token) {
         return null;
     }
 
-    private String SetUserToken(Long uid) {
+    private String SetUserToken(User user) {
         String token = UUID.randomUUID().toString().replaceAll("-","");
-        redisManager.set(token, uid,100000);
+        redisManager.hSet(REDIS_TOKEN_KEY, token, user.getId().toString(), 100000);
+        redisManager.hSetAll(REDIS_USER_KEY + user.getId().toString(), EntityMapConvertor.entity2Map(user), 100000);
         return token;
     }
 
@@ -97,11 +121,17 @@ public class UserServiceImpl implements UserService {
         if (!TelephoneCheck.checkTelephoneNumberAndCode(user.getTelephone(),verifyCode)) {
             throw new StatusException(StatusEnum.INVALID_VERIFY_CODE);
         }
-        int uid;
+        User existUser = UserBuilder.anUser()
+                .withTelephone(user.getTelephone())
+                .build();
+        if(!CollectionUtils.isEmpty(userManagerService.selectByUserWithUserNameLike(existUser))){
+            throw new StatusException(StatusEnum.USER_ALREADY_EXIST);
+        }
+        long uid;
         user.setType(UserTypeEnum.USER.getCode());
         user.setStatus(UserStatusEnum.AVAILABLE.getCode());
         try {
-            uid = userMapper.insertSelective(user);
+        uid = userMapper.insertSelective(user);
         }catch (Exception e){
             throw new StatusException(StatusEnum.USER_REGISTER_FAILED);
         }
@@ -126,5 +156,21 @@ public class UserServiceImpl implements UserService {
         UserRegisterDTO userRegisterDTO = new UserRegisterDTO(user,vip);
 
         return EntityMapConvertor.entity2Map(userRegisterDTO);
+    }
+
+    @Override
+    public boolean logout(HttpServletRequest httpServletRequest) {
+        Cookie[] cookies = httpServletRequest.getCookies();
+        if(cookies != null && cookies.length > 0){
+            for (Cookie cookie : cookies){
+                if(cookie.getName().equals(REDIS_TOKEN_KEY)){
+                    String userKey = (String) redisManager.hGet(REDIS_TOKEN_KEY, cookie.getValue());
+                    redisManager.hDel(REDIS_USER_KEY, userKey);
+                    redisManager.hDel(REDIS_TOKEN_KEY, cookie.getValue());
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

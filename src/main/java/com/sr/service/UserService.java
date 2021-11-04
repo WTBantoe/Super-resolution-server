@@ -4,6 +4,7 @@ package com.sr.service;
 import com.sr.entity.User;
 import com.sr.entity.UserInfo;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
 /**
@@ -18,4 +19,6 @@ public interface UserService {
     String LoginByThirdParty(String token);
 
     Map<String,Object> register (User user, String verifyCode);
+
+    boolean logout(HttpServletRequest httpServletRequest);
 }

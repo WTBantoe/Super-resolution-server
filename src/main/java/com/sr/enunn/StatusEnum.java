@@ -24,7 +24,9 @@ public enum StatusEnum {
     PICTURE_NOT_UPLOAD(512,"PICTURE_NOT_UPLOAD : 图片未上传！"),
     INVALID_FILE_TYPE(513,"INVALID_FILE_TYPE : 无法识别的文件类型！"),
     VIDEO_NOT_UPLOAD(514,"VIDEO_NOT_UPLOAD : 视频未上传！"),
-    COULD_NOT_FIND_PROCESSED_VIDEO(515,"COULD_NOT_FIND_PROCESSED_VIDEO : 找不到处理完的视频！"),;
+    COULD_NOT_FIND_PROCESSED_VIDEO(515,"COULD_NOT_FIND_PROCESSED_VIDEO : 找不到处理完的视频！"),
+    VERIFY_CODE_FAILED(516,"VERIFY_CODE_FAILED : 校验验证码失败！"),
+    ;
     int code;
     String description;
 
