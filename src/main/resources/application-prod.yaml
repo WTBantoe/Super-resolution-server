@@ -3,13 +3,13 @@ server:
 
 picture:
   path:
-    processed: file:/data/sr/prod/pic/processed/
-    raw: file:/data/sr/prod/pic/raw/
+    processed: /data/pic/processed/
+    raw: /data/pic/raw/
 
 video:
   path:
-    processed: file:/data/sr/prod/vid/processed/
-    raw: file:/data/sr/prod/vid/raw/
+    processed: /data/vid/processed/
+    raw: /data/vid/raw/
 
 spring:
   datasource:
