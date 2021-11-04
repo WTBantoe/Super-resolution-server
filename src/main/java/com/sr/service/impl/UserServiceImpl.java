@@ -121,11 +121,17 @@ public class UserServiceImpl implements UserService {
         if (!TelephoneCheck.checkTelephoneNumberAndCode(user.getTelephone(),verifyCode)) {
             throw new StatusException(StatusEnum.INVALID_VERIFY_CODE);
         }
-        int uid;
+        User existUser = UserBuilder.anUser()
+                .withTelephone(user.getTelephone())
+                .build();
+        if(!CollectionUtils.isEmpty(userManagerService.selectByUserWithUserNameLike(existUser))){
+            throw new StatusException(StatusEnum.USER_ALREADY_EXIST);
+        }
+        long uid;
         user.setType(UserTypeEnum.USER.getCode());
         user.setStatus(UserStatusEnum.AVAILABLE.getCode());
         try {
-            uid = userMapper.insertSelective(user);
+        uid = userMapper.insertSelective(user);
         }catch (Exception e){
             throw new StatusException(StatusEnum.USER_REGISTER_FAILED);
         }

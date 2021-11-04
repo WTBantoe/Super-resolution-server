@@ -1,7 +1,7 @@
 package com.sr.common;
 
 import javax.net.ssl.*;
-import java.io.DataOutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -24,6 +24,8 @@ public class TelephoneCheck {
     public static String APP_SECRET = "3302a31df896659c443a0079575a81a3";
 
     public static String ADDRESS = "https://webapi.sms.mob.com/sms/verify";
+
+    public static String VerifySuccessMessage = "{\"status\":200}";
     /**
      * 验证手机号是否符合正则表达式
      * @param telephone
@@ -81,7 +83,13 @@ public class TelephoneCheck {
             out.close();
             connection.connect();
             //get result
-            return connection.getResponseCode() == HttpURLConnection.HTTP_OK;
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                String result = parsRtn(connection.getInputStream());
+                return result.contains(VerifySuccessMessage);
+            } else {
+                System.out.println(connection.getResponseCode() + " "+ connection.getResponseMessage());
+                return false;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -89,5 +97,23 @@ public class TelephoneCheck {
                 connection.disconnect();
         }
         return false;
+    }
+
+
+    private static String parsRtn(InputStream is) throws IOException {
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder buffer = new StringBuilder();
+        String line = null;
+        boolean first = true;
+        while ((line = reader.readLine()) != null) {
+            if(first){
+                first = false;
+            }else{
+                buffer.append("\n");
+            }
+            buffer.append(line);
+        }
+        return buffer.toString();
     }
 }

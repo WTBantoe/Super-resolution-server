@@ -1,6 +1,8 @@
 package com.sr.controller;
 
 import com.sr.common.ReturnCodeBuilder;
+import com.sr.entity.User;
+import com.sr.entity.builder.UserBuilder;
 import com.sr.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -86,9 +88,12 @@ public class UserController {
                                                             @RequestParam(value = "password", required = true) String password,
                                                             @RequestParam(value = "userName", required = true) String userName,
                                                             @RequestParam(value = "verifyCode", required = true) String verifyCode){
-        String token = userService.LoginByTelephoneAndPassword(telephone,password);
-        Map<String, Object> map = new HashMap<>();
-        map.put("token", token);
+        User user = UserBuilder.anUser()
+                .withTelephone(telephone)
+                .withPassword(password)
+                .withUserName(userName)
+                .build();
+        Map<String, Object> map = userService.register(user,verifyCode);
         return ReturnCodeBuilder.successBuilder()
                 .addDataValue(map)
                 .buildMap();
