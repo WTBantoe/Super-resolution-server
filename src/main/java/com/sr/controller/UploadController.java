@@ -61,7 +61,7 @@ public class UploadController
 
     @PostMapping("/image/single")
     @ApiOperation("处理图片上传")
-    public Map<String, Object> uploadImage(@RequestParam(value = "image") MultipartFile file, HttpServletResponse response,
+    public void uploadImage(@RequestParam(value = "image") MultipartFile file, HttpServletResponse response,
                                            @RequestParam(value = "tag", required = false)String tag,
                                            HttpServletRequest httpServletRequest)
     {
@@ -105,14 +105,11 @@ public class UploadController
                 .build();
 
         historyService.post(history);
-
-        return ReturnCodeBuilder.successBuilder()
-                .buildMap();
     }
 
     @PostMapping("/video/single")
     @ApiOperation("处理视频上传")
-    public Map<String, Object> uploadVideo(@RequestParam(value = "video") MultipartFile file,
+    public void uploadVideo(@RequestParam(value = "video") MultipartFile file,
                                            @RequestParam(value = "tag")String tag,
                                            HttpServletRequest httpServletRequest)
     {
@@ -124,10 +121,6 @@ public class UploadController
         String videoPath = saveFile(file,MediaTypeEnum.VIDEO);
         System.out.println("Video Upload Success! Saved to" + videoPath);
         File video = new File(videoPath);
-
-
-        return ReturnCodeBuilder.successBuilder()
-                .buildMap();
     }
 
     private String saveFile(MultipartFile file, MediaTypeEnum mediaTypeEnum){
