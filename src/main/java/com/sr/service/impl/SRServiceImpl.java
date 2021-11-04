@@ -2,54 +2,37 @@ package com.sr.service.impl;
 
 import com.sr.common.PythonExecutionUtils;
 import com.sr.service.SRService;
-import org.python.core.PyObject;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 
+@Service
 public class SRServiceImpl implements SRService
 {
-
-    static File image_python_file = new File("test.py");
-    static File video_python_file = new File("test.py");
+    static File image_python_file = new File("src/test/testfiles/ESRGAN/imageSR.py");
+    static File video_python_file = new File("videoSR.py");
 
     @Override
-    public File imageSuperResolution(File image_path)
+    public String[] imageSuperResolution()
     {
-        PyObject py_result = PythonExecutionUtils.executePythonFunction("imageSR", image_python_file, image_path.getAbsolutePath());
-        Object result = null;
-        try
+        PythonExecutionUtils.setPython_path(new File("C:\\ProgramFiles\\Python37\\python.exe"));
+        String[] outputs = PythonExecutionUtils.executePythonFileWithOutput(image_python_file);
+        for (String output : outputs)
         {
-            result = PythonExecutionUtils.java_class_mapping.get(py_result.getClass()).invoke(py_result);
+            System.out.println(output);
         }
-        catch (IllegalAccessException e)
-        {
-            e.printStackTrace();
-        }
-        catch (InvocationTargetException e)
-        {
-            e.printStackTrace();
-        }
-        return new File((String) result);
+        return outputs;
     }
 
     @Override
-    public File videoSuperResolution(File video_path)
+    public String[] videoSuperResolution()
     {
-        PyObject py_result = PythonExecutionUtils.executePythonFunction("videoSR", video_python_file, video_path.getAbsolutePath());
-        Object result = null;
-        try
+        PythonExecutionUtils.setPython_path(new File("C:\\ProgramFiles\\Python37\\python.exe"));
+        String[] outputs = PythonExecutionUtils.executePythonFileWithOutput(video_python_file);
+        for (String output : outputs)
         {
-            result = PythonExecutionUtils.java_class_mapping.get(py_result.getClass()).invoke(py_result);
+            System.out.println(output);
         }
-        catch (IllegalAccessException e)
-        {
-            e.printStackTrace();
-        }
-        catch (InvocationTargetException e)
-        {
-            e.printStackTrace();
-        }
-        return new File((String) result);
+        return outputs;
     }
 }

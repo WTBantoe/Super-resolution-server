@@ -11,6 +11,9 @@ import java.util.ArrayList;
 public class PythonExecutionUtilsTest
 {
 
+    File test_file = new File("C:\\Users\\92887\\Desktop\\Projects\\Coding\\Python\\Super-resolution-server\\src\\test\\testfiles\\test.py");
+    File test_import_file = new File("C:\\Users\\92887\\Desktop\\Projects\\Coding\\Python\\Super-resolution-server\\src\\test\\testfiles\\test_import.py");
+
     @BeforeAll
     static void setPython()
     {
@@ -30,14 +33,12 @@ public class PythonExecutionUtilsTest
     @Test
     void fileTest()
     {
-        File test_file = new File("C:\\Users\\92887\\Desktop\\Projects\\Coding\\Python\\Super-resolution-server\\src\\test\\testfiles\\test.py");
         PythonExecutionUtils.executePythonFile(test_file);
     }
 
     @Test
     void fileOutputTest()
     {
-        File test_file = new File("C:\\Users\\92887\\Desktop\\Projects\\Coding\\Python\\Super-resolution-server\\src\\test\\testfiles\\test.py");
         String[] result = PythonExecutionUtils.executePythonFileWithOutput(test_file);
         for (String output : result)
         {
@@ -48,23 +49,20 @@ public class PythonExecutionUtilsTest
     @Test
     void functionTest()
     {
-        File test_file = new File("C:\\Users\\92887\\Desktop\\Projects\\Coding\\Python\\Super-resolution-server\\src\\test\\testfiles\\test_function.py");
-        PyObject result = PythonExecutionUtils.executePythonFunction("test", test_file, "teststring");
+        PyObject result = PythonExecutionUtils.executePythonFunction("testString", test_file, "TEST");
         System.out.println(result);
     }
 
     @Test
-    void srFileTest()
+    void importFileTest()
     {
-        File sr_file = new File("C:\\Users\\92887\\Desktop\\Projects\\Coding\\Python\\Super-resolution-server\\src\\test\\testfiles\\ESRGAN\\test.py");
-        PythonExecutionUtils.executePythonFile(sr_file);
+        PythonExecutionUtils.executePythonFile(test_import_file);
     }
 
     @Test
-    void srFileOutputTest()
+    void importFileOutputTest()
     {
-        File sr_file = new File("C:\\Users\\92887\\Desktop\\Projects\\Coding\\Python\\Super-resolution-server\\src\\test\\testfiles\\ESRGAN\\test.py");
-        String[] result = PythonExecutionUtils.executePythonFileWithOutput(sr_file);
+        String[] result = PythonExecutionUtils.executePythonFileWithOutput(test_import_file);
         for (String output : result)
         {
             System.out.println(output);
@@ -72,9 +70,8 @@ public class PythonExecutionUtilsTest
     }
 
     @Test
-    void srFunctionTest()
+    void importFunctionTest()
     {
-        File test_file = new File("C:\\Users\\92887\\Desktop\\Projects\\Coding\\Python\\Super-resolution-server\\src\\test\\testfiles\\ESRGAN\\test.py");
         PyObject result = PythonExecutionUtils.executePythonFunction("sr", test_file, "LR/*");
         System.out.println(result);
     }

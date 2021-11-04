@@ -20,12 +20,12 @@ def sr(test_img_folder):
     model.load_state_dict(torch.load(model_path), strict=True)
     model.eval()
     model = model.to(device)
-    print('Model path {:s}. \nTesting...'.format(model_path))
+#     print('Model path {:s}. \nTesting...'.format(model_path))
     idx = 0
     for path in glob.glob(test_img_folder):
         idx += 1
         base = osp.splitext(osp.basename(path))[0]
-        print(idx, base)
+#         print(idx, base)
         # read images
         img = cv2.imread(path, cv2.IMREAD_COLOR)
         img = img * 1.0 / 255
@@ -38,5 +38,6 @@ def sr(test_img_folder):
         output = np.transpose(output[[2, 1, 0], :, :], (1, 2, 0))
         output = (output * 255.0).round()
         cv2.imwrite(osp.abspath(".")+'/results/{:s}_rlt.png'.format(base), output)
+        print(osp.abspath(".")+'/results/{:s}_rlt.png'.format(base))
 
 sr(test_img_folder)
