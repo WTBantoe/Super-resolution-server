@@ -23,11 +23,21 @@ public class UploadController
     @Autowired
     TransferService transferService;
 
-    @Value("&{picture.path.raw}")
+
     public static String RAW_PICTURE_PATH;
 
-    @Value("&{video.path.raw}")
     public static String RAW_VIDEO_PATH;
+
+    @Value("${picture.path.raw}")
+    public void setRawPicturePath(String rawPicturePath) {
+        RAW_PICTURE_PATH = rawPicturePath;
+    }
+
+    @Value("${video.path.raw}")
+    public void setRawVideoPath(String rawVideoPath) {
+        RAW_VIDEO_PATH = rawVideoPath;
+    }
+
 
     @PostMapping("/image/single")
     @ApiOperation("处理图片上传")

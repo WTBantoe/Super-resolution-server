@@ -17,9 +17,9 @@ public class EntityMapConvertTest {
         user.setUserName("cyh");
         user.setPassword("sdasdasfa");
         UserInfo userInfo = new UserInfo();
-        userInfo.setSex(0);
-        userInfo.setTrueName("cyh");
-        UserRegisterDTO userRegisterDTO = new UserRegisterDTO(user,userInfo);
-        System.out.println(EntityMapConvertor.entity2Map(userRegisterDTO));
+//        userInfo.setSex(0);
+//        userInfo.setTrueName("cyh");
+//        UserRegisterDTO userRegisterDTO = new UserRegisterDTO(user,userInfo);
+//        System.out.println(EntityMapConvertor.entity2Map(userRegisterDTO));
     }
 }

@@ -21,11 +21,19 @@ public class DownloadController
     @Autowired
     TransferService transferService;
 
-    @Value("&{picture.path.processed}")
     public static String PROCESSED_PICTURE_PATH;
 
-    @Value("&{video.path.processed}")
     public static String PROCESSED_VIDEO_PATH;
+
+    @Value("${picture.path.processed}")
+    public void setProcessedPicturePath(String processedPicturePath) {
+        PROCESSED_PICTURE_PATH = processedPicturePath;
+    }
+
+    @Value("${video.path.processed}")
+    public void setProcessedVideoPath(String processedVideoPath) {
+        PROCESSED_VIDEO_PATH = processedVideoPath;
+    }
 
     @GetMapping("/image/single")
     @ApiOperation("处理图片下载")
