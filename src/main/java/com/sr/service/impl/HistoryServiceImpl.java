@@ -1,6 +1,7 @@
 package com.sr.service.impl;
 
 import com.sr.common.EntityMapConvertor;
+import com.sr.common.HttpUtil;
 import com.sr.dao.HistoryMapper;
 import com.sr.entity.History;
 import com.sr.entity.example.HistoryExample;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,9 @@ import java.util.Map;
 public class HistoryServiceImpl implements HistoryService {
     @Autowired
     HistoryMapper historyMapper;
+
+    @Autowired
+    HttpUtil httpUtil;
 
     @Override
     public List<Map<String, Object>> getUserHistoryListByModifyTimeDESC(Long uid, Long page, Integer pageSize, String tag) {
@@ -66,5 +71,10 @@ public class HistoryServiceImpl implements HistoryService {
             historyMapList.add(post(history));
         }
         return historyMapList;
+    }
+
+    @Override
+    public List<String> getUserTags(Long uid) {
+        return historyMapper.getUserTags(uid);
     }
 }

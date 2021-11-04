@@ -29,34 +29,6 @@ public class HistoryController {
 
     @Autowired
     HttpUtil httpUtil;
-//    @ApiOperation(
-//            value = "新增历史记录",
-//            notes = "新增历史记录"
-//    )
-//    @RequestMapping(
-//            value = "history",
-//            method = RequestMethod.POST
-//    )
-//    @Transactional(
-//            rollbackFor = Exception.class
-//    )
-//
-//    public Map<String, Object> postHistory (@RequestParam(value = "telephone", required = true) String telephone,
-//                                         @RequestParam(value = "password", required = true) String password,
-//                                         @RequestParam(value = "userName", required = true) String userName,
-//                                         @RequestParam(value = "verifyCode", required = true) String verifyCode){
-//        History history =
-//        User user = UserBuilder.anUser()
-//                .withTelephone(telephone)
-//                .withPassword(password)
-//                .withUserName(userName)
-//                .build();
-//        Map<String, Object> map = historyService.post(history);
-//        return ReturnCodeBuilder.successBuilder()
-//                .addDataValue(map)
-//                .buildMap();
-//    }
-
 
     @ApiOperation(
             value = "修改时间倒序获取用户历史记录",
@@ -70,7 +42,7 @@ public class HistoryController {
             rollbackFor = Exception.class
     )
 
-    public Map<String, Object> get (@RequestParam(value = "page", required = true) Long page,
+    public Map<String, Object> getUserHistoryListByModifyTimeDESC (@RequestParam(value = "page", required = true) Long page,
                                     @RequestParam(value = "pageSize", required = true) Integer pageSize,
                                     @RequestParam(value = "tage", required = false) String tag,
                                     HttpServletRequest httpServletRequest){
@@ -79,6 +51,28 @@ public class HistoryController {
 
         return ReturnCodeBuilder.successBuilder()
                 .addDataValue(mapList)
+                .buildMap();
+    }
+
+    @ApiOperation(
+            value = "获取用户的历史数据标签",
+            notes = "获取用户的历史数据标签"
+    )
+    @RequestMapping(
+            value = "history/user/tags",
+            method = RequestMethod.GET
+    )
+    @Transactional(
+            rollbackFor = Exception.class
+    )
+
+    public Map<String, Object> getUserTags (HttpServletRequest httpServletRequest){
+        Long uid = httpUtil.getUidByToken(httpUtil.getToken(httpServletRequest));
+
+        List<String> list = historyService.getUserTags(uid);
+
+        return ReturnCodeBuilder.successBuilder()
+                .addDataValue(list)
                 .buildMap();
     }
 

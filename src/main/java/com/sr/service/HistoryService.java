@@ -3,6 +3,7 @@ package com.sr.service;
 import com.sr.entity.History;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -17,4 +18,6 @@ public interface HistoryService {
     Map<String, Object> post (History history);
 
     List<Map<String, Object>> postList (List<History> history);
+
+    List<String> getUserTags(Long uid);
 }

@@ -29,4 +29,6 @@ public interface HistoryMapper {
     int updateByPrimaryKeySelective(History record);
 
     int updateByPrimaryKey(History record);
+
+    List<String> getUserTags(Long uid);
 }
