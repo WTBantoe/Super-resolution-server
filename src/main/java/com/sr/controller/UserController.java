@@ -31,9 +31,8 @@ public class UserController {
             notes = "手机密码登录"
     )
     @RequestMapping(
-            value = "login",
-            method = RequestMethod.GET,
-            params = {"telephone", "password"}
+            value = "login/password",
+            method = RequestMethod.GET
     )
     @Transactional(
             rollbackFor = Exception.class
@@ -54,9 +53,8 @@ public class UserController {
             notes = "手机验证码登录"
     )
     @RequestMapping(
-            value = "login",
-            method = RequestMethod.GET,
-            params = {"telephone", "code"}
+            value = "login/code",
+            method = RequestMethod.GET
     )
     @Transactional(
             rollbackFor = Exception.class
@@ -84,7 +82,7 @@ public class UserController {
             rollbackFor = Exception.class
     )
 
-    public Map<String, Object> LoginByTelephoneAndPassword (@RequestParam(value = "telephone", required = true) String telephone,
+    public Map<String, Object> register (@RequestParam(value = "telephone", required = true) String telephone,
                                                             @RequestParam(value = "password", required = true) String password,
                                                             @RequestParam(value = "userName", required = true) String userName,
                                                             @RequestParam(value = "verifyCode", required = true) String verifyCode){

@@ -107,8 +107,8 @@ public class UserServiceImpl implements UserService {
 
     private String SetUserToken(User user) {
         String token = UUID.randomUUID().toString().replaceAll("-","");
-        redisManager.hSet(REDIS_TOKEN_KEY, token, user.getId(), 100000);
-        redisManager.hSet(REDIS_USER_KEY, user.getId().toString(), user, 100000);
+        redisManager.hSet(REDIS_TOKEN_KEY, token, user.getId().toString(), 100000);
+        redisManager.hSetAll(REDIS_USER_KEY + user.getId().toString(), EntityMapConvertor.entity2Map(user), 100000);
         return token;
     }
 
