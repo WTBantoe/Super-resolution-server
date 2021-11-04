@@ -10,14 +10,18 @@ import org.python.util.PythonInterpreter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Dictionary;
+import java.util.HashMap;
 
 
 public class PythonExecutionUtils
 {
     public static BiMap<Class, Class> python_class_mapping = HashBiMap.create();
+    public static HashMap<Class, Method> java_class_mapping = new HashMap<>();
 
     static
     {
@@ -28,6 +32,18 @@ public class PythonExecutionUtils
         python_class_mapping.put(Arrays.class, PyArray.class);
         python_class_mapping.put(Dictionary.class, PyDictionary.class);
         python_class_mapping.put(File.class, PyFile.class);
+
+        java_class_mapping.clear();
+        try
+        {
+            java_class_mapping.put(PyInteger.class, PyInteger.class.getMethod("getValue"));
+            java_class_mapping.put(PyFloat.class, PyFloat.class.getMethod("getValue"));
+            java_class_mapping.put(PyString.class, PyString.class.getMethod("getString"));
+        }
+        catch (NoSuchMethodException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @NotNull
@@ -92,7 +108,26 @@ public class PythonExecutionUtils
         PyObject[] python_prams = new PyObject[params.length];
         for (int i = 0; i < params.length; i++)
         {
-            python_prams[i] = (PyObject) python_class_mapping.get(params[i].getClass()).cast(params[i]);
+            try
+            {
+                python_prams[i] = (PyObject) python_class_mapping.get(params[i].getClass()).getConstructor(params[i].getClass()).newInstance(params[i]);
+            }
+            catch (InstantiationException e)
+            {
+                e.printStackTrace();
+            }
+            catch (IllegalAccessException e)
+            {
+                e.printStackTrace();
+            }
+            catch (InvocationTargetException e)
+            {
+                e.printStackTrace();
+            }
+            catch (NoSuchMethodException e)
+            {
+                e.printStackTrace();
+            }
         }
         PyObject result = function.__call__(python_prams);
         return result;
