@@ -8,5 +8,6 @@ import java.io.File;
 public interface TransferService
 {
     void uploadFile(MultipartFile file, File destination);
+
     void downloadFile(File source, HttpServletResponse response);
 }

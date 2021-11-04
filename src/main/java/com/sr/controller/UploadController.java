@@ -9,13 +9,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -33,12 +34,14 @@ public class UploadController
     public static String RAW_VIDEO_PATH;
 
     @Value("${picture.path.raw}")
-    public void setRawPicturePath(String rawPicturePath) {
+    public void setRawPicturePath(String rawPicturePath)
+    {
         RAW_PICTURE_PATH = rawPicturePath;
     }
 
     @Value("${video.path.raw}")
-    public void setRawVideoPath(String rawVideoPath) {
+    public void setRawVideoPath(String rawVideoPath)
+    {
         RAW_VIDEO_PATH = rawVideoPath;
     }
 
@@ -52,7 +55,7 @@ public class UploadController
             throw new StatusException(StatusEnum.PICTURE_NOT_UPLOAD);
         }
 
-        String picturePath = saveFile(file,MediaTypeEnum.PICTURE);
+        String picturePath = saveFile(file, MediaTypeEnum.PICTURE);
         System.out.println("Image Upload Success! Saved to " + picturePath);
 
         File processed = new File(picturePath.trim());
@@ -65,8 +68,7 @@ public class UploadController
         response.addHeader("Content-Disposition", "attachment;fileName=" + processed.getAbsolutePath());
         transferService.downloadFile(processed, response);
 
-        return ReturnCodeBuilder.successBuilder()
-                .buildMap();
+        return ReturnCodeBuilder.successBuilder().buildMap();
     }
 
     @PostMapping("/video/single")
@@ -78,21 +80,23 @@ public class UploadController
             throw new StatusException(StatusEnum.VIDEO_NOT_UPLOAD);
         }
 
-        String videoPath = saveFile(file,MediaTypeEnum.VIDEO);
+        String videoPath = saveFile(file, MediaTypeEnum.VIDEO);
         System.out.println("Video Upload Success! Saved to" + videoPath);
         File video = new File(videoPath);
 
-        return ReturnCodeBuilder.successBuilder()
-                .buildMap();
+        return ReturnCodeBuilder.successBuilder().buildMap();
     }
 
-    private String saveFile(MultipartFile file, MediaTypeEnum mediaTypeEnum){
+    private String saveFile(MultipartFile file, MediaTypeEnum mediaTypeEnum)
+    {
         String fileName = file.getOriginalFilename();
-        if (fileName == null){
+        if (fileName == null)
+        {
             throw new StatusException(StatusEnum.PICTURE_NOT_UPLOAD);
         }
 
-        if (!fileName.contains(".")){
+        if (!fileName.contains("."))
+        {
             throw new StatusException((StatusEnum.INVALID_FILE_TYPE));
         }
 
@@ -100,7 +104,8 @@ public class UploadController
         fileName = UUID.randomUUID() + extName;
 
         String filePath = "";
-        switch (mediaTypeEnum){
+        switch (mediaTypeEnum)
+        {
             case PICTURE:
                 filePath = RAW_PICTURE_PATH;
                 break;

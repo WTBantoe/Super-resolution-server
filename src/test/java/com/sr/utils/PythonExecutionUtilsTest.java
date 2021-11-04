@@ -1,13 +1,12 @@
 package com.sr.utils;
 
+import com.sr.common.PythonExecutionUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.python.core.PyObject;
-import org.python.util.PythonInterpreter;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Properties;
 
 public class PythonExecutionUtilsTest
 {
@@ -15,13 +14,7 @@ public class PythonExecutionUtilsTest
     @BeforeAll
     static void setPython()
     {
-        Properties props = new Properties();
-        props.put("python.home", "C:\\ProgramFiles\\Python310\\Lib");
-        props.put("python.console.encoding", "UTF-8");
-        props.put("python.security.respectJavaAccessibility", "false");
-        props.put("python.import.site", "false");
-        Properties preprops = System.getProperties();
-        PythonInterpreter.initialize(preprops, props, new String[0]);
+        PythonExecutionUtils.setPython_path(new File("C:\\ProgramFiles\\Python37\\python.exe"));
     }
 
     @Test
@@ -45,7 +38,11 @@ public class PythonExecutionUtilsTest
     void fileOutputTest()
     {
         File test_file = new File("C:\\Users\\92887\\Desktop\\Projects\\Coding\\Python\\Super-resolution-server\\src\\test\\testfiles\\test.py");
-        PythonExecutionUtils.executePythonFileWithOutput(test_file);
+        String[] result = PythonExecutionUtils.executePythonFileWithOutput(test_file);
+        for (String output : result)
+        {
+            System.out.println(output);
+        }
     }
 
     @Test
@@ -57,17 +54,21 @@ public class PythonExecutionUtilsTest
     }
 
     @Test
-    void srTest()
+    void srFileTest()
     {
         File sr_file = new File("C:\\Users\\92887\\Desktop\\Projects\\Coding\\Python\\Super-resolution-server\\src\\test\\testfiles\\ESRGAN\\test.py");
         PythonExecutionUtils.executePythonFile(sr_file);
     }
 
     @Test
-    void srOutputTest()
+    void srFileOutputTest()
     {
         File sr_file = new File("C:\\Users\\92887\\Desktop\\Projects\\Coding\\Python\\Super-resolution-server\\src\\test\\testfiles\\ESRGAN\\test.py");
-        PythonExecutionUtils.executePythonFileWithOutput(sr_file);
+        String[] result = PythonExecutionUtils.executePythonFileWithOutput(sr_file);
+        for (String output : result)
+        {
+            System.out.println(output);
+        }
     }
 
     @Test
