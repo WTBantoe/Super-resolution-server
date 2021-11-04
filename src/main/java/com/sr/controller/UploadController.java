@@ -62,7 +62,7 @@ public class UploadController
             throw new StatusException(StatusEnum.COULD_NOT_FIND_PROCESSED_PICTURE);
         }
         response.setContentType("application/force-download");
-        response.addHeader("Content-Disposition", "attachment;fileName=" + processed.getAbsolutePath());
+        response.addHeader("Content-Disposition", "attachment;fileName=" + processed.getName().substring(36));
         transferService.downloadFile(processed, response);
 
         return ReturnCodeBuilder.successBuilder()
@@ -95,9 +95,8 @@ public class UploadController
         if (!fileName.contains(".")){
             throw new StatusException((StatusEnum.INVALID_FILE_TYPE));
         }
-
-        String extName = fileName.substring(fileName.lastIndexOf("."));
-        fileName = UUID.randomUUID() + extName;
+        File currentFile = new File(fileName);
+        fileName = UUID.randomUUID().toString() + currentFile.getName();
 
         String filePath = "";
         switch (mediaTypeEnum){
