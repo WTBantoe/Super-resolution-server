@@ -1,5 +1,6 @@
 package com.sr.controller;
 
+import com.sr.common.HttpUtil;
 import com.sr.common.ReturnCodeBuilder;
 import com.sr.entity.History;
 import com.sr.entity.User;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +26,9 @@ import java.util.Map;
 public class HistoryController {
     @Autowired
     HistoryService historyService;
+
+    @Autowired
+    HttpUtil httpUtil;
 //    @ApiOperation(
 //            value = "新增历史记录",
 //            notes = "新增历史记录"
@@ -65,9 +70,10 @@ public class HistoryController {
             rollbackFor = Exception.class
     )
 
-    public Map<String, Object> get (@RequestParam(value = "uid", required = true) Long uid,
-                                         @RequestParam(value = "page", required = true) Long page,
-                                         @RequestParam(value = "pageSize", required = true) Integer pageSize){
+    public Map<String, Object> get (@RequestParam(value = "page", required = true) Long page,
+                                    @RequestParam(value = "pageSize", required = true) Integer pageSize,
+                                    HttpServletRequest httpServletRequest){
+        Long uid = httpUtil.getUidByToken(httpUtil.getToken(httpServletRequest));
         List<Map<String, Object>> mapList = historyService.getUserHistoryListByModifyTimeDESC(uid,page,pageSize);
 
         return ReturnCodeBuilder.successBuilder()

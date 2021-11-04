@@ -41,6 +41,9 @@ public class UploadController
     @Autowired
     HistoryService historyService;
 
+    @Autowired
+    HttpUtil httpUtil;
+
     public static String RAW_PICTURE_PATH;
 
     public static String RAW_VIDEO_PATH;
@@ -59,7 +62,7 @@ public class UploadController
     @PostMapping("/image/single")
     @ApiOperation("处理图片上传")
     public Map<String, Object> uploadImage(@RequestParam(value = "image") MultipartFile file, HttpServletResponse response,
-                                           @RequestParam(value = "tag")String tag,
+                                           @RequestParam(value = "tag", required = false)String tag,
                                            HttpServletRequest httpServletRequest)
     {
         if (file.isEmpty())
@@ -81,16 +84,12 @@ public class UploadController
         response.addHeader("Content-Disposition", "attachment;fileName=" + processed.getName().substring(36));
         transferService.downloadFile(processed, response);
 
-        String token = HttpUtil.getToken(httpServletRequest);
+        String token = httpUtil.getToken(httpServletRequest);
 
         Long uid = null;
         try {
-            uid = (Long)redisManager.hGet(UserServiceImpl.REDIS_TOKEN_KEY, token);
+            uid = Long.parseLong((String) redisManager.hGet(UserServiceImpl.REDIS_TOKEN_KEY, token));
         } catch (Exception e) {
-            throw new StatusException(StatusEnum.TOKEN_EXPIRE);
-        }
-
-        if (uid == null) {
             throw new StatusException(StatusEnum.TOKEN_EXPIRE);
         }
 
@@ -105,10 +104,9 @@ public class UploadController
                 .withSpan(endTime - startTime)
                 .build();
 
-        Map<String, Object> map = historyService.post(history);
+        historyService.post(history);
 
         return ReturnCodeBuilder.successBuilder()
-                .addDataValue(map)
                 .buildMap();
     }
 
