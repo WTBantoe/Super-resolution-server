@@ -1,3 +1,5 @@
+import sys
+import os
 import os.path as osp
 import glob
 import cv2
@@ -5,13 +7,15 @@ import numpy as np
 import torch
 import RRDBNet_arch as arch
 
+os.chdir(sys.path[0])
+
 # device = torch.device('cuda')  # if you want to run on CPU, change 'cuda' -> cpu
 device = torch.device('cpu')
 
 test_img_folder = 'LR/*'
 
 def sr(test_img_folder):
-    model_path = 'models/RRDB_ESRGAN_x4.pth'  # models/RRDB_ESRGAN_x4.pth OR models/RRDB_PSNR_x4.pth
+    model_path = osp.abspath(".")+'/models/RRDB_ESRGAN_x4.pth'  # models/RRDB_ESRGAN_x4.pth OR models/RRDB_PSNR_x4.pth
     model = arch.RRDBNet(3, 3, 64, 23, gc=32)
     model.load_state_dict(torch.load(model_path), strict=True)
     model.eval()
@@ -33,6 +37,6 @@ def sr(test_img_folder):
             output = model(img_LR).data.squeeze().float().cpu().clamp_(0, 1).numpy()
         output = np.transpose(output[[2, 1, 0], :, :], (1, 2, 0))
         output = (output * 255.0).round()
-        cv2.imwrite('results/{:s}_rlt.png'.format(base), output)
+        cv2.imwrite(osp.abspath(".")+'/results/{:s}_rlt.png'.format(base), output)
 
 sr(test_img_folder)
