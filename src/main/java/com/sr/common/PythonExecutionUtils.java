@@ -23,6 +23,18 @@ public class PythonExecutionUtils
     public static BiMap<Class, Class> python_class_mapping = HashBiMap.create();
     public static HashMap<Class, Method> java_class_mapping = new HashMap<>();
 
+    public static File getPython_path()
+    {
+        return python_path;
+    }
+
+    public static void setPython_path(File python_path)
+    {
+        PythonExecutionUtils.python_path = python_path;
+    }
+
+    public static File python_path;
+
     static
     {
         python_class_mapping.clear();
@@ -72,31 +84,29 @@ public class PythonExecutionUtils
         ArrayList<String> result = new ArrayList<>();
         try
         {
-            process = Runtime.getRuntime().exec("python " + python_file.getAbsolutePath());
-            BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line = null;
-            while ((line = input.readLine()) != null)
+            process = Runtime.getRuntime().exec(python_path.getAbsolutePath() + ' ' + python_file.getAbsolutePath());
+            BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            String line;
+//            while ((line = error.readLine()) != null)
+//            {
+//                System.out.println(line);
+//                result.add(line);
+//            }
+            while ((line = output.readLine()) != null)
             {
-                System.out.println(line);
                 result.add(line);
             }
-            input.close();
+            output.close();
             process.waitFor();
         }
-        catch (IOException e)
+        catch (IOException | InterruptedException e)
         {
             e.printStackTrace();
         }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            String[] return_result = new String[result.size()];
-            result.toArray(return_result);
-            return return_result;
-        }
+        String[] return_result = new String[result.size()];
+        result.toArray(return_result);
+        return return_result;
     }
 
     @NotNull
@@ -112,24 +122,11 @@ public class PythonExecutionUtils
             {
                 python_prams[i] = (PyObject) python_class_mapping.get(params[i].getClass()).getConstructor(params[i].getClass()).newInstance(params[i]);
             }
-            catch (InstantiationException e)
-            {
-                e.printStackTrace();
-            }
-            catch (IllegalAccessException e)
-            {
-                e.printStackTrace();
-            }
-            catch (InvocationTargetException e)
-            {
-                e.printStackTrace();
-            }
-            catch (NoSuchMethodException e)
+            catch (InstantiationException | NoSuchMethodException | InvocationTargetException | IllegalAccessException e)
             {
                 e.printStackTrace();
             }
         }
-        PyObject result = function.__call__(python_prams);
-        return result;
+        return function.__call__(python_prams);
     }
 }

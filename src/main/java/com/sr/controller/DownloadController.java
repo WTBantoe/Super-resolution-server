@@ -7,8 +7,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -26,12 +28,14 @@ public class DownloadController
     public static String PROCESSED_VIDEO_PATH;
 
     @Value("${picture.path.processed}")
-    public void setProcessedPicturePath(String processedPicturePath) {
+    public void setProcessedPicturePath(String processedPicturePath)
+    {
         PROCESSED_PICTURE_PATH = processedPicturePath;
     }
 
     @Value("${video.path.processed}")
-    public void setProcessedVideoPath(String processedVideoPath) {
+    public void setProcessedVideoPath(String processedVideoPath)
+    {
         PROCESSED_VIDEO_PATH = processedVideoPath;
     }
 
