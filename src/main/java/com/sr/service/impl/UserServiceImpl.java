@@ -18,6 +18,7 @@ import com.sr.manager.UserManagerService;
 import com.sr.service.UserService;
 import com.sr.common.TelephoneCheck;
 import com.sr.service.VipService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,11 +60,16 @@ public class UserServiceImpl implements UserService {
     VipService vipService;
 
     @Override
-    public String LoginByTelephoneAndPassword (String telephone, String password) {
+    public String loginByTelephoneAndPasswordAndCheckPhoneNumber (String telephone, String password) {
         if (!TelephoneCheck.checkTelephoneNumber(telephone)) {
             throw new StatusException(StatusEnum.INVALID_TELEPHONE_NUMBER);
         }
 
+        return loginByTelephoneAndPassword(telephone, password);
+    }
+
+    @Override
+    public String loginByTelephoneAndPassword(String telephone, String password) {
         User user = UserBuilder
                 .anUser()
                 .withTelephone(telephone)
@@ -81,7 +87,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String LoginByTelephoneAndVerifyCode(String telephone, String verifyCode) {
+    public String loginByTelephoneAndVerifyCode(String telephone, String verifyCode) {
         if (!TelephoneCheck.checkTelephoneNumber(telephone)) {
             throw new StatusException(StatusEnum.INVALID_TELEPHONE_NUMBER);
         }
@@ -101,7 +107,7 @@ public class UserServiceImpl implements UserService {
         return SetUserToken(users.get(0));
     }
 
-    public String LoginByThirdParty (String token) {
+    public String loginByThirdParty (String token) {
         return null;
     }
 
@@ -164,10 +170,14 @@ public class UserServiceImpl implements UserService {
         if(cookies != null && cookies.length > 0){
             for (Cookie cookie : cookies){
                 if(cookie.getName().equals(REDIS_TOKEN_KEY)){
-                    String userKey = (String) redisManager.hGet(REDIS_TOKEN_KEY, cookie.getValue());
-                    redisManager.hDel(REDIS_USER_KEY, userKey);
-                    redisManager.hDel(REDIS_TOKEN_KEY, cookie.getValue());
-                    return true;
+                    if (redisManager.hHasKey(REDIS_TOKEN_KEY, cookie.getValue())) {
+                        String userKey = (String) redisManager.hGet(REDIS_TOKEN_KEY, cookie.getValue());
+                        if(redisManager.hHasKey(REDIS_USER_KEY, userKey)){
+                            redisManager.hDel(REDIS_USER_KEY, userKey);
+                            redisManager.hDel(REDIS_TOKEN_KEY, cookie.getValue());
+                            return true;
+                        }
+                    }
                 }
             }
         }

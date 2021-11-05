@@ -22,6 +22,9 @@ public class HttpUtil {
     public String getToken(HttpServletRequest httpServletRequest){
         Cookie[] cookies = httpServletRequest.getCookies();
         String token = "";
+        if (cookies == null || cookies.length == 0){
+            return token;
+        }
         for (Cookie cookie : cookies) {
             if(cookie.getName().equals(UserServiceImpl.REDIS_TOKEN_KEY)){
                 token = cookie.getValue();

@@ -12,13 +12,15 @@ import java.util.Map;
  * @Date 2021/9/28 10:47
  */
 public interface UserService {
-    String LoginByTelephoneAndPassword (String telephone, String password);
+    String loginByTelephoneAndPasswordAndCheckPhoneNumber (String telephone, String password);
 
-    String LoginByTelephoneAndVerifyCode (String telephone, String verifyCode);
+    String loginByTelephoneAndVerifyCode (String telephone, String verifyCode);
 
-    String LoginByThirdParty(String token);
+    String loginByThirdParty(String token);
 
     Map<String,Object> register (User user, String verifyCode);
 
     boolean logout(HttpServletRequest httpServletRequest);
+
+    String loginByTelephoneAndPassword(String testTelephone, String testPassword);
 }

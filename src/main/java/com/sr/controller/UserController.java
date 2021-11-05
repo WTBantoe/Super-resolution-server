@@ -40,7 +40,7 @@ public class UserController {
 
     public Map<String, Object> LoginByTelephoneAndPassword (@RequestParam(value = "telephone", required = true) String telephone,
                          @RequestParam(value = "password", required = true) String password){
-        String token = userService.LoginByTelephoneAndPassword(telephone,password);
+        String token = userService.loginByTelephoneAndPasswordAndCheckPhoneNumber(telephone,password);
         Map<String, Object> map = new HashMap<>();
         map.put("token", token);
         return ReturnCodeBuilder.successBuilder()
@@ -62,7 +62,7 @@ public class UserController {
 
     public Map<String, Object> LoginByTelephoneAndCode (@RequestParam(value = "telephone", required = true) String telephone,
                                                             @RequestParam(value = "code", required = true) String code){
-        String token = userService.LoginByTelephoneAndVerifyCode(telephone,code);
+        String token = userService.loginByTelephoneAndVerifyCode(telephone,code);
         Map<String, Object> map = new HashMap<>();
         map.put("token", token);
         return ReturnCodeBuilder.successBuilder()
