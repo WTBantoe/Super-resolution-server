@@ -49,6 +49,8 @@ public class UploadController
 
     public static String RAW_VIDEO_PATH;
 
+    public static String PROCESSED_PICTURE_PATH;
+
     @Value("${picture.path.raw}")
     public void setRawPicturePath(String rawPicturePath)
     {
@@ -59,6 +61,12 @@ public class UploadController
     public void setRawVideoPath(String rawVideoPath)
     {
         RAW_VIDEO_PATH = rawVideoPath;
+    }
+
+    @Value("${picture.path.processed}")
+    public void setProcessedPicturePath(String processedPicturePath)
+    {
+        PROCESSED_PICTURE_PATH = processedPicturePath;
     }
 
 
@@ -156,7 +164,7 @@ public class UploadController
 //        transferService.uploadFile(file, material);
 
         //TODO
-        File processed = new File("D:\\data\\super-resolution\\pic\\processed\\" + fileName);
+        File processed = new File(PROCESSED_PICTURE_PATH + fileName);
         transferService.uploadFile(file, processed);
 
         return processed.getAbsolutePath();
