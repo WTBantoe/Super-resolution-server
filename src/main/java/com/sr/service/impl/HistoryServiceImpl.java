@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -76,5 +77,30 @@ public class HistoryServiceImpl implements HistoryService {
     @Override
     public List<String> getUserTags(Long uid) {
         return historyMapper.getUserTags(uid);
+    }
+
+    @Override
+    public History preHistory(Long uid, String material, Integer type, String tag)
+    {
+        History history = new History();
+        history.setUid(uid);
+        history.setRawMaterial(material);
+        history.setType(type);
+        history.setTag(tag);
+        return history;
+    }
+
+    @Override
+    public History postHistory(History history,String result, Long span)
+    {
+        history.setResult(result);
+        history.setSpan(span);
+        return history;
+    }
+
+    @Override
+    public void addHistory(History history)
+    {
+        historyMapper.insert(history);
     }
 }
