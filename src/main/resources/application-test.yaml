@@ -1,6 +1,11 @@
 server:
   port: 9008
 
+model:
+  path:
+    image: src/main/resources/model/ESRGAN/imageSR.py
+    video: src/main/resources/model/ESRGAN/imageSR.py
+
 picture:
   path:
     processed: /data/sr/test/pic/processed/
