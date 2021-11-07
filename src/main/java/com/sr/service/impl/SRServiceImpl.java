@@ -42,9 +42,9 @@ public class SRServiceImpl implements SRService
     }
 
     @Value("${python.path}")
-    public void setPython_exe_file(File python_exe_file)
+    public void setPython_exe_file(String python_exe_file)
     {
-        SRServiceImpl.python_exe_file = python_exe_file;
+        SRServiceImpl.python_exe_file = new File(python_exe_file);
     }
 
     @Override
@@ -64,6 +64,30 @@ public class SRServiceImpl implements SRService
     {
         PythonExecutionUtils.setPython_path(python_exe_file);
         String[] outputs = PythonExecutionUtils.executePythonFileWithOutput(video_python_file);
+        for (String output : outputs)
+        {
+            System.out.println(output);
+        }
+        return outputs;
+    }
+
+    @Override
+    public String[] imageSuperResolution(File input_file, File output_file)
+    {
+        PythonExecutionUtils.setPython_path(python_exe_file);
+        String[] outputs = PythonExecutionUtils.executePythonFileWithOutput(image_python_file, input_file, output_file);
+        for (String output : outputs)
+        {
+            System.out.println(output);
+        }
+        return outputs;
+    }
+
+    @Override
+    public String[] videoSuperResolution(File input_file, File output_file)
+    {
+        PythonExecutionUtils.setPython_path(python_exe_file);
+        String[] outputs = PythonExecutionUtils.executePythonFileWithOutput(video_python_file, input_file, output_file);
         for (String output : outputs)
         {
             System.out.println(output);
