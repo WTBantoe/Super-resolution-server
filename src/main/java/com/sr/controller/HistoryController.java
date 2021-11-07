@@ -6,6 +6,7 @@ import com.sr.entity.History;
 import com.sr.entity.User;
 import com.sr.entity.builder.UserBuilder;
 import com.sr.service.HistoryService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,8 @@ import java.util.Map;
  * @Author cyh
  * @Date 2021/11/4 18:30
  */
+@RequestMapping("/history")
+@Api(tags = {"历史记录管理"})
 @RestController
 public class HistoryController {
     @Autowired

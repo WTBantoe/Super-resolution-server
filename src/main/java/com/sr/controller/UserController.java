@@ -97,11 +97,37 @@ public class UserController {
                 .buildMap();
     }
 
+    @ApiOperation(
+            value = "退出登录",
+            notes = "退出登录"
+    )
+    @RequestMapping(
+            value = "logout",
+            method = RequestMethod.GET
+    )
+    @Transactional(
+            rollbackFor = Exception.class
+    )
     public Map<String, Object> Logout(HttpServletRequest request){
         Map<String, Object> map = new HashMap<>();
         map.put("successful", userService.logout(request) ? "登出成功" : "登出失败");
         return ReturnCodeBuilder.successBuilder()
                 .addDataValue(map)
                 .buildMap();
+    }
+
+    public String getAvatar() {
+        // TODO
+        return null;
+    }
+
+    public Map<String, Object> modifyUserInfo() {
+        // TODO
+        return null;
+    }
+
+    public Map<String, Object> getUserInfo() {
+        // TODO
+        return null;
     }
 }

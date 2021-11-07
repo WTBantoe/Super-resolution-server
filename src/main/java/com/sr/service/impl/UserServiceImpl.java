@@ -1,13 +1,16 @@
 package com.sr.service.impl;
 
+import com.sr.common.CollectionUtil;
 import com.sr.common.EntityMapConvertor;
 import com.sr.dao.UserInfoMapper;
 import com.sr.dao.UserMapper;
 import com.sr.entity.User;
+import com.sr.entity.UserInfo;
 import com.sr.entity.Vip;
 import com.sr.entity.builder.UserBuilder;
 import com.sr.entity.builder.VipBuilder;
 import com.sr.entity.dto.UserRegisterDTO;
+import com.sr.entity.example.UserInfoExample;
 import com.sr.enunn.StatusEnum;
 import com.sr.enunn.UserStatusEnum;
 import com.sr.enunn.UserTypeEnum;
@@ -84,6 +87,36 @@ public class UserServiceImpl implements UserService {
             throw new StatusException(StatusEnum.USER_NOT_UNIQUE);
         }
         return SetUserToken(users.get(0));
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> modifyUserInfo(UserInfo userInfo, Long uid) {
+        UserInfoExample example = new UserInfoExample();
+        UserInfoExample.Criteria criteria = example.createCriteria();
+        criteria.andUidEqualTo(uid);
+        List<UserInfo> userInfos = getUserInfoByUserId(uid);
+        if (CollectionUtils.isEmpty(userInfos)) {
+            userInfo.setUid(uid);
+            userInfoMapper.insertSelective(userInfo);
+        } else {
+            userInfoMapper.updateByExampleSelective(userInfo,example);
+        }
+        return EntityMapConvertor.entity2Map(userInfo);
+    }
+
+    @Override
+    public Map<String, Object> getUserInfo(Long uid) {
+        List<UserInfo> userInfos = getUserInfoByUserId(uid);
+        UserInfo userInfo = CollectionUtil.getUniqueObjectFromList(userInfos);
+        return EntityMapConvertor.entity2Map(userInfo);
+    }
+
+    public List<UserInfo> getUserInfoByUserId(Long uid){
+        UserInfoExample example = new UserInfoExample();
+        UserInfoExample.Criteria criteria = example.createCriteria();
+        criteria.andUidEqualTo(uid);
+        return userInfoMapper.selectByExample(example);
     }
 
     @Override

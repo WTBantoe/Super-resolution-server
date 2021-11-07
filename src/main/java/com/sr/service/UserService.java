@@ -23,4 +23,8 @@ public interface UserService {
     boolean logout(HttpServletRequest httpServletRequest);
 
     String loginByTelephoneAndPassword(String testTelephone, String testPassword);
+
+    Map<String,Object> modifyUserInfo (UserInfo userInfo, Long uid);
+
+    Map<String,Object> getUserInfo (Long uid);
 }

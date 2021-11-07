@@ -169,4 +169,9 @@ public class UploadController
 
         return processed.getAbsolutePath();
     }
+
+    public String uploadAvatar(){
+        // TODO
+        return null;
+    }
 }
