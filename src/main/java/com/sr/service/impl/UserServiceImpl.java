@@ -112,6 +112,13 @@ public class UserServiceImpl implements UserService {
         return EntityMapConvertor.entity2Map(userInfo);
     }
 
+    @Override
+    public String getAvatar(Long uid) {
+        List<UserInfo> userInfos = getUserInfoByUserId(uid);
+        UserInfo userInfo = CollectionUtil.getUniqueObjectFromList(userInfos);
+        return userInfo.getAvatar() == null ? "" : userInfo.getAvatar();
+    }
+
     public List<UserInfo> getUserInfoByUserId(Long uid){
         UserInfoExample example = new UserInfoExample();
         UserInfoExample.Criteria criteria = example.createCriteria();

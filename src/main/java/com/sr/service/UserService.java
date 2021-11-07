@@ -27,4 +27,6 @@ public interface UserService {
     Map<String,Object> modifyUserInfo (UserInfo userInfo, Long uid);
 
     Map<String,Object> getUserInfo (Long uid);
+
+    String getAvatar (Long uid);
 }

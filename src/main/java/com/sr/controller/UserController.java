@@ -1,7 +1,9 @@
 package com.sr.controller;
 
+import com.sr.common.HttpUtil;
 import com.sr.common.ReturnCodeBuilder;
 import com.sr.entity.User;
+import com.sr.entity.UserInfo;
 import com.sr.entity.builder.UserBuilder;
 import com.sr.service.UserService;
 import io.swagger.annotations.Api;
@@ -9,8 +11,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +25,9 @@ import java.util.Map;
 public class UserController {
     @Autowired
     UserService userService;
+
+    @Autowired
+    HttpUtil httpUtil;
 
     @ApiOperation(
             value = "手机密码登录",
@@ -116,18 +119,51 @@ public class UserController {
                 .buildMap();
     }
 
-    public String getAvatar() {
-        // TODO
-        return null;
+    @ApiOperation(
+            value = "获得头像",
+            notes = "获得头像"
+    )
+    @RequestMapping(
+            value = "avatar",
+            method = RequestMethod.GET
+    )
+    @Transactional(
+            rollbackFor = Exception.class
+    )
+    public String getAvatar(HttpServletRequest request) {
+        return userService.getAvatar(httpUtil.getUidByToken(httpUtil.getToken(request)));
     }
 
-    public Map<String, Object> modifyUserInfo() {
-        // TODO
-        return null;
+
+    @ApiOperation(
+            value = "修改个人信息",
+            notes = "修改个人信息"
+    )
+    @RequestMapping(
+            value = "info",
+            method = RequestMethod.POST
+    )
+    @Transactional(
+            rollbackFor = Exception.class
+    )
+    public Map<String, Object> modifyUserInfo(@RequestBody UserInfo userInfo,
+                                              HttpServletRequest request) {
+        return userService.modifyUserInfo(userInfo,httpUtil.getUidByToken(httpUtil.getToken(request)));
     }
 
-    public Map<String, Object> getUserInfo() {
-        // TODO
-        return null;
+
+    @ApiOperation(
+            value = "获得个人信息",
+            notes = "获得个人信息"
+    )
+    @RequestMapping(
+            value = "info",
+            method = RequestMethod.GET
+    )
+    @Transactional(
+            rollbackFor = Exception.class
+    )
+    public Map<String, Object> getUserInfo(HttpServletRequest request) {
+        return userService.getUserInfo(httpUtil.getUidByToken(httpUtil.getToken(request)));
     }
 }
