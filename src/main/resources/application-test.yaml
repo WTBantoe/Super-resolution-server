@@ -1,6 +1,14 @@
 server:
   port: 9008
 
+python:
+  path: /root/miniconda3/envs/sr/bin/python
+
+model:
+  path:
+    image: src/main/resources/model/ESRGAN/imageSR.py
+    video: src/main/resources/model/ESRGAN/imageSR.py
+
 picture:
   path:
     processed: /data/sr/test/pic/processed/

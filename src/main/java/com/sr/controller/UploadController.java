@@ -1,7 +1,6 @@
 package com.sr.controller;
 
 import com.sr.common.HttpUtil;
-import com.sr.common.ReturnCodeBuilder;
 import com.sr.entity.History;
 import com.sr.entity.builder.HistoryBuilder;
 import com.sr.enunn.MediaTypeEnum;
@@ -9,6 +8,7 @@ import com.sr.enunn.StatusEnum;
 import com.sr.exception.StatusException;
 import com.sr.manager.RedisManager;
 import com.sr.service.HistoryService;
+import com.sr.service.SRService;
 import com.sr.service.TransferService;
 import com.sr.service.impl.UserServiceImpl;
 import io.swagger.annotations.Api;
@@ -21,11 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -44,6 +42,9 @@ public class UploadController
 
     @Autowired
     HttpUtil httpUtil;
+
+    @Autowired
+    SRService srService;
 
     public static String RAW_PICTURE_PATH;
 
@@ -72,9 +73,7 @@ public class UploadController
 
     @PostMapping("/image/single")
     @ApiOperation("处理图片上传")
-    public void uploadImage(@RequestParam(value = "image") MultipartFile file, HttpServletResponse response,
-                                           @RequestParam(value = "tag", required = false)String tag,
-                                           HttpServletRequest httpServletRequest)
+    public void uploadImage(@RequestParam(value = "image") MultipartFile file, HttpServletResponse response, @RequestParam(value = "tag", required = false) String tag, HttpServletRequest httpServletRequest)
     {
         if (file.isEmpty())
         {
@@ -83,8 +82,9 @@ public class UploadController
 
         Long startTime = System.currentTimeMillis();
 
-        String picturePath = saveFile(file,MediaTypeEnum.PICTURE);
+        String picturePath = saveFile(file, MediaTypeEnum.PICTURE);
         System.out.println("Image Upload Success! Saved to " + picturePath);
+
         File processed = new File(picturePath.trim());
 
         if (!processed.exists())
@@ -94,35 +94,30 @@ public class UploadController
         response.setContentType("application/force-download");
         response.addHeader("Content-Disposition", "attachment;fileName=" + processed.getName().substring(36));
         transferService.downloadFile(processed, response);
+        srService.imageSuperResolution();
 
         String token = httpUtil.getToken(httpServletRequest);
 
-        Long uid = null;
-        try {
+        long uid;
+        try
+        {
             uid = Long.parseLong((String) redisManager.hGet(UserServiceImpl.REDIS_TOKEN_KEY, token));
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             throw new StatusException(StatusEnum.TOKEN_EXPIRE);
         }
 
         Long endTime = System.currentTimeMillis();
 
-        History history = HistoryBuilder.aHistory()
-                .withUid(uid)
-                .withType(MediaTypeEnum.PICTURE.getCode())
-                .withTag(tag)
-                .withRawMaterial(picturePath)
-                .withResult(picturePath)
-                .withSpan(endTime - startTime)
-                .build();
+        History history = HistoryBuilder.aHistory().withUid(uid).withType(MediaTypeEnum.PICTURE.getCode()).withTag(tag).withRawMaterial(picturePath).withResult(picturePath).withSpan(endTime - startTime).build();
 
         historyService.post(history);
     }
 
     @PostMapping("/video/single")
     @ApiOperation("处理视频上传")
-    public void uploadVideo(@RequestParam(value = "video") MultipartFile file,
-                                           @RequestParam(value = "tag")String tag,
-                                           HttpServletRequest httpServletRequest)
+    public void uploadVideo(@RequestParam(value = "video") MultipartFile file, @RequestParam(value = "tag") String tag, HttpServletRequest httpServletRequest)
     {
         if (file.isEmpty())
         {
@@ -131,6 +126,7 @@ public class UploadController
 
         String videoPath = saveFile(file, MediaTypeEnum.VIDEO);
         System.out.println("Video Upload Success! Saved to" + videoPath);
+        srService.videoSuperResolution();
         File video = new File(videoPath);
     }
 
@@ -147,7 +143,7 @@ public class UploadController
             throw new StatusException((StatusEnum.INVALID_FILE_TYPE));
         }
         File currentFile = new File(fileName);
-        fileName = UUID.randomUUID().toString() + currentFile.getName();
+        fileName = UUID.randomUUID() + currentFile.getName();
 
         String filePath = "";
         switch (mediaTypeEnum)
