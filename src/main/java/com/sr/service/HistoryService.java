@@ -21,9 +21,4 @@ public interface HistoryService {
     List<Map<String, Object>> postList (List<History> history);
 
     List<String> getUserTags(Long uid);
-
-    History preHistory(Long uid, String material, Integer type, String tag);
-    History postHistory(History history,String result,Long span);
-    void addHistory(History history);
-
 }
