@@ -23,6 +23,8 @@ public class PythonExecutionUtils
     public static BiMap<Class, Class> python_class_mapping = HashBiMap.create();
     public static HashMap<Class, Method> java_class_mapping = new HashMap<>();
 
+    public static File python_path;
+
     public static File getPython_path()
     {
         return python_path;
@@ -32,8 +34,6 @@ public class PythonExecutionUtils
     {
         PythonExecutionUtils.python_path = python_path;
     }
-
-    public static File python_path;
 
     static
     {
@@ -84,7 +84,7 @@ public class PythonExecutionUtils
         ArrayList<String> result = new ArrayList<>();
         try
         {
-            process = Runtime.getRuntime().exec(python_path.getAbsolutePath() + ' ' + python_file.getAbsolutePath());
+            process = Runtime.getRuntime().exec(new String[]{python_path.getAbsolutePath(), python_file.getAbsolutePath()});
             BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream()));
             BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
             String line;
@@ -106,6 +106,44 @@ public class PythonExecutionUtils
         }
         String[] return_result = new String[result.size()];
         result.toArray(return_result);
+        return return_result;
+    }
+
+    @NotNull
+    public static String[] executePythonFileWithOutput(File python_file, File input_file, File output_file)
+    {
+        Process process;
+        ArrayList<String> result = new ArrayList<>();
+        ArrayList<String> err_result = new ArrayList<>();
+        try
+        {
+            process = Runtime.getRuntime().exec(new String[]{python_path.getAbsolutePath(), python_file.getAbsolutePath(), "-i", input_file.getAbsolutePath(), "-o", output_file.getAbsolutePath()});
+            BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+            String outputLine;
+            String errorLine;
+            while ((outputLine = output.readLine()) != null)
+            {
+                System.out.println(outputLine);
+                result.add(outputLine);
+            }
+            while ((errorLine = error.readLine()) != null)
+            {
+                System.out.println(errorLine);
+                err_result.add(errorLine);
+            }
+            output.close();
+            process.waitFor();
+        }
+        catch (IOException | InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+        ArrayList<String> full_result = new ArrayList<>();
+        full_result.addAll(result);
+        full_result.addAll(err_result);
+        String[] return_result = new String[full_result.size()];
+        full_result.toArray(return_result);
         return return_result;
     }
 

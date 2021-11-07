@@ -1,28 +1,26 @@
 package com.sr.service;
 
-import com.sr.service.impl.SRServiceImpl;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
-
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class SRServiceTest
 {
-    static SRService srService;
-
-    @BeforeAll
-    static void startService()
-    {
-        srService = new SRServiceImpl();
-    }
+    @Autowired
+    SRService srService;
 
     @Test
-    void imageSRTest()
+    public void imageSRTest()
     {
         srService.imageSuperResolution();
     }
 
     @Test
-    void videoSRTest()
+    public void videoSRTest()
     {
         srService.videoSuperResolution();
     }

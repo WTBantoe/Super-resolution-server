@@ -1,27 +1,45 @@
 package com.sr.utils;
 
 import com.sr.common.PythonExecutionUtils;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.python.core.PyObject;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
 import java.util.ArrayList;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class PythonExecutionUtilsTest
 {
 
-    File test_file = new File("C:\\Users\\92887\\Desktop\\Projects\\Coding\\Python\\Super-resolution-server\\src\\test\\testfiles\\test.py");
-    File test_import_file = new File("C:\\Users\\92887\\Desktop\\Projects\\Coding\\Python\\Super-resolution-server\\src\\test\\testfiles\\test_import.py");
+    static File python_exe_file;
 
-    @BeforeAll
-    static void setPython()
+    public File getPython_exe_file()
     {
-        PythonExecutionUtils.setPython_path(new File("C:\\ProgramFiles\\Python37\\python.exe"));
+        return python_exe_file;
+    }
+
+    @Value("${python.path}")
+    public void setPython_exe_file(String python_exe_file)
+    {
+        PythonExecutionUtilsTest.python_exe_file = new File(python_exe_file);
+    }
+
+    File test_file = new File("C:\\Users\\92887\\Desktop\\Projects\\Coding\\Python\\Super-resolution-server\\src\\test\\testfiles\\test.py");
+
+    @Before
+    public void setPython()
+    {
+        PythonExecutionUtils.setPython_path(python_exe_file);
     }
 
     @Test
-    void statementTest()
+    public void statementTest()
     {
         ArrayList<String> strings = new ArrayList<>();
         strings.add("print('Hello World!')");
@@ -31,13 +49,13 @@ public class PythonExecutionUtilsTest
     }
 
     @Test
-    void fileTest()
+    public void fileTest()
     {
         PythonExecutionUtils.executePythonFile(test_file);
     }
 
     @Test
-    void fileOutputTest()
+    public void fileOutputTest()
     {
         String[] result = PythonExecutionUtils.executePythonFileWithOutput(test_file);
         for (String output : result)
@@ -47,22 +65,9 @@ public class PythonExecutionUtilsTest
     }
 
     @Test
-    void functionTest()
+    public void fileOutputParamTest()
     {
-        PyObject result = PythonExecutionUtils.executePythonFunction("testString", test_file, "TEST");
-        System.out.println(result);
-    }
-
-    @Test
-    void importFileTest()
-    {
-        PythonExecutionUtils.executePythonFile(test_import_file);
-    }
-
-    @Test
-    void importFileOutputTest()
-    {
-        String[] result = PythonExecutionUtils.executePythonFileWithOutput(test_import_file);
+        String[] result = PythonExecutionUtils.executePythonFileWithOutput(test_file, new File("first.txt"), new File("second.txt"));
         for (String output : result)
         {
             System.out.println(output);
@@ -70,9 +75,9 @@ public class PythonExecutionUtilsTest
     }
 
     @Test
-    void importFunctionTest()
+    public void functionTest()
     {
-        PyObject result = PythonExecutionUtils.executePythonFunction("sr", test_file, "LR/*");
+        PyObject result = PythonExecutionUtils.executePythonFunction("testString", test_file, "TEST");
         System.out.println(result);
     }
 
