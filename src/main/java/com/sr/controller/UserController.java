@@ -5,6 +5,7 @@ import com.sr.common.ReturnCodeBuilder;
 import com.sr.entity.User;
 import com.sr.entity.UserInfo;
 import com.sr.entity.builder.UserBuilder;
+import com.sr.entity.builder.UserInfoBuilder;
 import com.sr.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -146,8 +147,17 @@ public class UserController {
     @Transactional(
             rollbackFor = Exception.class
     )
-    public Map<String, Object> modifyUserInfo(@RequestBody UserInfo userInfo,
+    public Map<String, Object> modifyUserInfo(@RequestParam(required = false) String avatar,
+                                              @RequestParam(required = false) String idCardNumber,
+                                              @RequestParam(required = false) Integer sex,
+                                              @RequestParam(required = false) String trueName,
                                               HttpServletRequest request) {
+        UserInfo userInfo = UserInfoBuilder.anUserInfo()
+                .withAvatar(avatar)
+                .withIdCardNumber(idCardNumber)
+                .withSex(sex)
+                .withTrueName(trueName)
+                .build();
         return userService.modifyUserInfo(userInfo,httpUtil.getUidByToken(httpUtil.getToken(request)));
     }
 
