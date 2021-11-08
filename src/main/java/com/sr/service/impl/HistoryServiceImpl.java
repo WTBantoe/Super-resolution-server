@@ -52,6 +52,13 @@ public class HistoryServiceImpl implements HistoryService {
         return EntityMapConvertor.entityList2MapList(histories);
     }
 
+    public HistoryExample getExampleByUid(Long uid) {
+        HistoryExample historyExample = new HistoryExample();
+        HistoryExample.Criteria criteria = historyExample.createCriteria();
+        criteria.andUidEqualTo(uid);
+        return historyExample;
+    }
+
     @Override
     public Map<String, Object> post(History history) {
         try {
@@ -77,5 +84,32 @@ public class HistoryServiceImpl implements HistoryService {
     @Override
     public List<String> getUserTags(Long uid) {
         return historyMapper.getUserTags(uid);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deleteById(Long id, Long uid) {
+        History history = historyMapper.selectByPrimaryKey(id);
+        if (history == null) {
+            throw new StatusException(StatusEnum.HISTORY_NOT_EXIST);
+        }
+        if (history.getUid() == null) {
+            throw new StatusException(StatusEnum.NOT_CORRECT_USER);
+        }
+        if (!history.getUid().equals(uid)) {
+            throw new StatusException(StatusEnum.NOT_CORRECT_USER);
+        }
+        try{
+            historyMapper.deleteByPrimaryKey(id);
+        } catch (Exception e) {
+            throw new StatusException(StatusEnum.HISTORY_DELETE_FAILED);
+        }
+        return true;
+    }
+
+    @Override
+    public long getCountByUid(Long uid) {
+        HistoryExample historyExample = getExampleByUid(uid);
+        return historyMapper.countByExample(historyExample);
     }
 }

@@ -30,6 +30,9 @@ public enum StatusEnum {
     TOKEN_EXPIRE(518,"TOKEN_EXPIRE : 用户token过期！请重新登录"),
     LIST_IS_EMPTY_OR_NOT_UNIQUE(519,"LIST_IS_EMPTY_OR_NOT_UNIQUE : 列表为空或不唯一！"),
     FREE_TIME_NOT_ENOUGH(520,"FREE_TIME_NOT_ENOUGH : 免费次数不足！"),
+    HISTORY_NOT_EXIST(521,"HISTORY_NOT_EXIST : 历史记录不存在！"),
+    NOT_CORRECT_USER(522,"NOT_CORRECT_USER : 不是正确的用户！"),
+    HISTORY_DELETE_FAILED(523,"HISTORY_DELETE_FAILED : 历史用户删除失败！"),
     ;
     int code;
     String description;
