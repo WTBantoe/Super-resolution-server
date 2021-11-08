@@ -21,4 +21,8 @@ public interface HistoryService {
     List<Map<String, Object>> postList (List<History> history);
 
     List<String> getUserTags(Long uid);
+
+    boolean deleteById(Long id, Long uid);
+
+    long getCountByUid(Long uid);
 }

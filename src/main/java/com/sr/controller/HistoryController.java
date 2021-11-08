@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ public class HistoryController {
             notes = "修改时间倒序获取用户历史记录"
     )
     @RequestMapping(
-            value = "history/user/modify/desc",
+            value = "/modify/desc",
             method = RequestMethod.GET
     )
     @Transactional(
@@ -62,7 +63,7 @@ public class HistoryController {
             notes = "获取用户的历史数据标签"
     )
     @RequestMapping(
-            value = "history/user/tags",
+            value = "/tags",
             method = RequestMethod.GET
     )
     @Transactional(
@@ -79,4 +80,51 @@ public class HistoryController {
                 .buildMap();
     }
 
+    @ApiOperation(
+            value = "获取用户的历史数据数量",
+            notes = "获取用户的历史数据数量"
+    )
+    @RequestMapping(
+            value = "count",
+            method = RequestMethod.GET
+    )
+    @Transactional(
+            rollbackFor = Exception.class
+    )
+
+    public Map<String, Object> getUserHistoryCount (HttpServletRequest httpServletRequest){
+        Long uid = httpUtil.getUidByToken(httpUtil.getToken(httpServletRequest));
+        long count = historyService.getCountByUid(uid);
+        Map<String, Object> map = new HashMap<>();
+        map.put("count", count);
+
+        return ReturnCodeBuilder.successBuilder()
+                .addDataValue(map)
+                .buildMap();
+    }
+
+
+    @ApiOperation(
+            value = "删除一条历史数据",
+            notes = "删除一条历史数据"
+    )
+    @RequestMapping(
+            value = "",
+            method = RequestMethod.DELETE
+    )
+    @Transactional(
+            rollbackFor = Exception.class
+    )
+
+    public Map<String, Object> deleteById (HttpServletRequest httpServletRequest,
+                                           @RequestParam(required = true)Long historyId){
+        Long uid = httpUtil.getUidByToken(httpUtil.getToken(httpServletRequest));
+        boolean deleted = historyService.deleteById(historyId, uid);
+        Map<String, Object> map = new HashMap<>();
+        map.put("deleted", deleted ? "删除成功" : "删除失败");
+
+        return ReturnCodeBuilder.successBuilder()
+                .addDataValue(map)
+                .buildMap();
+    }
 }
