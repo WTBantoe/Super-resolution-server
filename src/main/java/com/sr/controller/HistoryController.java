@@ -127,4 +127,29 @@ public class HistoryController {
                 .addDataValue(map)
                 .buildMap();
     }
+
+    @ApiOperation(
+            value = "批量删除历史数据",
+            notes = "批量删除历史数据"
+    )
+    @RequestMapping(
+            value = "batch",
+            method = RequestMethod.DELETE
+    )
+    @Transactional(
+            rollbackFor = Exception.class
+    )
+
+    public Map<String, Object> deleteByIdList (HttpServletRequest httpServletRequest,
+                                           @RequestParam(required = true)List<Long> historyIds){
+        Long uid = httpUtil.getUidByToken(httpUtil.getToken(httpServletRequest));
+        long count = historyService.deleteByIdList(historyIds, uid);
+        Map<String, Object> map = new HashMap<>();
+        map.put("count", count);
+
+        return ReturnCodeBuilder.successBuilder()
+                .addDataValue(map)
+                .buildMap();
+    }
+
 }

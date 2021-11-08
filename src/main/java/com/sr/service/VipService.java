@@ -12,4 +12,6 @@ public interface VipService {
     public int post(Vip vip);
 
     Map<String,Object> useFreeTime (Long uid);
+
+
 }
