@@ -6,8 +6,13 @@ python:
 
 model:
   path:
-    image: src/main/resources/model/ESRGAN/imageSR.py
-    video: src/main/resources/model/ESRGAN/imageSR.py
+    image: /root/ESRGAN/imageSR.py
+    video: /root/TecoGAN/run.py
+
+tool:
+  path:
+    video2image: /root/TecoGAN/video2image.py
+    image2video: /root/TecoGAN/image2video.py
 
 picture:
   path:
@@ -18,6 +23,8 @@ video:
   path:
     processed: /data/sr/prod/vid/processed/
     raw: /data/sr/prod/vid/raw/
+    raw_frame: /data/sr/prod/vid/raw_frame/
+    processed_frame: /data/sr/prod/vid/processed_frame/
 
 spring:
   datasource:

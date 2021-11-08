@@ -108,9 +108,9 @@ model
 # inputs
 LR
 # outputs
-results
+results_frame
 # targets
-HR
+raw_frame
 # runs
 ex_*
 tx_*

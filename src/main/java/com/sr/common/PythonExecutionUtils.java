@@ -117,21 +117,88 @@ public class PythonExecutionUtils
         ArrayList<String> err_result = new ArrayList<>();
         try
         {
-            process = Runtime.getRuntime().exec(new String[]{python_path.getAbsolutePath(), python_file.getAbsolutePath(), "-i", input_file.getAbsolutePath(), "-o", output_file.getAbsolutePath()});
+            process = Runtime.getRuntime().exec(new String[]{python_path.getAbsolutePath(), python_file.getAbsolutePath(), "--input", input_file.getAbsolutePath(), "--output", output_file.getAbsolutePath()});
+
+//            final InputStream output_stream = process.getInputStream();
+//            final InputStream error_stream = process.getErrorStream();
+//            new Thread(() ->
+//            {
+//                BufferedReader output = new BufferedReader(new InputStreamReader(output_stream));
+//                try
+//                {
+//                    String outputLine = null;
+//                    while ((outputLine = output.readLine()) != null)
+//                    {
+//                        System.out.println(outputLine);
+//                        result.add(outputLine);
+//                    }
+//                }
+//                catch (IOException e)
+//
+//                {
+//                    e.printStackTrace();
+//                }
+//                finally
+//                {
+//                    try
+//                    {
+//                        output_stream.close();
+//                    }
+//                    catch (IOException e)
+//                    {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }).start();
+//
+//            new Thread(() ->
+//            {
+//                BufferedReader output = new BufferedReader(new InputStreamReader(error_stream));
+//                try
+//                {
+//                    String errorLine = null;
+//                    while ((errorLine = output.readLine()) != null)
+//                    {
+//                        System.out.println(errorLine);
+//                        err_result.add(errorLine);
+//                    }
+//                }
+//                catch (IOException e)
+//
+//                {
+//                    e.printStackTrace();
+//                }
+//                finally
+//
+//                {
+//                    try
+//                    {
+//                        output_stream.close();
+//                    }
+//                    catch (IOException e)
+//                    {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }).start();
+
             BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream()));
             BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-            String outputLine;
+
             String errorLine;
-            while ((outputLine = output.readLine()) != null)
-            {
-                System.out.println(outputLine);
-                result.add(outputLine);
-            }
+            String outputLine;
+
             while ((errorLine = error.readLine()) != null)
             {
                 System.out.println(errorLine);
                 err_result.add(errorLine);
             }
+            while ((outputLine = output.readLine()) != null)
+            {
+                System.out.println(outputLine);
+                result.add(outputLine);
+            }
+            error.close();
             output.close();
             process.waitFor();
         }

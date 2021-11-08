@@ -1,5 +1,6 @@
 package com.sr.service.impl;
 
+import com.sr.common.FileNameUtils;
 import com.sr.entity.History;
 import com.sr.entity.builder.HistoryBuilder;
 import com.sr.enunn.MediaTypeEnum;
@@ -18,14 +19,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.util.UUID;
 
 /**
  * @Author cyh
  * @Date 2021/11/7 15:54
  */
 @Service
-public class UploadServiceImpl implements UploadService {
+public class UploadServiceImpl implements UploadService
+{
 
     @Autowired
     TransferService transferService;
@@ -45,6 +46,8 @@ public class UploadServiceImpl implements UploadService {
 
     public static String PROCESSED_PICTURE_PATH;
 
+    public static String PROCESSED_VIDEO_PATH;
+
     @Value("${picture.path.raw}")
     public void setRawPicturePath(String rawPicturePath)
     {
@@ -63,45 +66,35 @@ public class UploadServiceImpl implements UploadService {
         PROCESSED_PICTURE_PATH = processedPicturePath;
     }
 
-    private String saveFile(MultipartFile file, MediaTypeEnum mediaTypeEnum)
+    @Value("${video.path.processed}")
+    public static void setProcessedVideoPath(String processedVideoPath)
     {
-        String fileName = file.getOriginalFilename();
-        if (fileName == null)
-        {
-            throw new StatusException(StatusEnum.PICTURE_NOT_UPLOAD);
-        }
+        PROCESSED_VIDEO_PATH = processedVideoPath;
+    }
 
-        if (!fileName.contains("."))
-        {
-            throw new StatusException((StatusEnum.INVALID_FILE_TYPE));
-        }
-        File currentFile = new File(fileName);
-        fileName = UUID.randomUUID().toString() + currentFile.getName();
-
-        String filePath = "";
+    private String saveFile(MultipartFile file, String fileName, MediaTypeEnum mediaTypeEnum)
+    {
+        String rawFilePath = "";
         switch (mediaTypeEnum)
         {
             case PICTURE:
-                filePath = RAW_PICTURE_PATH;
+                rawFilePath = RAW_PICTURE_PATH;
                 break;
             case VIDEO:
-                filePath = RAW_VIDEO_PATH;
+                rawFilePath = RAW_VIDEO_PATH;
                 break;
         }
 
-//        File material = new File(filePath + fileName);
-//        transferService.uploadFile(file, material);
+        File material = new File(rawFilePath + fileName);
+        transferService.uploadFile(file, material);
 
-        //TODO
-        File processed = new File(PROCESSED_PICTURE_PATH + fileName);
-        transferService.uploadFile(file, processed);
-
-        return processed.getAbsolutePath();
+        return material.getAbsolutePath();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void processSinglePicture(MultipartFile file, HttpServletResponse response, String tag, String token) {
+    public void processSinglePicture(MultipartFile file, HttpServletResponse response, String tag, String token)
+    {
         if (file.isEmpty())
         {
             throw new StatusException(StatusEnum.PICTURE_NOT_UPLOAD);
@@ -109,11 +102,14 @@ public class UploadServiceImpl implements UploadService {
 
         Long startTime = System.currentTimeMillis();
 
-        // TODO 将保存路径修改，目前赞数不改
-        String picturePath = saveFile(file, MediaTypeEnum.PICTURE);
+        String fileName = FileNameUtils.processFileName(file);
+
+        String picturePath = saveFile(file, fileName, MediaTypeEnum.PICTURE);
         System.out.println("Image Upload Success! Saved to " + picturePath);
 
-        File processed = new File(picturePath.trim());
+        srService.imageSuperResolution(new File(RAW_PICTURE_PATH + fileName), new File(PROCESSED_PICTURE_PATH + fileName));
+
+        File processed = new File((PROCESSED_PICTURE_PATH + fileName).trim());
 
         if (!processed.exists())
         {
@@ -121,7 +117,6 @@ public class UploadServiceImpl implements UploadService {
         }
 
         transferService.downloadFile(processed, response);
-        srService.imageSuperResolution();
 
         long uid;
         try
@@ -135,14 +130,7 @@ public class UploadServiceImpl implements UploadService {
 
         Long endTime = System.currentTimeMillis();
 
-        History history = HistoryBuilder.aHistory()
-                .withUid(uid)
-                .withType(MediaTypeEnum.PICTURE.getCode())
-                .withTag(tag)
-                .withRawMaterial(picturePath)
-                .withResult(picturePath)
-                .withSpan(endTime - startTime)
-                .build();
+        History history = HistoryBuilder.aHistory().withUid(uid).withType(MediaTypeEnum.PICTURE.getCode()).withTag(tag).withRawMaterial(picturePath).withResult(picturePath).withSpan(endTime - startTime).build();
 
         historyService.post(history);
 
@@ -152,17 +140,49 @@ public class UploadServiceImpl implements UploadService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String processSingleVideo(MultipartFile file) {
+    public void processSingleVideo(MultipartFile file, HttpServletResponse response, String tag, String token)
+    {
         if (file.isEmpty())
         {
             throw new StatusException(StatusEnum.VIDEO_NOT_UPLOAD);
         }
 
-        String videoPath = saveFile(file, MediaTypeEnum.VIDEO);
+        Long startTime = System.currentTimeMillis();
+
+        String fileName = FileNameUtils.processFileName(file);
+
+        String videoPath = saveFile(file, fileName, MediaTypeEnum.VIDEO);
         System.out.println("Video Upload Success! Saved to" + videoPath);
-        srService.videoSuperResolution();
-        File video = new File(videoPath);
-        // TODO 返回处理后的文件路径
-        return null;
+
+        srService.videoSuperResolution(new File(RAW_VIDEO_PATH + fileName), new File(PROCESSED_VIDEO_PATH + fileName));
+
+        File processed = new File((PROCESSED_VIDEO_PATH + fileName).trim());
+
+        if (!processed.exists())
+        {
+            throw new StatusException(StatusEnum.COULD_NOT_FIND_PROCESSED_VIDEO);
+        }
+
+        transferService.downloadFile(processed, response);
+
+        long uid;
+        try
+        {
+            uid = Long.parseLong((String) redisManager.hGet(UserServiceImpl.REDIS_TOKEN_KEY, token));
+        }
+        catch (Exception e)
+        {
+            throw new StatusException(StatusEnum.TOKEN_EXPIRE);
+        }
+
+        Long endTime = System.currentTimeMillis();
+
+        History history = HistoryBuilder.aHistory().withUid(uid).withType(MediaTypeEnum.PICTURE.getCode()).withTag(tag).withRawMaterial(videoPath).withResult(videoPath).withSpan(endTime - startTime).build();
+
+        historyService.post(history);
+
+        response.setContentType("application/force-download");
+        response.addHeader("Content-Disposition", "attachment;fileName=" + processed.getName().substring(36));
+
     }
 }
