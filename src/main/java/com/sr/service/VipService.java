@@ -13,5 +13,7 @@ public interface VipService {
 
     Map<String,Object> useFreeTime (Long uid);
 
+    Map<String,Object> openVipAccount(Long uid, Integer mountCount);
 
+    Map<String,Object> renewVipAccount(Long uid, Integer mountCount);
 }

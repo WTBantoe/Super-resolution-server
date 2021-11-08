@@ -2,15 +2,20 @@ package com.sr.service.impl;
 
 import com.sr.common.CollectionUtil;
 import com.sr.common.EntityMapConvertor;
+import com.sr.common.TimeUtil;
 import com.sr.dao.VipMapper;
 import com.sr.entity.Vip;
 import com.sr.entity.example.VipExample;
 import com.sr.enunn.StatusEnum;
+import com.sr.enunn.VipTypeEnum;
 import com.sr.exception.StatusException;
 import com.sr.service.VipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +27,8 @@ import java.util.Map;
 public class VipServiceImpl implements VipService {
     @Autowired
     VipMapper vipMapper;
+
+    public static Integer FREE_VIP_TIMES = 30;
 
     @Override
     public int post(Vip vip) {
@@ -42,6 +49,38 @@ public class VipServiceImpl implements VipService {
         }
         VipExample vipExample = getExampleByUid(uid);
         vipMapper.updateByExampleSelective(vip,vipExample);
+        return EntityMapConvertor.entity2Map(vip);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> openVipAccount(Long uid, Integer mountCount) {
+        VipExample vipExample = getExampleByUid(uid);
+        Vip vip = CollectionUtil.getUniqueObjectFromList(vipMapper.selectByExample(vipExample));
+
+        vip.setType(VipTypeEnum.VIP.getCode());
+        Calendar calendar = Calendar.getInstance();
+        vip.setStartTime(calendar.getTime());
+        vip.setLastRefreshTime(calendar.getTime());
+        vip.setEndTime(TimeUtil.addMonth(calendar,mountCount));
+        vip.setFreeVipTimes(FREE_VIP_TIMES);
+
+        vipMapper.updateByExampleSelective(vip, vipExample);
+
+        return EntityMapConvertor.entity2Map(vip);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> renewVipAccount(Long uid, Integer mountCount) {
+        VipExample vipExample = getExampleByUid(uid);
+        Vip vip = CollectionUtil.getUniqueObjectFromList(vipMapper.selectByExample(vipExample));
+        Date date = vip.getEndTime();
+        vip.setEndTime(TimeUtil.addMonth(date,mountCount));
+        vip.setLastRefreshTime(new Date());
+
+        vipMapper.updateByExampleSelective(vip, vipExample);
+
         return EntityMapConvertor.entity2Map(vip);
     }
 
