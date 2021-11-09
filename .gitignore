@@ -134,4 +134,5 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+src/main/resources/application.yaml
 src/main/resources/application-dev.yaml
