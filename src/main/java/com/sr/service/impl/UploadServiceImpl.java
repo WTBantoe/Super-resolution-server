@@ -67,7 +67,7 @@ public class UploadServiceImpl implements UploadService
     }
 
     @Value("${video.path.processed}")
-    public static void setProcessedVideoPath(String processedVideoPath)
+    public void setProcessedVideoPath(String processedVideoPath)
     {
         PROCESSED_VIDEO_PATH = processedVideoPath;
     }
@@ -152,7 +152,7 @@ public class UploadServiceImpl implements UploadService
         String fileName = FileNameUtils.processFileName(file);
 
         String videoPath = saveFile(file, fileName, MediaTypeEnum.VIDEO);
-        System.out.println("Video Upload Success! Saved to" + videoPath);
+        System.out.println("Video Upload Success! Saved to " + videoPath);
 
         srService.videoSuperResolution(new File(RAW_VIDEO_PATH + fileName), new File(PROCESSED_VIDEO_PATH + fileName));
 

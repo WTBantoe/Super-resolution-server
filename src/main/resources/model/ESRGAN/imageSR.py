@@ -19,7 +19,7 @@ model = arch.RRDBNet(3, 3, 64, 23, gc=32)
 model.load_state_dict(torch.load(model_path), strict=True)
 model.eval()
 model = model.to(device)
-print('Model path {:s}. \nTesting...'.format(model_path))
+print('Model path: {:s}. \nTesting...'.format(model_path))
 
 if os.path.isfile(args.input):
     _, filename = os.path.split(args.input)
@@ -29,7 +29,7 @@ if os.path.isfile(args.input):
         os.makedirs(parent_output_folder)
     input_img = args.input
     output_img = args.output
-    print(output_img)
+    print("Single Image, reading:", input_img)
 
     img = cv2.imread(input_img, cv2.IMREAD_COLOR)
     img = img * 1.0 / 255
@@ -42,6 +42,7 @@ if os.path.isfile(args.input):
     output = np.transpose(output[[2, 1, 0], :, :], (1, 2, 0))
     output = (output * 255.0).round()
     cv2.imwrite(output_img, output)
+    print("Single Image, output:", output_img)
 
 if os.path.isdir(args.input):
     _, filename = os.path.split(args.input)
@@ -56,10 +57,11 @@ if os.path.isdir(args.input):
     for file in filelist:
         if file.endswith('.png') or file.endswith('jpg'):
             resultlist.append(file)
+    print("Reading Image Folder:", input_img_folder)
     for filename in resultlist:
         idx += 1
         path = input_img_folder + '/' + filename
-        print(idx, filename)
+        print("No.", idx, filename)
 
         # read images
         img = cv2.imread(path, cv2.IMREAD_COLOR)
@@ -74,3 +76,4 @@ if os.path.isdir(args.input):
         output = (output * 255.0).round()
         output_file = output_img_folder + '/' + filename
         cv2.imwrite(output_file, output)
+        print("No.", idx, "Output:", output_file)
