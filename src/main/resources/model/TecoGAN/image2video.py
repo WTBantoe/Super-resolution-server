@@ -1,19 +1,23 @@
-import cv2
-import os
 import argparse
+import os
+
+import cv2
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--input', type=str)
 parser.add_argument('--output', type=str)
 args = parser.parse_args()
 
-
 input_img_path = args.input
 output_video = args.output
-fps = 2
+parent_output_folder = os.path.dirname(output_video)
+if not os.path.exists(parent_output_folder):
+    os.makedirs(parent_output_folder)
+
+fps = 10
 imglist = os.listdir(input_img_path)
 for item in imglist:
-    if item.endswith('.png') or item.endswith('jpg'):
+    if item.endswith('.png') or item.endswith('.jpg'):
         path = input_img_path + '/' + item
         img = cv2.imread(path)
         size = []
@@ -30,7 +34,7 @@ for item in imglist:
 print(maxframe)
 video = cv2.VideoWriter(output_video, cv2.VideoWriter_fourcc('I', '4', '2', '0'), fps, size)
 for i in range(maxframe):
-    path = input_img_path + '/' + 'output_' + format(i + 1, '04d') + 'png'
+    path = os.path.join(input_img_path, 'output_' + str(i + 1) + '.png')
     print(path)
     img = cv2.imread(path)
     video.write(img)
