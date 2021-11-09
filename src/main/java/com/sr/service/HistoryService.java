@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Author cyh
@@ -25,4 +26,6 @@ public interface HistoryService {
     boolean deleteById(Long id, Long uid);
 
     long getCountByUid(Long uid);
+
+    long deleteByIdList(List<Long> historyIds, Long uid);
 }

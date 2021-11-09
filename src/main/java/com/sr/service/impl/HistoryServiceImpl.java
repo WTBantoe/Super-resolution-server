@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @Author cyh
@@ -108,8 +109,23 @@ public class HistoryServiceImpl implements HistoryService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public long getCountByUid(Long uid) {
         HistoryExample historyExample = getExampleByUid(uid);
         return historyMapper.countByExample(historyExample);
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public long deleteByIdList(List<Long> historyIds, Long uid) {
+        AtomicInteger count = new AtomicInteger();
+        for (Long historyId : historyIds) {
+            deleteById(historyId,uid);
+            count.addAndGet(1);
+        }
+        return count.get();
+    }
 }
+
+
+

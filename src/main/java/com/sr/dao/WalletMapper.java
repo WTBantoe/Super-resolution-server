@@ -4,7 +4,9 @@ import com.sr.entity.Wallet;
 import com.sr.entity.example.WalletExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface WalletMapper {
     long countByExample(WalletExample example);
 

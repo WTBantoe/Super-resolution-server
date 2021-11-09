@@ -20,6 +20,8 @@ public class ReturnCodeBuilder {
     private Object data;
     //请求URL
     private String url;
+    //数据数量
+    private Long count;
 
     public int getStatusCode() {
         return statusCode;
@@ -53,6 +55,14 @@ public class ReturnCodeBuilder {
         this.url = url;
     }
 
+    public Long getCount() {
+        return count;
+    }
+
+    public void setCount(Long count) {
+        this.count = count;
+    }
+
     public Map<String,Object> buildMap () {
         Map<String,Object> statusMap = new HashMap<>();
         statusMap.put("statusCode", statusCode);
@@ -60,6 +70,7 @@ public class ReturnCodeBuilder {
         statusMap.put("timestamp", new Date().getTime());
         statusMap.put("data", data);
         statusMap.put("url", url);
+        statusMap.put("count", count);
         return statusMap;
     }
 
@@ -97,6 +108,8 @@ public class ReturnCodeBuilder {
         private Object data;
         //请求url
         private String url;
+        //数据数量
+        private Long count;
 
         public Builder code (int statusCode) {
             this.statusCode = statusCode;
@@ -113,6 +126,11 @@ public class ReturnCodeBuilder {
             return this;
         }
 
+        public Builder addDataCount (Long count) {
+            this.count = count;
+            return this;
+        }
+
         public Builder url (String url) {
             this.url = url;
             return this;
@@ -124,6 +142,7 @@ public class ReturnCodeBuilder {
             returnCodeBuilder.setMessage(this.message);
             returnCodeBuilder.setData(this.data);
             returnCodeBuilder.setUrl(url);
+            returnCodeBuilder.setCount(count);
             return returnCodeBuilder.buildMap();
         }
     }
