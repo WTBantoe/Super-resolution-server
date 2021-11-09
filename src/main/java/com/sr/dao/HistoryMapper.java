@@ -2,12 +2,14 @@ package com.sr.dao;
 
 import com.sr.entity.History;
 import com.sr.entity.example.HistoryExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-public interface HistoryMapper {
+public interface HistoryMapper
+{
     long countByExample(HistoryExample example);
 
     int deleteByExample(HistoryExample example);
