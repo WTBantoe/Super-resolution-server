@@ -2,12 +2,14 @@ package com.sr.dao;
 
 import com.sr.entity.Vip;
 import com.sr.entity.example.VipExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-public interface VipMapper {
+public interface VipMapper
+{
     long countByExample(VipExample example);
 
     int deleteByExample(VipExample example);

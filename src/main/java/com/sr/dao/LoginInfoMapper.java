@@ -2,10 +2,12 @@ package com.sr.dao;
 
 import com.sr.entity.LoginInfo;
 import com.sr.entity.example.LoginInfoExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
-public interface LoginInfoMapper {
+import java.util.List;
+
+public interface LoginInfoMapper
+{
     long countByExample(LoginInfoExample example);
 
     int deleteByExample(LoginInfoExample example);

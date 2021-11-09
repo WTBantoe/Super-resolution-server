@@ -64,15 +64,11 @@ public class UploadController
     @PostMapping("/image/single")
     @ApiOperation("处理图片上传")
     @Transactional(rollbackFor = Exception.class)
-    public void uploadImage(@RequestParam(value = "image") MultipartFile file,
-                            @RequestParam(value = "tag", required = false) String tag,
-                            HttpServletResponse response,
-                            HttpServletRequest httpServletRequest)
+    public void uploadImage(@RequestParam(value = "image") MultipartFile file, @RequestParam(value = "tag", required = false) String tag, HttpServletResponse response, HttpServletRequest httpServletRequest)
     {
         String token = httpUtil.getToken(httpServletRequest);
         uploadService.processSinglePicture(file, response, tag, token);
     }
-
 
 
     @PostMapping("/video/single")
@@ -85,7 +81,8 @@ public class UploadController
     }
 
 
-    public String uploadAvatar(){
+    public String uploadAvatar()
+    {
         // TODO
         return null;
     }

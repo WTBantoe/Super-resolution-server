@@ -2,12 +2,14 @@ package com.sr.dao;
 
 import com.sr.entity.UserInfo;
 import com.sr.entity.example.UserInfoExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-public interface UserInfoMapper {
+public interface UserInfoMapper
+{
     long countByExample(UserInfoExample example);
 
     int deleteByExample(UserInfoExample example);

@@ -2,7 +2,8 @@ package com.sr.entity;
 
 import java.util.Date;
 
-public class Order {
+public class Order
+{
     private Long id;
 
     private Long uid;
@@ -23,83 +24,103 @@ public class Order {
 
     private Date gmtModify;
 
-    public Long getId() {
+    public Long getId()
+    {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Long id)
+    {
         this.id = id;
     }
 
-    public Long getUid() {
+    public Long getUid()
+    {
         return uid;
     }
 
-    public void setUid(Long uid) {
+    public void setUid(Long uid)
+    {
         this.uid = uid;
     }
 
-    public String getOrderId() {
+    public String getOrderId()
+    {
         return orderId;
     }
 
-    public void setOrderId(String orderId) {
+    public void setOrderId(String orderId)
+    {
         this.orderId = orderId == null ? null : orderId.trim();
     }
 
-    public Integer getOrigin() {
+    public Integer getOrigin()
+    {
         return origin;
     }
 
-    public void setOrigin(Integer origin) {
+    public void setOrigin(Integer origin)
+    {
         this.origin = origin;
     }
 
-    public Integer getType() {
+    public Integer getType()
+    {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(Integer type)
+    {
         this.type = type;
     }
 
-    public String getMessage() {
+    public String getMessage()
+    {
         return message;
     }
 
-    public void setMessage(String message) {
+    public void setMessage(String message)
+    {
         this.message = message == null ? null : message.trim();
     }
 
-    public Long getMoney() {
+    public Long getMoney()
+    {
         return money;
     }
 
-    public void setMoney(Long money) {
+    public void setMoney(Long money)
+    {
         this.money = money;
     }
 
-    public Integer getStatus() {
+    public Integer getStatus()
+    {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(Integer status)
+    {
         this.status = status;
     }
 
-    public Date getGmtCreate() {
+    public Date getGmtCreate()
+    {
         return gmtCreate;
     }
 
-    public void setGmtCreate(Date gmtCreate) {
+    public void setGmtCreate(Date gmtCreate)
+    {
         this.gmtCreate = gmtCreate;
     }
 
-    public Date getGmtModify() {
+    public Date getGmtModify()
+    {
         return gmtModify;
     }
 
-    public void setGmtModify(Date gmtModify) {
+    public void setGmtModify(Date gmtModify)
+    {
         this.gmtModify = gmtModify;
     }
 }

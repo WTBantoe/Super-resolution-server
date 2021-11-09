@@ -109,7 +109,7 @@ def TecoGAN(r_inputs, r_targets, FLAGS, GAN_Flag=True):
 
         fnet_input = tf.concat((Frame_t_pre, Frame_t), axis=-1)
         fnet_input = tf.reshape(fnet_input, (
-        FLAGS.batch_size * (inputimages - 1), FLAGS.crop_size, FLAGS.crop_size, 2 * output_channel))
+            FLAGS.batch_size * (inputimages - 1), FLAGS.crop_size, FLAGS.crop_size, 2 * output_channel))
         # batch*(frame-1), FLAGS.crop_size, FLAGS.crop_size, output_channel
         gen_flow_lr = fnet(fnet_input, reuse=False)
         # batch * (inputimages-1), FLAGS.crop_size, FLAGS.crop_size, 2
@@ -119,7 +119,7 @@ def TecoGAN(r_inputs, r_targets, FLAGS, GAN_Flag=True):
                               (FLAGS.batch_size, (inputimages - 1), FLAGS.crop_size * 4, FLAGS.crop_size * 4, 2))
         # Compute the euclidean distance between the two features (input_frames and s_input_warp) as the warp_loss
         input_frames = tf.reshape(Frame_t, (
-        FLAGS.batch_size * (inputimages - 1), FLAGS.crop_size, FLAGS.crop_size, output_channel))
+            FLAGS.batch_size * (inputimages - 1), FLAGS.crop_size, FLAGS.crop_size, output_channel))
 
     # tf.contrib.image.dense_image_warp, only in tf1.8 or larger, no GPU support
     s_input_warp = tf.contrib.image.dense_image_warp(
@@ -241,7 +241,7 @@ def TecoGAN(r_inputs, r_targets, FLAGS, GAN_Flag=True):
             # batch*t_size, h=FLAGS.crop_size*4, w=FLAGS.crop_size*4, 3
             with tf.device('/gpu:0'), tf.variable_scope('tdiscriminator', reuse=False):
                 real_warp = tf.reshape(real_warp0, (
-                t_batch, 3, FLAGS.crop_size * 4, FLAGS.crop_size * 4, 3))  # [tb,T=3,h,w,ch=3 for RGB]
+                    t_batch, 3, FLAGS.crop_size * 4, FLAGS.crop_size * 4, 3))  # [tb,T=3,h,w,ch=3 for RGB]
                 real_warp = tf.transpose(real_warp, perm=[0, 2, 3, 4, 1])  # [tb,h,w,RGB,3T], 3T are t-1, t and t+1
                 real_warp = tf.reshape(real_warp, (t_batch, FLAGS.crop_size * 4, FLAGS.crop_size * 4,
                                                    9))  # [tb,h,w,RRRGGGBBB] RRR: Red_t-1, Red_t, Red_t+1
@@ -254,18 +254,18 @@ def TecoGAN(r_inputs, r_targets, FLAGS, GAN_Flag=True):
                     with tf.variable_scope('sdiscriminator',
                                            reuse=False):  # actually no more variable under this scope...
                         before_warp = tf.reshape(t_targets, (
-                        t_batch, 3, FLAGS.crop_size * 4, FLAGS.crop_size * 4, 3))  # [tb,3=T,h,w,3=RGB]
+                            t_batch, 3, FLAGS.crop_size * 4, FLAGS.crop_size * 4, 3))  # [tb,3=T,h,w,3=RGB]
                         before_warp = tf.transpose(before_warp, perm=[0, 2, 3, 4, 1])  # [b,h,w,3RGB,3T]
                         before_warp = tf.reshape(before_warp, (
-                        t_batch, FLAGS.crop_size * 4, FLAGS.crop_size * 4, 3 * 3))  # [b,h,w,9=RRRGGGBBB]
+                            t_batch, FLAGS.crop_size * 4, FLAGS.crop_size * 4, 3 * 3))  # [b,h,w,9=RRRGGGBBB]
 
                         t_input = tf.reshape(r_inputs[:, :t_size, :, :, :], \
                                              (t_batch, 3, FLAGS.crop_size, FLAGS.crop_size, -1))
                         t_input = tf.transpose(t_input, perm=[0, 2, 3, 4, 1])  # [tb,h//4,w//4,3RGB,3T]
                         t_input = tf.reshape(t_input, (
-                        t_batch, FLAGS.crop_size, FLAGS.crop_size, -1))  # [tb,h//4,w//4,9=RRRGGGBBB]
+                            t_batch, FLAGS.crop_size, FLAGS.crop_size, -1))  # [tb,h//4,w//4,9=RRRGGGBBB]
                         input_hi = tf.image.resize_images(t_input, (
-                        FLAGS.crop_size * 4, FLAGS.crop_size * 4))  # [tb,h,w,9=RRRGGGBBB]
+                            FLAGS.crop_size * 4, FLAGS.crop_size * 4))  # [tb,h,w,9=RRRGGGBBB]
                         real_warp = tf.concat((before_warp, real_warp, input_hi), axis=-1)  # [tb,h,w,9 + 9 + 9]
 
                     tdiscrim_real_output, real_layers = discriminator_F(real_warp, FLAGS=FLAGS)
@@ -451,7 +451,7 @@ def TecoGAN(r_inputs, r_targets, FLAGS, GAN_Flag=True):
             tdiscrim_tvars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='tdiscriminator')
             tdis_learning_rate = learning_rate
             if (
-            not FLAGS.Dt_mergeDs):  # use a smaller learning rate when Dt only (Hard-coded as 0.3), otherwise blur too much
+                    not FLAGS.Dt_mergeDs):  # use a smaller learning rate when Dt only (Hard-coded as 0.3), otherwise blur too much
                 tdis_learning_rate = tdis_learning_rate * 0.3
             tdiscrim_optimizer = tf.train.AdamOptimizer(tdis_learning_rate, beta1=FLAGS.beta, epsilon=FLAGS.adameps)
             tdiscrim_grads_and_vars = tdiscrim_optimizer.compute_gradients(discrim_loss, tdiscrim_tvars)

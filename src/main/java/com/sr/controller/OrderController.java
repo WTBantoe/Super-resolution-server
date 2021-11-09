@@ -23,102 +23,55 @@ import java.util.Map;
 @RequestMapping("/order")
 @Api(tags = {"订单管理"})
 @RestController
-public class OrderController {
+public class OrderController
+{
     @Autowired
     OrderService orderService;
 
     @Autowired
     HttpUtil httpUtil;
 
-    @ApiOperation(
-            value = "获取全部订单信息",
-            notes = "获取全部订单信息"
-    )
-    @RequestMapping(
-            value = "all",
-            method = RequestMethod.GET
-    )
-    @Transactional(
-            rollbackFor = Exception.class
-    )
+    @ApiOperation(value = "获取全部订单信息", notes = "获取全部订单信息")
+    @RequestMapping(value = "all", method = RequestMethod.GET)
+    @Transactional(rollbackFor = Exception.class)
 
-    public Map<String, Object> getAllOrderList (HttpServletRequest httpServletRequest){
+    public Map<String, Object> getAllOrderList(HttpServletRequest httpServletRequest)
+    {
         Long uid = httpUtil.getUidByToken(httpUtil.getToken(httpServletRequest));
 
-        return ReturnCodeBuilder.successBuilder()
-                .addDataValue(orderService.getOrderList(uid))
-                .addDataCount(orderService.orderCount(uid))
-                .buildMap();
+        return ReturnCodeBuilder.successBuilder().addDataValue(orderService.getOrderList(uid)).addDataCount(orderService.orderCount(uid)).buildMap();
     }
 
-    @ApiOperation(
-            value = "分页获取全部订单信息",
-            notes = "分页获取全部订单信息"
-    )
-    @RequestMapping(
-            value = "all/page",
-            method = RequestMethod.GET
-    )
-    @Transactional(
-            rollbackFor = Exception.class
-    )
+    @ApiOperation(value = "分页获取全部订单信息", notes = "分页获取全部订单信息")
+    @RequestMapping(value = "all/page", method = RequestMethod.GET)
+    @Transactional(rollbackFor = Exception.class)
 
-    public Map<String, Object> getAllOrderListPaging (@RequestParam(value = "pageIndex", required = true) Long pageIndex,
-                                                      @RequestParam(value = "pageSize", required = true) Integer pageSize,
-                                                      HttpServletRequest httpServletRequest){
+    public Map<String, Object> getAllOrderListPaging(@RequestParam(value = "pageIndex", required = true) Long pageIndex, @RequestParam(value = "pageSize", required = true) Integer pageSize, HttpServletRequest httpServletRequest)
+    {
         Long uid = httpUtil.getUidByToken(httpUtil.getToken(httpServletRequest));
 
-        return ReturnCodeBuilder.successBuilder()
-                .addDataValue(orderService.getOrderListPaging(uid,pageIndex,pageSize))
-                .addDataCount(orderService.orderCount(uid))
-                .buildMap();
+        return ReturnCodeBuilder.successBuilder().addDataValue(orderService.getOrderListPaging(uid, pageIndex, pageSize)).addDataCount(orderService.orderCount(uid)).buildMap();
     }
 
-    @ApiOperation(
-            value = "获取一段时间内的订单信息",
-            notes = "获取一段时间内的订单信息"
-    )
-    @RequestMapping(
-            value = "all/between",
-            method = RequestMethod.GET
-    )
-    @Transactional(
-            rollbackFor = Exception.class
-    )
+    @ApiOperation(value = "获取一段时间内的订单信息", notes = "获取一段时间内的订单信息")
+    @RequestMapping(value = "all/between", method = RequestMethod.GET)
+    @Transactional(rollbackFor = Exception.class)
 
-    public Map<String, Object> getAllOrderListBetween (@RequestParam(value = "startTime", required = true) Date startTime,
-                                                       @RequestParam(value = "endTime", required = true) Date endTime,
-                                                       HttpServletRequest httpServletRequest){
+    public Map<String, Object> getAllOrderListBetween(@RequestParam(value = "startTime", required = true) Date startTime, @RequestParam(value = "endTime", required = true) Date endTime, HttpServletRequest httpServletRequest)
+    {
         Long uid = httpUtil.getUidByToken(httpUtil.getToken(httpServletRequest));
 
-        return ReturnCodeBuilder.successBuilder()
-                .addDataValue(orderService.getOrderListBetween(uid,startTime,endTime))
-                .addDataCount(orderService.orderCountBetween(uid,startTime,endTime))
-                .buildMap();
+        return ReturnCodeBuilder.successBuilder().addDataValue(orderService.getOrderListBetween(uid, startTime, endTime)).addDataCount(orderService.orderCountBetween(uid, startTime, endTime)).buildMap();
     }
 
-    @ApiOperation(
-            value = "分页获取一段时间内的订单信息",
-            notes = "分页获取一段时间内的订单信息"
-    )
-    @RequestMapping(
-            value = "all/between/page",
-            method = RequestMethod.GET
-    )
-    @Transactional(
-            rollbackFor = Exception.class
-    )
+    @ApiOperation(value = "分页获取一段时间内的订单信息", notes = "分页获取一段时间内的订单信息")
+    @RequestMapping(value = "all/between/page", method = RequestMethod.GET)
+    @Transactional(rollbackFor = Exception.class)
 
-    public Map<String, Object> getAllOrderListBetween (@RequestParam(value = "startTime", required = true) Date startTime,
-                                                       @RequestParam(value = "endTime", required = true) Date endTime,
-                                                       @RequestParam(value = "pageIndex", required = true) Long pageIndex,
-                                                       @RequestParam(value = "pageSize", required = true) Integer pageSize,
-                                                       HttpServletRequest httpServletRequest){
+    public Map<String, Object> getAllOrderListBetween(@RequestParam(value = "startTime", required = true) Date startTime, @RequestParam(value = "endTime", required = true) Date endTime, @RequestParam(value = "pageIndex", required = true) Long pageIndex, @RequestParam(value = "pageSize", required = true) Integer pageSize, HttpServletRequest httpServletRequest)
+    {
         Long uid = httpUtil.getUidByToken(httpUtil.getToken(httpServletRequest));
 
-        return ReturnCodeBuilder.successBuilder()
-                .addDataValue(orderService.getOrderListBetweenPaging(uid,startTime,endTime,pageIndex,pageSize))
-                .addDataCount(orderService.orderCountBetween(uid,startTime,endTime))
-                .buildMap();
+        return ReturnCodeBuilder.successBuilder().addDataValue(orderService.getOrderListBetweenPaging(uid, startTime, endTime, pageIndex, pageSize)).addDataCount(orderService.orderCountBetween(uid, startTime, endTime)).buildMap();
     }
 }

@@ -12,12 +12,14 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class WalletDTO {
+public class WalletDTO
+{
     private Long balance;
     private Long totalIncome;
     private Long totalOutcome;
 
-    public static WalletDTO convertWalletToWalletDTO(Wallet wallet) {
+    public static WalletDTO convertWalletToWalletDTO(Wallet wallet)
+    {
         WalletDTO walletDTO = new WalletDTO();
         walletDTO.setBalance(wallet.getBalance());
         walletDTO.setTotalIncome(wallet.getTotalIncome());
@@ -26,11 +28,8 @@ public class WalletDTO {
     }
 
     @Override
-    public String toString() {
-        return "WalletDTO{" +
-                "balance=" + balance +
-                ", totalIncome=" + totalIncome +
-                ", totalOutcome=" + totalOutcome +
-                '}';
+    public String toString()
+    {
+        return "WalletDTO{" + "balance=" + balance + ", totalIncome=" + totalIncome + ", totalOutcome=" + totalOutcome + '}';
     }
 }

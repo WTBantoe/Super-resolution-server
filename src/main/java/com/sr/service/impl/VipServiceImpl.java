@@ -24,7 +24,8 @@ import java.util.Map;
  * @Date 2021/11/3 20:07
  */
 @Service
-public class VipServiceImpl implements VipService {
+public class VipServiceImpl implements VipService
+{
     @Autowired
     VipMapper vipMapper;
 
@@ -33,30 +34,39 @@ public class VipServiceImpl implements VipService {
     public static Integer VIP_FEE_PER_MONTH = 10;
 
     @Override
-    public int post(Vip vip) {
+    public int post(Vip vip)
+    {
         return vipMapper.insertSelective(vip);
     }
 
     @Override
-    public Map<String, Object> useFreeTime(Long uid) {
+    public Map<String, Object> useFreeTime(Long uid)
+    {
         Vip vip = getVipByUid(uid);
-        if (vip.getFreeVipTimes() != null && vip.getFreeVipTimes() > 0) {
+        if (vip.getFreeVipTimes() != null && vip.getFreeVipTimes() > 0)
+        {
             vip.setFreeVipTimes(vip.getFreeVipTimes() - 1);
-        } else {
-            if (vip.getFreeTimes() != null && vip.getFreeTimes() > 0) {
+        }
+        else
+        {
+            if (vip.getFreeTimes() != null && vip.getFreeTimes() > 0)
+            {
                 vip.setFreeTimes(vip.getFreeTimes() - 1);
-            } else {
+            }
+            else
+            {
                 throw new StatusException(StatusEnum.FREE_TIME_NOT_ENOUGH);
             }
         }
         VipExample vipExample = getExampleByUid(uid);
-        vipMapper.updateByExampleSelective(vip,vipExample);
+        vipMapper.updateByExampleSelective(vip, vipExample);
         return EntityMapConvertor.entity2Map(vip);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> openVipAccount(Long uid, Integer mountCount) {
+    public Map<String, Object> openVipAccount(Long uid, Integer mountCount)
+    {
         VipExample vipExample = getExampleByUid(uid);
         Vip vip = CollectionUtil.getUniqueObjectFromList(vipMapper.selectByExample(vipExample));
 
@@ -64,7 +74,7 @@ public class VipServiceImpl implements VipService {
         Calendar calendar = Calendar.getInstance();
         vip.setStartTime(calendar.getTime());
         vip.setLastRefreshTime(calendar.getTime());
-        vip.setEndTime(TimeUtil.addMonth(calendar,mountCount));
+        vip.setEndTime(TimeUtil.addMonth(calendar, mountCount));
         vip.setFreeVipTimes(FREE_VIP_TIMES);
 
         vipMapper.updateByExampleSelective(vip, vipExample);
@@ -74,11 +84,12 @@ public class VipServiceImpl implements VipService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> renewVipAccount(Long uid, Integer mountCount) {
+    public Map<String, Object> renewVipAccount(Long uid, Integer mountCount)
+    {
         VipExample vipExample = getExampleByUid(uid);
         Vip vip = CollectionUtil.getUniqueObjectFromList(vipMapper.selectByExample(vipExample));
         Date date = vip.getEndTime();
-        vip.setEndTime(TimeUtil.addMonth(date,mountCount));
+        vip.setEndTime(TimeUtil.addMonth(date, mountCount));
         vip.setLastRefreshTime(new Date());
 
         vipMapper.updateByExampleSelective(vip, vipExample);
@@ -87,35 +98,41 @@ public class VipServiceImpl implements VipService {
     }
 
     @Override
-    public Map<String, Object> getVipInfo(Long uid) {
+    public Map<String, Object> getVipInfo(Long uid)
+    {
         Vip vip = getVipByUid(uid);
         return EntityMapConvertor.entity2Map(vip);
     }
 
     @Override
-    public Map<String, Object> renewVipAccountByWallet(Long uid, Integer mountCount) {
+    public Map<String, Object> renewVipAccountByWallet(Long uid, Integer mountCount)
+    {
         // TODO
         return null;
     }
 
     @Override
-    public Map<String, Object> openVipAccountByWallet(Long uid, Integer mountCount) {
+    public Map<String, Object> openVipAccountByWallet(Long uid, Integer mountCount)
+    {
         // TODO
         return null;
     }
 
-    public VipExample getExampleByUid (Long uid) {
+    public VipExample getExampleByUid(Long uid)
+    {
         VipExample vipExample = new VipExample();
         VipExample.Criteria criteria = vipExample.createCriteria();
         criteria.andUidEqualTo(uid);
         return vipExample;
     }
 
-    public List<Vip> getVipListByUid(Long uid) {
+    public List<Vip> getVipListByUid(Long uid)
+    {
         return vipMapper.selectByExample(getExampleByUid(uid));
     }
 
-    public Vip getVipByUid(Long uid) {
+    public Vip getVipByUid(Long uid)
+    {
         return CollectionUtil.getUniqueObjectFromList(getVipListByUid(uid));
     }
 }

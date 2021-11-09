@@ -8,7 +8,8 @@ import java.util.Date;
  * @Author cyh
  * @Date 2021/11/9 22:14
  */
-public final class OrderBuilder {
+public final class OrderBuilder
+{
     private Long id;
     private Long uid;
     private String orderId;
@@ -20,64 +21,77 @@ public final class OrderBuilder {
     private Date gmtCreate;
     private Date gmtModify;
 
-    private OrderBuilder() {
+    private OrderBuilder()
+    {
     }
 
-    public static OrderBuilder anOrder() {
+    public static OrderBuilder anOrder()
+    {
         return new OrderBuilder();
     }
 
-    public OrderBuilder withId(Long id) {
+    public OrderBuilder withId(Long id)
+    {
         this.id = id;
         return this;
     }
 
-    public OrderBuilder withUid(Long uid) {
+    public OrderBuilder withUid(Long uid)
+    {
         this.uid = uid;
         return this;
     }
 
-    public OrderBuilder withOrderId(String orderId) {
+    public OrderBuilder withOrderId(String orderId)
+    {
         this.orderId = orderId;
         return this;
     }
 
-    public OrderBuilder withOrigin(Integer origin) {
+    public OrderBuilder withOrigin(Integer origin)
+    {
         this.origin = origin;
         return this;
     }
 
-    public OrderBuilder withType(Integer type) {
+    public OrderBuilder withType(Integer type)
+    {
         this.type = type;
         return this;
     }
 
-    public OrderBuilder withMessage(String message) {
+    public OrderBuilder withMessage(String message)
+    {
         this.message = message;
         return this;
     }
 
-    public OrderBuilder withMoney(Long money) {
+    public OrderBuilder withMoney(Long money)
+    {
         this.money = money;
         return this;
     }
 
-    public OrderBuilder withStatus(Integer status) {
+    public OrderBuilder withStatus(Integer status)
+    {
         this.status = status;
         return this;
     }
 
-    public OrderBuilder withGmtCreate(Date gmtCreate) {
+    public OrderBuilder withGmtCreate(Date gmtCreate)
+    {
         this.gmtCreate = gmtCreate;
         return this;
     }
 
-    public OrderBuilder withGmtModify(Date gmtModify) {
+    public OrderBuilder withGmtModify(Date gmtModify)
+    {
         this.gmtModify = gmtModify;
         return this;
     }
 
-    public Order build() {
+    public Order build()
+    {
         Order order = new Order();
         order.setId(id);
         order.setUid(uid);

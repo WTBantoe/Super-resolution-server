@@ -12,9 +12,11 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  * @Date 2021/9/28 10:32
  */
 @Configuration
-public class RedisConfig {
+public class RedisConfig
+{
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory factory) {
+    public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory factory)
+    {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(factory);
 

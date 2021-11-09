@@ -8,7 +8,8 @@ import java.util.List;
  * @Author cyh
  * @Date 2021/9/30 11:45
  */
-public interface UserManagerService {
+public interface UserManagerService
+{
     List<User> selectByUserWithUserNameLike(User user);
 
     List<User> selectByUserWithUserNameEqual(User user);

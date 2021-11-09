@@ -2,7 +2,8 @@ package com.sr.entity;
 
 import java.util.Date;
 
-public class Vip {
+public class Vip
+{
     private Long id;
 
     private Long uid;
@@ -23,99 +24,109 @@ public class Vip {
 
     private Date gmtModify;
 
-    public Long getId() {
+    public Long getId()
+    {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Long id)
+    {
         this.id = id;
     }
 
-    public Long getUid() {
+    public Long getUid()
+    {
         return uid;
     }
 
-    public void setUid(Long uid) {
+    public void setUid(Long uid)
+    {
         this.uid = uid;
     }
 
-    public Integer getFreeTimes() {
+    public Integer getFreeTimes()
+    {
         return freeTimes;
     }
 
-    public void setFreeTimes(Integer freeTimes) {
+    public void setFreeTimes(Integer freeTimes)
+    {
         this.freeTimes = freeTimes;
     }
 
-    public Integer getFreeVipTimes() {
+    public Integer getFreeVipTimes()
+    {
         return freeVipTimes;
     }
 
-    public void setFreeVipTimes(Integer freeVipTimes) {
+    public void setFreeVipTimes(Integer freeVipTimes)
+    {
         this.freeVipTimes = freeVipTimes;
     }
 
-    public Date getStartTime() {
+    public Date getStartTime()
+    {
         return startTime;
     }
 
-    public void setStartTime(Date startTime) {
+    public void setStartTime(Date startTime)
+    {
         this.startTime = startTime;
     }
 
-    public Date getEndTime() {
+    public Date getEndTime()
+    {
         return endTime;
     }
 
-    public void setEndTime(Date endTime) {
+    public void setEndTime(Date endTime)
+    {
         this.endTime = endTime;
     }
 
-    public Integer getType() {
+    public Integer getType()
+    {
         return type;
     }
 
-    public void setType(Integer type) {
+    public void setType(Integer type)
+    {
         this.type = type;
     }
 
-    public Date getLastRefreshTime() {
+    public Date getLastRefreshTime()
+    {
         return lastRefreshTime;
     }
 
-    public void setLastRefreshTime(Date lastRefreshTime) {
+    public void setLastRefreshTime(Date lastRefreshTime)
+    {
         this.lastRefreshTime = lastRefreshTime;
     }
 
-    public Date getGmtCreate() {
+    public Date getGmtCreate()
+    {
         return gmtCreate;
     }
 
-    public void setGmtCreate(Date gmtCreate) {
+    public void setGmtCreate(Date gmtCreate)
+    {
         this.gmtCreate = gmtCreate;
     }
 
-    public Date getGmtModify() {
+    public Date getGmtModify()
+    {
         return gmtModify;
     }
 
-    public void setGmtModify(Date gmtModify) {
+    public void setGmtModify(Date gmtModify)
+    {
         this.gmtModify = gmtModify;
     }
 
     @Override
-    public String toString() {
-        return "Vip{" +
-                "id=" + id +
-                ", uid=" + uid +
-                ", freeTimes=" + freeTimes +
-                ", freeVipTimes=" + freeVipTimes +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", type=" + type +
-                ", lastRefreshTime=" + lastRefreshTime +
-                ", gmtCreate=" + gmtCreate +
-                ", gmtModify=" + gmtModify +
-                '}';
+    public String toString()
+    {
+        return "Vip{" + "id=" + id + ", uid=" + uid + ", freeTimes=" + freeTimes + ", freeVipTimes=" + freeVipTimes + ", startTime=" + startTime + ", endTime=" + endTime + ", type=" + type + ", lastRefreshTime=" + lastRefreshTime + ", gmtCreate=" + gmtCreate + ", gmtModify=" + gmtModify + '}';
     }
 }

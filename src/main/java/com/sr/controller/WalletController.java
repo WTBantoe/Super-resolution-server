@@ -22,53 +22,35 @@ import java.util.Map;
 @RequestMapping("/wallet")
 @Api(tags = {"钱包管理"})
 @RestController
-public class WalletController {
+public class WalletController
+{
     @Autowired
     HttpUtil httpUtil;
 
     @Autowired
     WalletService walletService;
 
-    @ApiOperation(
-            value = "充值",
-            notes = "充值"
-    )
-    @RequestMapping(
-            value = "/recharge",
-            method = RequestMethod.PATCH
-    )
-    @Transactional(
-            rollbackFor = Exception.class
-    )
+    @ApiOperation(value = "充值", notes = "充值")
+    @RequestMapping(value = "/recharge", method = RequestMethod.PATCH)
+    @Transactional(rollbackFor = Exception.class)
 
-    public Map<String, Object> recharge (@RequestParam(value = "money", required = true) Long money,
-                                                        HttpServletRequest httpServletRequest){
+    public Map<String, Object> recharge(@RequestParam(value = "money", required = true) Long money, HttpServletRequest httpServletRequest)
+    {
         Long uid = httpUtil.getUidByToken(httpUtil.getToken(httpServletRequest));
-        Map<String, Object> map = walletService.recharge(uid,money);
+        Map<String, Object> map = walletService.recharge(uid, money);
 
-        return ReturnCodeBuilder.successBuilder()
-                .addDataValue(map)
-                .buildMap();
+        return ReturnCodeBuilder.successBuilder().addDataValue(map).buildMap();
     }
 
-    @ApiOperation(
-            value = "获取钱包余额",
-            notes = "获取钱包余额"
-    )
-    @RequestMapping(
-            value = "/info",
-            method = RequestMethod.GET
-    )
-    @Transactional(
-            rollbackFor = Exception.class
-    )
+    @ApiOperation(value = "获取钱包余额", notes = "获取钱包余额")
+    @RequestMapping(value = "/info", method = RequestMethod.GET)
+    @Transactional(rollbackFor = Exception.class)
 
-    public Map<String, Object> getWalletInfo (HttpServletRequest httpServletRequest){
+    public Map<String, Object> getWalletInfo(HttpServletRequest httpServletRequest)
+    {
         Long uid = httpUtil.getUidByToken(httpUtil.getToken(httpServletRequest));
         Map<String, Object> map = walletService.getWalletInfo(uid);
 
-        return ReturnCodeBuilder.successBuilder()
-                .addDataValue(map)
-                .buildMap();
+        return ReturnCodeBuilder.successBuilder().addDataValue(map).buildMap();
     }
 }
