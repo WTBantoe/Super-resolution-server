@@ -1,7 +1,3 @@
-import sys
-import os
-import torch
-import cv2
 import argparse
 
 parser = argparse.ArgumentParser()
