@@ -30,6 +30,8 @@ public class VipServiceImpl implements VipService {
 
     public static Integer FREE_VIP_TIMES = 30;
 
+    public static Integer VIP_FEE_PER_MONTH = 10;
+
     @Override
     public int post(Vip vip) {
         return vipMapper.insertSelective(vip);
@@ -82,6 +84,24 @@ public class VipServiceImpl implements VipService {
         vipMapper.updateByExampleSelective(vip, vipExample);
 
         return EntityMapConvertor.entity2Map(vip);
+    }
+
+    @Override
+    public Map<String, Object> getVipInfo(Long uid) {
+        Vip vip = getVipByUid(uid);
+        return EntityMapConvertor.entity2Map(vip);
+    }
+
+    @Override
+    public Map<String, Object> renewVipAccountByWallet(Long uid, Integer mountCount) {
+        // TODO
+        return null;
+    }
+
+    @Override
+    public Map<String, Object> openVipAccountByWallet(Long uid, Integer mountCount) {
+        // TODO
+        return null;
     }
 
     public VipExample getExampleByUid (Long uid) {

@@ -16,4 +16,10 @@ public interface VipService {
     Map<String,Object> openVipAccount(Long uid, Integer mountCount);
 
     Map<String,Object> renewVipAccount(Long uid, Integer mountCount);
+
+    Map<String,Object> getVipInfo(Long uid);
+
+    Map<String,Object> renewVipAccountByWallet(Long uid, Integer mountCount);
+
+    Map<String,Object> openVipAccountByWallet(Long uid, Integer mountCount);
 }

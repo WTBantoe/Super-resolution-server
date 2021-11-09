@@ -75,4 +75,71 @@ public class VipController {
                 .addDataValue(map)
                 .buildMap();
     }
+
+
+    @ApiOperation(
+            value = "获取会员信息",
+            notes = "获取会员信息"
+    )
+    @RequestMapping(
+            value = "",
+            method = RequestMethod.GET
+    )
+    @Transactional(
+            rollbackFor = Exception.class
+    )
+
+    public Map<String, Object> getVipInfo (HttpServletRequest httpServletRequest){
+        Long uid = httpUtil.getUidByToken(httpUtil.getToken(httpServletRequest));
+        Map<String, Object> map = vipService.getVipInfo(uid);
+
+        return ReturnCodeBuilder.successBuilder()
+                .addDataValue(map)
+                .buildMap();
+    }
+
+    @ApiOperation(
+            value = "通过钱包开通会员",
+            notes = "通过钱包开通会员"
+    )
+    @RequestMapping(
+            value = "/open/wallet",
+            method = RequestMethod.POST
+    )
+    @Transactional(
+            rollbackFor = Exception.class
+    )
+
+    public Map<String, Object> openVipAccountByWallet (@RequestParam(value = "month", required = true) Integer month,
+                                               HttpServletRequest httpServletRequest){
+        Long uid = httpUtil.getUidByToken(httpUtil.getToken(httpServletRequest));
+        Map<String, Object> map = vipService.openVipAccountByWallet(uid,month);
+
+        return ReturnCodeBuilder.successBuilder()
+                .addDataValue(map)
+                .buildMap();
+    }
+
+
+    @ApiOperation(
+            value = "通过钱包续费会员",
+            notes = "通过钱包续费会员"
+    )
+    @RequestMapping(
+            value = "/renew/wallet",
+            method = RequestMethod.PATCH
+    )
+    @Transactional(
+            rollbackFor = Exception.class
+    )
+
+    public Map<String, Object> renewVipAccountByWallet (@RequestParam(value = "month", required = true) Integer month,
+                                                HttpServletRequest httpServletRequest){
+        Long uid = httpUtil.getUidByToken(httpUtil.getToken(httpServletRequest));
+        Map<String, Object> map = vipService.renewVipAccountByWallet(uid,month);
+
+        return ReturnCodeBuilder.successBuilder()
+                .addDataValue(map)
+                .buildMap();
+    }
 }

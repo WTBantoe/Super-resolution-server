@@ -4,7 +4,9 @@ import com.sr.entity.Order;
 import com.sr.entity.example.OrderExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface OrderMapper {
     long countByExample(OrderExample example);
 
@@ -14,7 +16,7 @@ public interface OrderMapper {
 
     int insert(Order record);
 
-    int insertSelective(Order record);
+    long insertSelective(Order record);
 
     List<Order> selectByExample(OrderExample example);
 
