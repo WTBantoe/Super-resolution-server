@@ -1,20 +1,11 @@
 package com.sr.controller;
 
 import com.sr.common.HttpUtil;
-import com.sr.entity.History;
-import com.sr.entity.builder.HistoryBuilder;
-import com.sr.enunn.MediaTypeEnum;
-import com.sr.enunn.StatusEnum;
-import com.sr.exception.StatusException;
 import com.sr.manager.RedisManager;
-import com.sr.service.HistoryService;
-import com.sr.service.SRService;
 import com.sr.service.TransferService;
 import com.sr.service.UploadService;
-import com.sr.service.impl.UserServiceImpl;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/upload")
@@ -89,11 +78,10 @@ public class UploadController
     @PostMapping("/video/single")
     @ApiOperation("处理视频上传")
     @Transactional(rollbackFor = Exception.class)
-    public void uploadVideo(@RequestParam(value = "video") MultipartFile file,
-                            @RequestParam(value = "tag") String tag,
-                            HttpServletRequest httpServletRequest)
+    public void uploadVideo(@RequestParam(value = "video") MultipartFile file, @RequestParam(value = "tag") String tag, HttpServletResponse response, HttpServletRequest httpServletRequest)
     {
-        uploadService.processSingleVideo(file);
+        String token = httpUtil.getToken(httpServletRequest);
+        uploadService.processSingleVideo(file, response, tag, token);
     }
 
 
