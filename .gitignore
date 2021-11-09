@@ -136,3 +136,4 @@ dmypy.json
 
 src/main/resources/application.yaml
 src/main/resources/application-dev.yaml
+/.jython_cache/
