@@ -2,10 +2,12 @@ package com.sr.dao;
 
 import com.sr.entity.AuthThirdParty;
 import com.sr.entity.example.AuthThirdPartyExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
-public interface AuthThirdPartyMapper {
+import java.util.List;
+
+public interface AuthThirdPartyMapper
+{
     long countByExample(AuthThirdPartyExample example);
 
     int deleteByExample(AuthThirdPartyExample example);
