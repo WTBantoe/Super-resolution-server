@@ -24,6 +24,7 @@ import org.springframework.util.CollectionUtils;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -78,8 +79,8 @@ public class WalletServiceImpl implements WalletService {
         }
         wallet.setBalance(wallet.getBalance() + money);
         wallet.setTotalIncome(wallet.getTotalIncome() + money);
-        wallet.setGmtModify(null);
-        wallet.setGmtCreate(null);
+        wallet.setGmtModify(new Date());
+        wallet.setGmtCreate(wallet.getGmtCreate());
         wallet.setHash(md5Wallet(wallet));
         walletMapper.updateByExample(wallet,getExampleByUid(uid));
 
@@ -109,8 +110,8 @@ public class WalletServiceImpl implements WalletService {
         }
         wallet.setBalance(wallet.getBalance() - money);
         wallet.setTotalIoutcome(wallet.getTotalIoutcome() + money);
-        wallet.setGmtModify(null);
-        wallet.setGmtCreate(null);
+        wallet.setGmtModify(new Date());
+        wallet.setGmtCreate(wallet.getGmtCreate());
         wallet.setHash(md5Wallet(wallet));
         walletMapper.updateByExample(wallet,getExampleByUid(uid));
 
