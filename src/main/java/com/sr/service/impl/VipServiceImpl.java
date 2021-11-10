@@ -4,12 +4,15 @@ import com.sr.common.CollectionUtil;
 import com.sr.common.EntityMapConvertor;
 import com.sr.common.TimeUtil;
 import com.sr.dao.VipMapper;
+import com.sr.entity.Order;
 import com.sr.entity.Vip;
+import com.sr.entity.builder.OrderBuilder;
 import com.sr.entity.example.VipExample;
-import com.sr.enunn.StatusEnum;
-import com.sr.enunn.VipTypeEnum;
+import com.sr.enunn.*;
 import com.sr.exception.StatusException;
+import com.sr.service.OrderService;
 import com.sr.service.VipService;
+import com.sr.service.WalletService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +30,12 @@ import java.util.Map;
 public class VipServiceImpl implements VipService {
     @Autowired
     VipMapper vipMapper;
+
+    @Autowired
+    OrderService orderService;
+
+    @Autowired
+    WalletService walletService;
 
     public static Integer FREE_VIP_TIMES = 30;
 
@@ -57,17 +66,18 @@ public class VipServiceImpl implements VipService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> openVipAccount(Long uid, Integer mountCount) {
-        VipExample vipExample = getExampleByUid(uid);
-        Vip vip = CollectionUtil.getUniqueObjectFromList(vipMapper.selectByExample(vipExample));
+        Vip vip = openVip(uid, mountCount);
 
-        vip.setType(VipTypeEnum.VIP.getCode());
-        Calendar calendar = Calendar.getInstance();
-        vip.setStartTime(calendar.getTime());
-        vip.setLastRefreshTime(calendar.getTime());
-        vip.setEndTime(TimeUtil.addMonth(calendar,mountCount));
-        vip.setFreeVipTimes(FREE_VIP_TIMES);
-
-        vipMapper.updateByExampleSelective(vip, vipExample);
+        Order order = OrderBuilder.anOrder()
+                .withOrderId(String.valueOf(System.currentTimeMillis()) + uid)
+                .withUid(uid)
+                .withMoney((long) (mountCount * VIP_FEE_PER_MONTH))
+                .withMessage("开通会员")
+                .withOrigin(OrderOriginEnum.ALIPAY.getCode())
+                .withStatus(OrderStatusEnum.FINISHED.getCode())
+                .withType(OrderOperationTypeEnum.VIP_RECHARGE.getCode())
+                .build();
+        orderService.createOrder(order);
 
         return EntityMapConvertor.entity2Map(vip);
     }
@@ -75,13 +85,18 @@ public class VipServiceImpl implements VipService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> renewVipAccount(Long uid, Integer mountCount) {
-        VipExample vipExample = getExampleByUid(uid);
-        Vip vip = CollectionUtil.getUniqueObjectFromList(vipMapper.selectByExample(vipExample));
-        Date date = vip.getEndTime();
-        vip.setEndTime(TimeUtil.addMonth(date,mountCount));
-        vip.setLastRefreshTime(new Date());
+        Vip vip = renewVip(uid, mountCount);
 
-        vipMapper.updateByExampleSelective(vip, vipExample);
+        Order order = OrderBuilder.anOrder()
+                .withOrderId(String.valueOf(System.currentTimeMillis()) + uid)
+                .withUid(uid)
+                .withMoney((long) (mountCount * VIP_FEE_PER_MONTH))
+                .withMessage("续费会员")
+                .withOrigin(OrderOriginEnum.ALIPAY.getCode())
+                .withStatus(OrderStatusEnum.FINISHED.getCode())
+                .withType(OrderOperationTypeEnum.VIP_RECHARGE.getCode())
+                .build();
+        orderService.createOrder(order);
 
         return EntityMapConvertor.entity2Map(vip);
     }
@@ -93,15 +108,52 @@ public class VipServiceImpl implements VipService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> renewVipAccountByWallet(Long uid, Integer mountCount) {
-        // TODO
-        return null;
+        walletService.consume(uid, (long) (mountCount * VIP_FEE_PER_MONTH), "续费会员", OrderOperationTypeEnum.VIP_RECHARGE);
+
+        Vip vip = renewVip(uid, mountCount);
+
+        return EntityMapConvertor.entity2Map(vip);
+    }
+
+    public Vip renewVip(Long uid, Integer mountCount) {
+        VipExample vipExample = getExampleByUid(uid);
+        Vip vip = CollectionUtil.getUniqueObjectFromList(vipMapper.selectByExample(vipExample));
+        if (vip.getEndTime() == null || vip.getEndTime().getTime() < new Date().getTime()) {
+            return openVip(uid, mountCount);
+        } else {
+            Date date = vip.getEndTime();
+            vip.setEndTime(TimeUtil.addMonth(date,mountCount));
+            vip.setLastRefreshTime(new Date());
+            vipMapper.updateByExampleSelective(vip, vipExample);
+            return vip;
+        }
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> openVipAccountByWallet(Long uid, Integer mountCount) {
-        // TODO
-        return null;
+        walletService.consume(uid, (long) (mountCount * VIP_FEE_PER_MONTH), "开通会员", OrderOperationTypeEnum.VIP_RECHARGE);
+
+        Vip vip = openVip(uid, mountCount);
+
+        return EntityMapConvertor.entity2Map(vip);
+    }
+
+    public Vip openVip(Long uid, Integer mountCount) {
+        VipExample vipExample = getExampleByUid(uid);
+        Vip vip = CollectionUtil.getUniqueObjectFromList(vipMapper.selectByExample(vipExample));
+
+        vip.setType(VipTypeEnum.VIP.getCode());
+        Calendar calendar = Calendar.getInstance();
+        vip.setStartTime(calendar.getTime());
+        vip.setLastRefreshTime(calendar.getTime());
+        vip.setEndTime(TimeUtil.addMonth(calendar, mountCount));
+        vip.setFreeVipTimes(FREE_VIP_TIMES);
+        vipMapper.updateByExampleSelective(vip, vipExample);
+
+        return vip;
     }
 
     public VipExample getExampleByUid (Long uid) {
