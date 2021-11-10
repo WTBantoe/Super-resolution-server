@@ -2,8 +2,7 @@ package com.sr.entity;
 
 import java.util.Date;
 
-public class AuthThirdParty
-{
+public class AuthThirdParty {
     private Long id;
 
     private Long uid;
@@ -18,73 +17,59 @@ public class AuthThirdParty
 
     private Date gmtModify;
 
-    public Long getId()
-    {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Long id)
-    {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getUid()
-    {
+    public Long getUid() {
         return uid;
     }
 
-    public void setUid(Long uid)
-    {
+    public void setUid(Long uid) {
         this.uid = uid;
     }
 
-    public Integer getAuthType()
-    {
+    public Integer getAuthType() {
         return authType;
     }
 
-    public void setAuthType(Integer authType)
-    {
+    public void setAuthType(Integer authType) {
         this.authType = authType;
     }
 
-    public String getLoginToken()
-    {
+    public String getLoginToken() {
         return loginToken;
     }
 
-    public void setLoginToken(String loginToken)
-    {
+    public void setLoginToken(String loginToken) {
         this.loginToken = loginToken == null ? null : loginToken.trim();
     }
 
-    public Date getExpire()
-    {
+    public Date getExpire() {
         return expire;
     }
 
-    public void setExpire(Date expire)
-    {
+    public void setExpire(Date expire) {
         this.expire = expire;
     }
 
-    public Date getGmtCreate()
-    {
+    public Date getGmtCreate() {
         return gmtCreate;
     }
 
-    public void setGmtCreate(Date gmtCreate)
-    {
+    public void setGmtCreate(Date gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    public Date getGmtModify()
-    {
+    public Date getGmtModify() {
         return gmtModify;
     }
 
-    public void setGmtModify(Date gmtModify)
-    {
+    public void setGmtModify(Date gmtModify) {
         this.gmtModify = gmtModify;
     }
 }
