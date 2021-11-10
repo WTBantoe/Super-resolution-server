@@ -28,8 +28,7 @@ import java.util.Map;
  * @Date 2021/11/9 15:53
  */
 @Service
-public class WalletServiceImpl implements WalletService
-{
+public class WalletServiceImpl implements WalletService {
     @Autowired
     WalletMapper walletMapper;
 
@@ -38,12 +37,20 @@ public class WalletServiceImpl implements WalletService
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> post(Long uid, Long initMoney)
-    {
+    public Map<String, Object> post(Long uid, Long initMoney) {
         String hash = md5Wallet(uid, initMoney, initMoney, 0L);
-        Wallet wallet = WalletBuilder.aWallet().withUid(uid).withBalance(initMoney).withTotalIncome(initMoney).withTotalIoutcome(0L).withHash(hash).build();
+        Wallet wallet = WalletBuilder.aWallet()
+                .withUid(uid)
+                .withBalance(initMoney)
+                .withTotalIncome(initMoney)
+                .withTotalIoutcome(0L)
+                .withHash(hash)
+                .build();
 
-        Order order = OrderBuilder.anOrder().withOrderId(String.valueOf(System.currentTimeMillis()) + uid).withUid(uid).withMoney(initMoney)
+        Order order = OrderBuilder.anOrder()
+                .withOrderId(String.valueOf(System.currentTimeMillis()) + uid)
+                .withUid(uid)
+                .withMoney(initMoney)
 
                 // TODO 订单
                 .build();
@@ -56,99 +63,82 @@ public class WalletServiceImpl implements WalletService
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> recharge(Long uid, Long money)
-    {
-        if (CollectionUtils.isEmpty(walletMapper.selectByExample(getExampleByUid(uid))))
-        {
+    public Map<String, Object> recharge(Long uid, Long money) {
+        if (CollectionUtils.isEmpty(walletMapper.selectByExample(getExampleByUid(uid)))) {
             return post(uid, money);
         }
         Wallet wallet = CollectionUtil.getUniqueObjectFromList(walletMapper.selectByExample(getExampleByUid(uid)));
-        if (!verifyHash(wallet))
-        {
+        if (!verifyHash(wallet)) {
             throw new StatusException(StatusEnum.WALLET_HASH_INCORRECT);
         }
         wallet.setBalance(wallet.getBalance() + money);
         wallet.setTotalIncome(wallet.getTotalIncome() + money);
         wallet.setGmtModify(null);
         wallet.setGmtCreate(null);
-        wallet.setHash(md5Wallet(wallet.getUid(), wallet.getBalance(), wallet.getTotalIncome(), wallet.getTotalIoutcome()));
-        walletMapper.updateByExample(wallet, getExampleByUid(uid));
+        wallet.setHash(md5Wallet(wallet.getUid(),wallet.getBalance(),wallet.getTotalIncome(),wallet.getTotalIoutcome()));
+        walletMapper.updateByExample(wallet,getExampleByUid(uid));
         // TODO 订单
         return EntityMapConvertor.entity2Map(WalletDTO.convertWalletToWalletDTO(wallet));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> consume(Long uid, Long money)
-    {
+    public Map<String, Object> consume(Long uid, Long money) {
         Wallet wallet = CollectionUtil.getUniqueObjectFromList(walletMapper.selectByExample(getExampleByUid(uid)));
-        if (!verifyHash(wallet))
-        {
+        if (!verifyHash(wallet)) {
             throw new StatusException(StatusEnum.WALLET_HASH_INCORRECT);
         }
-        if (wallet.getBalance() < money)
-        {
+        if (wallet.getBalance() < money) {
             throw new StatusException(StatusEnum.BALANCE_NOT_ENOUGH);
         }
         wallet.setBalance(wallet.getBalance() - money);
         wallet.setTotalIoutcome(wallet.getTotalIoutcome() + money);
         wallet.setGmtModify(null);
         wallet.setGmtCreate(null);
-        wallet.setHash(md5Wallet(wallet.getUid(), wallet.getBalance(), wallet.getTotalIncome(), wallet.getTotalIoutcome()));
-        walletMapper.updateByExample(wallet, getExampleByUid(uid));
+        wallet.setHash(md5Wallet(wallet.getUid(),wallet.getBalance(),wallet.getTotalIncome(),wallet.getTotalIoutcome()));
+        walletMapper.updateByExample(wallet,getExampleByUid(uid));
         // TODO 订单
         return EntityMapConvertor.entity2Map(WalletDTO.convertWalletToWalletDTO(wallet));
     }
 
     @Override
-    public Map<String, Object> getWalletInfo(Long uid)
-    {
+    public Map<String, Object> getWalletInfo(Long uid) {
         Wallet wallet = CollectionUtil.getUniqueObjectFromList(walletMapper.selectByExample(getExampleByUid(uid)));
-        if (!verifyHash(wallet))
-        {
+        if (!verifyHash(wallet)) {
             throw new StatusException(StatusEnum.WALLET_HASH_INCORRECT);
         }
         return EntityMapConvertor.entity2Map(WalletDTO.convertWalletToWalletDTO(wallet));
     }
 
-    private boolean verifyHash(Wallet wallet)
-    {
-        return wallet.getHash().equals(md5Wallet(wallet.getUid(), wallet.getBalance(), wallet.getTotalIncome(), wallet.getTotalIoutcome()));
+    private boolean verifyHash(Wallet wallet) {
+        return wallet.getHash().equals(md5Wallet(wallet.getUid(),wallet.getBalance(),wallet.getTotalIncome(),wallet.getTotalIoutcome()));
     }
 
-    private String md5Wallet(Long uid, Long balance, Long totalIncome, Long totalOutcome)
-    {
+    private String md5Wallet(Long uid, Long balance, Long totalIncome, Long totalOutcome) {
         long key = uid + balance + totalIncome + totalOutcome;
         String string = Long.toString(key);
-        if (string.isEmpty())
-        {
+        if (string.isEmpty()) {
             return "";
         }
-        try
-        {
+        try {
             MessageDigest md5 = MessageDigest.getInstance("MD5");
             byte[] bytes = md5.digest(string.getBytes("UTF-8"));
             StringBuilder result = new StringBuilder();
-            for (byte b : bytes)
-            {
+            for (byte b : bytes) {
                 String temp = Integer.toHexString(b & 0xff);
-                if (temp.length() == 1)
-                {
+                if (temp.length() == 1) {
                     temp = "0" + temp;
                 }
                 result.append(temp);
             }
             return result.toString();
-        }
-        catch (NoSuchAlgorithmException | UnsupportedEncodingException e)
-        {
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return "";
     }
 
-    private WalletExample getExampleByUid(Long uid)
-    {
+    private WalletExample getExampleByUid(Long uid) {
         WalletExample walletExample = new WalletExample();
         WalletExample.Criteria criteria = walletExample.createCriteria();
         criteria.andUidEqualTo(uid);

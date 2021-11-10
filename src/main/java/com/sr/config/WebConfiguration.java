@@ -11,17 +11,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @Date 2021/11/5 14:03
  */
 @Configuration
-public class WebConfiguration implements WebMvcConfigurer
-{
+public class WebConfiguration implements WebMvcConfigurer {
     @Bean
-    public AuthInterceptor authInterceptor()
-    {
+    public AuthInterceptor authInterceptor(){
         return new AuthInterceptor();
     }
 
     @Override
-    public void addInterceptors(InterceptorRegistry registry)
-    {
-        registry.addInterceptor(authInterceptor());
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor( authInterceptor());
     }
 }

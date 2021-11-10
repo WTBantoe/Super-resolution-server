@@ -32,7 +32,7 @@ class TestSceneRender():
         if fgImg is not None:
             self.foreground = fgImg.copy()
             self.center = self.currentCenter = (
-                int(self.w / 2 - fgImg.shape[0] / 2), int(self.h / 2 - fgImg.shape[1] / 2))
+            int(self.w / 2 - fgImg.shape[0] / 2), int(self.h / 2 - fgImg.shape[1] / 2))
 
             self.xAmpl = self.sceneBg.shape[0] - (self.center[0] + fgImg.shape[0])
             self.yAmpl = self.sceneBg.shape[1] - (self.center[1] + fgImg.shape[1])
@@ -82,7 +82,7 @@ class TestSceneRender():
 
         if self.foreground is not None:
             self.currentCenter = (
-                self.center[0] + self.getXOffset(self.time), self.center[1] + self.getYOffset(self.time))
+            self.center[0] + self.getXOffset(self.time), self.center[1] + self.getYOffset(self.time))
             img[self.currentCenter[0]:self.currentCenter[0] + self.foreground.shape[0],
             self.currentCenter[1]:self.currentCenter[1] + self.foreground.shape[1]] = self.foreground
         else:

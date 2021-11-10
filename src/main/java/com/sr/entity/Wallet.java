@@ -2,8 +2,7 @@ package com.sr.entity;
 
 import java.util.Date;
 
-public class Wallet
-{
+public class Wallet {
     private Long id;
 
     private Long uid;
@@ -20,83 +19,67 @@ public class Wallet
 
     private Date gmtModify;
 
-    public Long getId()
-    {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Long id)
-    {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getUid()
-    {
+    public Long getUid() {
         return uid;
     }
 
-    public void setUid(Long uid)
-    {
+    public void setUid(Long uid) {
         this.uid = uid;
     }
 
-    public Long getBalance()
-    {
+    public Long getBalance() {
         return balance;
     }
 
-    public void setBalance(Long balance)
-    {
+    public void setBalance(Long balance) {
         this.balance = balance;
     }
 
-    public Long getTotalIoutcome()
-    {
+    public Long getTotalIoutcome() {
         return totalIoutcome;
     }
 
-    public void setTotalIoutcome(Long totalIoutcome)
-    {
+    public void setTotalIoutcome(Long totalIoutcome) {
         this.totalIoutcome = totalIoutcome;
     }
 
-    public Long getTotalIncome()
-    {
+    public Long getTotalIncome() {
         return totalIncome;
     }
 
-    public void setTotalIncome(Long totalIncome)
-    {
+    public void setTotalIncome(Long totalIncome) {
         this.totalIncome = totalIncome;
     }
 
-    public String getHash()
-    {
+    public String getHash() {
         return hash;
     }
 
-    public void setHash(String hash)
-    {
+    public void setHash(String hash) {
         this.hash = hash == null ? null : hash.trim();
     }
 
-    public Date getGmtCreate()
-    {
+    public Date getGmtCreate() {
         return gmtCreate;
     }
 
-    public void setGmtCreate(Date gmtCreate)
-    {
+    public void setGmtCreate(Date gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    public Date getGmtModify()
-    {
+    public Date getGmtModify() {
         return gmtModify;
     }
 
-    public void setGmtModify(Date gmtModify)
-    {
+    public void setGmtModify(Date gmtModify) {
         this.gmtModify = gmtModify;
     }
 }

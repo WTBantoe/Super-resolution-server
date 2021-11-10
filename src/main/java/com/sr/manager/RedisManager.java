@@ -8,8 +8,7 @@ import java.util.Set;
  * @Author cyh
  * @Date 2021/9/30 14:58
  */
-public interface RedisManager
-{
+public interface RedisManager {
     /**
      * 保存属性
      */
