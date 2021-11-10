@@ -1,15 +1,31 @@
 server:
   port: 9006
 
+python:
+  path: C:\Program Files\Python37
+
 picture:
   path:
     processed: D:\data\super-resolution\pic\processed\
     raw: D:\data\super-resolution\pic\raw\
 
+model:
+  path:
+    image: src/main/resources/model/ESRGAN/imageSR.py
+    video: src/main/resources/model/ESRGAN/imageSR.py
+
 video:
   path:
     processed: D:\data\super-resolution\vid\processed\
     raw: D:\data\super-resolution\vid\raw\
+    raw_frame: D:\data\super-resolution\vid\raw_frame\
+    processed_frame: D:\data\super-resolution\vid\processed_frame\
+
+tool:
+  path:
+    video2image: src/main/resources/model/TecoGAN/video2image.py
+    image2video: src/main/resources/model/TecoGAN/image2video.py
+
 
 
 spring:
