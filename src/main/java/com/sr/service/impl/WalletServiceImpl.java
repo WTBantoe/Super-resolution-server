@@ -9,6 +9,9 @@ import com.sr.entity.builder.OrderBuilder;
 import com.sr.entity.builder.WalletBuilder;
 import com.sr.entity.dto.WalletDTO;
 import com.sr.entity.example.WalletExample;
+import com.sr.enunn.OrderOperationTypeEnum;
+import com.sr.enunn.OrderOriginEnum;
+import com.sr.enunn.OrderStatusEnum;
 import com.sr.enunn.StatusEnum;
 import com.sr.exception.StatusException;
 import com.sr.service.OrderService;
@@ -51,8 +54,10 @@ public class WalletServiceImpl implements WalletService {
                 .withOrderId(String.valueOf(System.currentTimeMillis()) + uid)
                 .withUid(uid)
                 .withMoney(initMoney)
-
-                // TODO 订单
+                .withMessage("钱包首次充值")
+                .withOrigin(OrderOriginEnum.WALLET.getCode())
+                .withStatus(OrderStatusEnum.FINISHED.getCode())
+                .withType(OrderOperationTypeEnum.WALLET_RECHARGE.getCode())
                 .build();
         orderService.createOrder(order);
 
@@ -75,15 +80,26 @@ public class WalletServiceImpl implements WalletService {
         wallet.setTotalIncome(wallet.getTotalIncome() + money);
         wallet.setGmtModify(null);
         wallet.setGmtCreate(null);
-        wallet.setHash(md5Wallet(wallet.getUid(),wallet.getBalance(),wallet.getTotalIncome(),wallet.getTotalIoutcome()));
+        wallet.setHash(md5Wallet(wallet));
         walletMapper.updateByExample(wallet,getExampleByUid(uid));
-        // TODO 订单
+
+        Order order = OrderBuilder.anOrder()
+                .withOrderId(String.valueOf(System.currentTimeMillis()) + uid)
+                .withUid(uid)
+                .withMoney(money)
+                .withMessage("钱包充值")
+                .withOrigin(OrderOriginEnum.WALLET.getCode())
+                .withStatus(OrderStatusEnum.FINISHED.getCode())
+                .withType(OrderOperationTypeEnum.WALLET_RECHARGE.getCode())
+                .build();
+        orderService.createOrder(order);
+
         return EntityMapConvertor.entity2Map(WalletDTO.convertWalletToWalletDTO(wallet));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> consume(Long uid, Long money) {
+    public Map<String, Object> consume(Long uid, Long money, String message, OrderOperationTypeEnum operationType) {
         Wallet wallet = CollectionUtil.getUniqueObjectFromList(walletMapper.selectByExample(getExampleByUid(uid)));
         if (!verifyHash(wallet)) {
             throw new StatusException(StatusEnum.WALLET_HASH_INCORRECT);
@@ -95,9 +111,20 @@ public class WalletServiceImpl implements WalletService {
         wallet.setTotalIoutcome(wallet.getTotalIoutcome() + money);
         wallet.setGmtModify(null);
         wallet.setGmtCreate(null);
-        wallet.setHash(md5Wallet(wallet.getUid(),wallet.getBalance(),wallet.getTotalIncome(),wallet.getTotalIoutcome()));
+        wallet.setHash(md5Wallet(wallet));
         walletMapper.updateByExample(wallet,getExampleByUid(uid));
-        // TODO 订单
+
+        Order order = OrderBuilder.anOrder()
+                .withOrderId(String.valueOf(System.currentTimeMillis()) + uid)
+                .withUid(uid)
+                .withMoney(money)
+                .withMessage(message)
+                .withOrigin(OrderOriginEnum.WALLET.getCode())
+                .withStatus(OrderStatusEnum.FINISHED.getCode())
+                .withType(operationType.getCode())
+                .build();
+        orderService.createOrder(order);
+
         return EntityMapConvertor.entity2Map(WalletDTO.convertWalletToWalletDTO(wallet));
     }
 
@@ -112,6 +139,10 @@ public class WalletServiceImpl implements WalletService {
 
     private boolean verifyHash(Wallet wallet) {
         return wallet.getHash().equals(md5Wallet(wallet.getUid(),wallet.getBalance(),wallet.getTotalIncome(),wallet.getTotalIoutcome()));
+    }
+
+    private String md5Wallet(Wallet wallet){
+        return md5Wallet(wallet.getUid(),wallet.getBalance(),wallet.getTotalIncome(),wallet.getTotalIoutcome());
     }
 
     private String md5Wallet(Long uid, Long balance, Long totalIncome, Long totalOutcome) {

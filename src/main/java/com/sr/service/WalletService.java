@@ -1,5 +1,7 @@
 package com.sr.service;
 
+import com.sr.enunn.OrderOperationTypeEnum;
+
 import java.util.Map;
 
 /**
@@ -11,7 +13,7 @@ public interface WalletService {
 
     Map<String, Object> recharge(Long uid, Long money);
 
-    Map<String, Object> consume(Long uid, Long money);
+    Map<String, Object> consume(Long uid, Long money, String message, OrderOperationTypeEnum operationType);
 
     Map<String, Object> getWalletInfo(Long uid);
 }
