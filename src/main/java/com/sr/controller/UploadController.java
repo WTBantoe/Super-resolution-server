@@ -14,9 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/upload")
@@ -64,20 +67,38 @@ public class UploadController
     @PostMapping("/image/single")
     @ApiOperation("处理图片上传")
     @Transactional(rollbackFor = Exception.class)
-    public void uploadImage(@RequestParam(value = "image") MultipartFile file, @RequestParam(value = "tag", required = false) String tag, HttpServletResponse response, HttpServletRequest httpServletRequest)
+    public Map<String, Object> uploadImage(@RequestParam(value = "image") MultipartFile file, @RequestParam(value = "tag", required = false) String tag, HttpServletResponse response, HttpServletRequest request)
     {
-        String token = httpUtil.getToken(httpServletRequest);
-        uploadService.processSinglePicture(file, response, tag, token);
+        String token = httpUtil.getToken(request);
+        return uploadService.processSinglePicture(file, response, tag, token);
     }
 
 
     @PostMapping("/video/single")
     @ApiOperation("处理视频上传")
     @Transactional(rollbackFor = Exception.class)
-    public void uploadVideo(@RequestParam(value = "video") MultipartFile file, @RequestParam(value = "tag") String tag, HttpServletResponse response, HttpServletRequest httpServletRequest)
+    public Map<String, Object> uploadVideo(@RequestParam(value = "video") MultipartFile file, @RequestParam(value = "tag") String tag, HttpServletResponse response, HttpServletRequest request)
     {
-        String token = httpUtil.getToken(httpServletRequest);
-        uploadService.processSingleVideo(file, response, tag, token);
+        String token = httpUtil.getToken(request);
+        return uploadService.processSingleVideo(file, response, tag, token);
+    }
+
+    @PostMapping("/image/multi")
+    @ApiOperation("处理多图片上传")
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> uploadMultiImage(@RequestParam(value = "images") MultipartFile[] files, @RequestParam(value = "tag", required = false) String tag, HttpServletResponse response, HttpServletRequest request)
+    {
+        String token = httpUtil.getToken(request);
+        return uploadService.processMultiPicture(files, response, tag, token);
+    }
+
+    @PostMapping("/video/multi")
+    @ApiOperation("处理多视频上传")
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> uploadMultiVideo(@RequestParam(value = "videos") MultipartFile[] files, @RequestParam(value = "tag") String tag, HttpServletResponse response, HttpServletRequest request)
+    {
+        String token = httpUtil.getToken(request);
+        return uploadService.processMultiVideo(files, response, tag, token);
     }
 
 

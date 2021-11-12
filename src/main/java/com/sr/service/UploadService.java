@@ -3,6 +3,7 @@ package com.sr.service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 /**
  * @Author cyh
@@ -10,7 +11,11 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface UploadService
 {
-    void processSinglePicture(MultipartFile file, HttpServletResponse response, String tag, String token);
+    Map<String, Object> processSinglePicture(MultipartFile file, HttpServletResponse response, String tag, String token);
 
-    void processSingleVideo(MultipartFile file, HttpServletResponse response, String tag, String token);
+    Map<String, Object> processSingleVideo(MultipartFile file, HttpServletResponse response, String tag, String token);
+
+    Map<String, Object> processMultiPicture(MultipartFile[] files, HttpServletResponse response, String tag, String token);
+
+    Map<String, Object> processMultiVideo(MultipartFile[] files, HttpServletResponse response, String tag, String token);
 }
