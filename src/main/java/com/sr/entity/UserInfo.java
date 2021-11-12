@@ -2,8 +2,7 @@ package com.sr.entity;
 
 import java.util.Date;
 
-public class UserInfo
-{
+public class UserInfo {
     private Long id;
 
     private Long uid;
@@ -20,89 +19,81 @@ public class UserInfo
 
     private Date gmtModify;
 
-    public Long getId()
-    {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Long id)
-    {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getUid()
-    {
+    public Long getUid() {
         return uid;
     }
 
-    public void setUid(Long uid)
-    {
+    public void setUid(Long uid) {
         this.uid = uid;
     }
 
-    public Integer getSex()
-    {
+    public Integer getSex() {
         return sex;
     }
 
-    public void setSex(Integer sex)
-    {
+    public void setSex(Integer sex) {
         this.sex = sex;
     }
 
-    public String getAvatar()
-    {
+    public String getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(String avatar)
-    {
+    public void setAvatar(String avatar) {
         this.avatar = avatar == null ? null : avatar.trim();
     }
 
-    public String getIdCardNumber()
-    {
+    public String getIdCardNumber() {
         return idCardNumber;
     }
 
-    public void setIdCardNumber(String idCardNumber)
-    {
+    public void setIdCardNumber(String idCardNumber) {
         this.idCardNumber = idCardNumber == null ? null : idCardNumber.trim();
     }
 
-    public String getTrueName()
-    {
+    public String getTrueName() {
         return trueName;
     }
 
-    public void setTrueName(String trueName)
-    {
+    public void setTrueName(String trueName) {
         this.trueName = trueName == null ? null : trueName.trim();
     }
 
-    public Date getGmtCreate()
-    {
+    public Date getGmtCreate() {
         return gmtCreate;
     }
 
-    public void setGmtCreate(Date gmtCreate)
-    {
+    public void setGmtCreate(Date gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    public Date getGmtModify()
-    {
+    public Date getGmtModify() {
         return gmtModify;
     }
 
-    public void setGmtModify(Date gmtModify)
-    {
+    public void setGmtModify(Date gmtModify) {
         this.gmtModify = gmtModify;
     }
 
     @Override
-    public String toString()
-    {
-        return "UserInfo{" + "id=" + id + ", uid=" + uid + ", sex=" + sex + ", avatar='" + avatar + '\'' + ", idCardNumber='" + idCardNumber + '\'' + ", trueName='" + trueName + '\'' + ", gmtCreate=" + gmtCreate + ", gmtModify=" + gmtModify + '}';
+    public String toString() {
+        return "UserInfo{" +
+                "id=" + id +
+                ", uid=" + uid +
+                ", sex=" + sex +
+                ", avatar='" + avatar + '\'' +
+                ", idCardNumber='" + idCardNumber + '\'' +
+                ", trueName='" + trueName + '\'' +
+                ", gmtCreate=" + gmtCreate +
+                ", gmtModify=" + gmtModify +
+                '}';
     }
 }

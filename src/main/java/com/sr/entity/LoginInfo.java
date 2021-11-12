@@ -2,8 +2,7 @@ package com.sr.entity;
 
 import java.util.Date;
 
-public class LoginInfo
-{
+public class LoginInfo {
     private Long id;
 
     private Long uid;
@@ -18,73 +17,59 @@ public class LoginInfo
 
     private Date gmtModify;
 
-    public Long getId()
-    {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Long id)
-    {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Long getUid()
-    {
+    public Long getUid() {
         return uid;
     }
 
-    public void setUid(Long uid)
-    {
+    public void setUid(Long uid) {
         this.uid = uid;
     }
 
-    public Integer getLoginType()
-    {
+    public Integer getLoginType() {
         return loginType;
     }
 
-    public void setLoginType(Integer loginType)
-    {
+    public void setLoginType(Integer loginType) {
         this.loginType = loginType;
     }
 
-    public Long getLoginCount()
-    {
+    public Long getLoginCount() {
         return loginCount;
     }
 
-    public void setLoginCount(Long loginCount)
-    {
+    public void setLoginCount(Long loginCount) {
         this.loginCount = loginCount;
     }
 
-    public Date getLastLoginTime()
-    {
+    public Date getLastLoginTime() {
         return lastLoginTime;
     }
 
-    public void setLastLoginTime(Date lastLoginTime)
-    {
+    public void setLastLoginTime(Date lastLoginTime) {
         this.lastLoginTime = lastLoginTime;
     }
 
-    public Date getGmtCreate()
-    {
+    public Date getGmtCreate() {
         return gmtCreate;
     }
 
-    public void setGmtCreate(Date gmtCreate)
-    {
+    public void setGmtCreate(Date gmtCreate) {
         this.gmtCreate = gmtCreate;
     }
 
-    public Date getGmtModify()
-    {
+    public Date getGmtModify() {
         return gmtModify;
     }
 
-    public void setGmtModify(Date gmtModify)
-    {
+    public void setGmtModify(Date gmtModify) {
         this.gmtModify = gmtModify;
     }
 }

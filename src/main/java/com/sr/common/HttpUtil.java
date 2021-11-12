@@ -15,38 +15,29 @@ import javax.servlet.http.HttpServletRequest;
  * @Date 2021/11/4 19:14
  */
 @Component
-public class HttpUtil
-{
+public class HttpUtil {
     @Autowired
     RedisManager redisManager;
 
-    public String getToken(HttpServletRequest httpServletRequest)
-    {
+    public String getToken(HttpServletRequest httpServletRequest){
         Cookie[] cookies = httpServletRequest.getCookies();
         String token = "";
-        if (cookies == null || cookies.length == 0)
-        {
+        if (cookies == null || cookies.length == 0){
             return token;
         }
-        for (Cookie cookie : cookies)
-        {
-            if (cookie.getName().equals(UserServiceImpl.REDIS_TOKEN_KEY))
-            {
+        for (Cookie cookie : cookies) {
+            if(cookie.getName().equals(UserServiceImpl.REDIS_TOKEN_KEY)){
                 token = cookie.getValue();
             }
         }
         return token;
     }
 
-    public Long getUidByToken(String token)
-    {
+    public Long getUidByToken(String token){
         Long uid = null;
-        try
-        {
+        try {
             uid = Long.parseLong((String) redisManager.hGet(UserServiceImpl.REDIS_TOKEN_KEY, token));
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             throw new StatusException(StatusEnum.TOKEN_EXPIRE);
         }
         return uid;

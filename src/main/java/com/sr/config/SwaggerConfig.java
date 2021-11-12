@@ -18,16 +18,23 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @Configuration
 @EnableSwagger2
-public class SwaggerConfig
-{
+public class SwaggerConfig {
     @Bean
-    public Docket createRestApi()
-    {
-        return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).select().apis(RequestHandlerSelectors.withClassAnnotation(RestController.class)).paths(PathSelectors.any()).build();
+    public Docket createRestApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(apiInfo())
+                .select()
+                .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
+                .paths(PathSelectors.any())
+                .build();
     }
 
-    private ApiInfo apiInfo()
-    {
-        return new ApiInfoBuilder().title("super-resolution").description("cyh super-resolution-server").contact(new Contact("cyh", "https://github.com/WTBantoe/Super-resolution-server", "1169858807@qq.com")).version("1.0").build();
+    private ApiInfo apiInfo(){
+        return new ApiInfoBuilder()
+                .title("super-resolution")
+                .description("cyh super-resolution-server")
+                .contact(new Contact("cyh", "https://github.com/WTBantoe/Super-resolution-server", "1169858807@qq.com"))
+                .version("1.0")
+                .build();
     }
 }

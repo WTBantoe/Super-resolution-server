@@ -2,14 +2,12 @@ package com.sr.dao;
 
 import com.sr.entity.Wallet;
 import com.sr.entity.example.WalletExample;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
-public interface WalletMapper
-{
+public interface WalletMapper {
     long countByExample(WalletExample example);
 
     int deleteByExample(WalletExample example);
