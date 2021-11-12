@@ -131,7 +131,7 @@ public class PythonExecutionUtils
                     String outputLine = null;
                     while ((outputLine = output.readLine()) != null)
                     {
-                        System.out.println(outputLine);
+//                        System.out.println(outputLine);
                         result.add(outputLine);
                     }
                 }
@@ -161,7 +161,7 @@ public class PythonExecutionUtils
                     String errorLine = null;
                     while ((errorLine = error.readLine()) != null)
                     {
-                        System.out.println(errorLine);
+//                        System.out.println(errorLine);
                         err_result.add(errorLine);
                     }
                 }

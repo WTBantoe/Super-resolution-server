@@ -44,76 +44,74 @@ public class UploadServiceImpl implements UploadService
     @Autowired
     SRService srService;
 
-    public static String RAW_PICTURE_PATH;
+    public static String RAW_PICTURE_FOLDER;
 
-    public static String RAW_VIDEO_PATH;
+    public static String RAW_VIDEO_FOLDER;
 
-    public static String PROCESSED_PICTURE_PATH;
+    public static String PROCESSED_PICTURE_FOLDER;
 
-    public static String PROCESSED_VIDEO_PATH;
+    public static String PROCESSED_VIDEO_FOLDER;
 
     @Value("${picture.path.raw}")
     public void setRawPicturePath(String rawPicturePath)
     {
-        RAW_PICTURE_PATH = rawPicturePath;
+        RAW_PICTURE_FOLDER = rawPicturePath;
     }
 
     @Value("${video.path.raw}")
     public void setRawVideoPath(String rawVideoPath)
     {
-        RAW_VIDEO_PATH = rawVideoPath;
+        RAW_VIDEO_FOLDER = rawVideoPath;
     }
 
     @Value("${picture.path.processed}")
     public void setProcessedPicturePath(String processedPicturePath)
     {
-        PROCESSED_PICTURE_PATH = processedPicturePath;
+        PROCESSED_PICTURE_FOLDER = processedPicturePath;
     }
 
     @Value("${video.path.processed}")
     public void setProcessedVideoPath(String processedVideoPath)
     {
-        PROCESSED_VIDEO_PATH = processedVideoPath;
+        PROCESSED_VIDEO_FOLDER = processedVideoPath;
     }
 
-    private String saveFile(MultipartFile file, String fileName, MediaTypeEnum mediaTypeEnum)
+    private File getSavePath(String fileName, MediaTypeEnum mediaTypeEnum)
     {
-        String rawFilePath = "";
+        String rawFilePath = "/";
+
         switch (mediaTypeEnum)
         {
             case PICTURE:
-                rawFilePath = RAW_PICTURE_PATH;
+                rawFilePath = RAW_PICTURE_FOLDER;
                 break;
             case VIDEO:
-                rawFilePath = RAW_VIDEO_PATH;
+                rawFilePath = RAW_VIDEO_FOLDER;
                 break;
         }
 
-        File material = new File(rawFilePath + fileName);
-        transferService.uploadFile(file, material);
-
-        return material.getAbsolutePath();
+        return new File(rawFilePath + fileName);
     }
 
-    @NotNull
-    private File saveSinglePicture(MultipartFile file, String tag, String token)
+    private File getProcessedPath(String fileName, MediaTypeEnum mediaTypeEnum)
     {
-        Long startTime = System.currentTimeMillis();
+        String rawFilePath = "/";
 
-        String fileName = FileNameUtils.processFileName(file);
-
-        String picturePath = saveFile(file, fileName, MediaTypeEnum.PICTURE);
-        System.out.println("Image Upload Success! Saved to " + picturePath);
-
-        srService.imageSuperResolution(new File(RAW_PICTURE_PATH + fileName), new File(PROCESSED_PICTURE_PATH + fileName));
-
-        File processed = new File((PROCESSED_PICTURE_PATH + fileName).trim());
-
-        if (!processed.exists())
+        switch (mediaTypeEnum)
         {
-            throw new StatusException(StatusEnum.COULD_NOT_FIND_PROCESSED_PICTURE);
+            case PICTURE:
+                rawFilePath = PROCESSED_PICTURE_FOLDER;
+                break;
+            case VIDEO:
+                rawFilePath = PROCESSED_VIDEO_FOLDER;
+                break;
         }
 
+        return new File(rawFilePath + fileName);
+    }
+
+    private long getUid(String token)
+    {
         long uid;
         try
         {
@@ -123,83 +121,131 @@ public class UploadServiceImpl implements UploadService
         {
             throw new StatusException(StatusEnum.TOKEN_EXPIRE);
         }
+        return uid;
+    }
 
-        Long endTime = System.currentTimeMillis();
-
-        History history = HistoryBuilder.aHistory().withUid(uid).withType(MediaTypeEnum.PICTURE.getCode()).withTag(tag).withRawMaterial(picturePath).withResult(picturePath).withSpan(endTime - startTime).build();
-
-        historyService.post(history);
-        return processed;
+    private void saveFile(MultipartFile file, File destination)
+    {
+        transferService.uploadFile(file, destination);
     }
 
     @NotNull
-    private File saveSingleVideo(MultipartFile file, String tag, String token)
+    private String[] handleSinglePicture(MultipartFile file)
     {
-        Long startTime = System.currentTimeMillis();
-
         String fileName = FileNameUtils.processFileName(file);
-        String videoPath = saveFile(file, fileName, MediaTypeEnum.VIDEO);
-        System.out.println("Video Upload Success! Saved to " + videoPath);
 
-        srService.videoSuperResolution(new File(RAW_VIDEO_PATH + fileName), new File(PROCESSED_VIDEO_PATH + fileName));
+        File rawPicturePath = getSavePath(fileName, MediaTypeEnum.PICTURE);
+        File processedPicturePath = getProcessedPath(fileName,MediaTypeEnum.PICTURE);
 
-        File processed = new File((PROCESSED_VIDEO_PATH + fileName).trim());
+        new Thread(()->{
+            saveFile(file, rawPicturePath);
+            System.out.println("Image Upload Success! Saved to " + rawPicturePath.getAbsolutePath());
+            srService.imageSuperResolution(rawPicturePath, processedPicturePath);
+        }).start();
 
-        if (!processed.exists())
-        {
-            throw new StatusException(StatusEnum.COULD_NOT_FIND_PROCESSED_VIDEO);
-        }
+//  TODO:放到下载
+//        File processed = new File((PROCESSED_PICTURE_FOLDER + fileName).trim());
+//
+//        if (!processed.exists())
+//        {
+//            throw new StatusException(StatusEnum.COULD_NOT_FIND_PROCESSED_PICTURE);
+//        }
 
-        long uid;
-        try
-        {
-            uid = Long.parseLong((String) redisManager.hGet(UserServiceImpl.REDIS_TOKEN_KEY, token));
-        }
-        catch (Exception e)
-        {
-            throw new StatusException(StatusEnum.TOKEN_EXPIRE);
-        }
+        return new String[]{rawPicturePath.getAbsolutePath(), processedPicturePath.getAbsolutePath()};
+    }
 
-        Long endTime = System.currentTimeMillis();
+    @NotNull
+    private String[] handleSingleVideo(MultipartFile file)
+    {
+        String fileName = FileNameUtils.processFileName(file);
 
-        History history = HistoryBuilder.aHistory().withUid(uid).withType(MediaTypeEnum.PICTURE.getCode()).withTag(tag).withRawMaterial(videoPath).withResult(videoPath).withSpan(endTime - startTime).build();
+        File rawVideoPath = getSavePath(fileName, MediaTypeEnum.VIDEO);
+        File processedVideoPath = getProcessedPath(fileName, MediaTypeEnum.VIDEO);
 
-        historyService.post(history);
-        return processed;
+        new Thread(() ->{
+            saveFile(file, rawVideoPath);
+            System.out.println("Video Upload Success! Saved to " + rawVideoPath.getAbsolutePath());
+            srService.videoSuperResolution(rawVideoPath, processedVideoPath);
+        }).start();
+
+//  TODO:放到下载
+//        File processed = new File((PROCESSED_VIDEO_FOLDER + fileName).trim());
+//
+//        if (!processed.exists())
+//        {
+//            throw new StatusException(StatusEnum.COULD_NOT_FIND_PROCESSED_VIDEO);
+//        }
+
+        return new String[]{rawVideoPath.getAbsolutePath(),processedVideoPath.getAbsolutePath()};
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> processSinglePicture(MultipartFile file, HttpServletResponse response, String tag, String token)
     {
+        Long startTime = System.currentTimeMillis();
+        long uid = getUid(token);
+
         if (file.isEmpty())
         {
             throw new StatusException(StatusEnum.PICTURE_NOT_UPLOAD);
         }
 
-        File processed = saveSinglePicture(file, tag, token);
+        String[] raw_and_processed = handleSinglePicture(file);
 
-        return ReturnCodeBuilder.successBuilder().addDataValue(processed.getAbsolutePath()).buildMap();
+        Long endTime = System.currentTimeMillis();
+
+        History history = HistoryBuilder.aHistory()
+                .withUid(uid)
+                .withType(MediaTypeEnum.PICTURE.getCode())
+                .withTag(tag)
+                .withRawMaterial(raw_and_processed[0])
+                .withResult(raw_and_processed[1])
+                .withSpan(endTime - startTime)
+                .build();
+
+        historyService.post(history);
+
+        return ReturnCodeBuilder.successBuilder().addDataValue(raw_and_processed).buildMap();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> processSingleVideo(MultipartFile file, HttpServletResponse response, String tag, String token)
     {
+        Long startTime = System.currentTimeMillis();
+        long uid = getUid(token);
+
         if (file.isEmpty())
         {
             throw new StatusException(StatusEnum.VIDEO_NOT_UPLOAD);
         }
 
-        File processed = saveSingleVideo(file, tag, token);
+        String[] raw_and_processed = handleSingleVideo(file);
 
-        return ReturnCodeBuilder.successBuilder().addDataValue(processed.getAbsolutePath()).buildMap();
+        Long endTime = System.currentTimeMillis();
+
+        History history = HistoryBuilder.aHistory()
+                .withUid(uid)
+                .withType(MediaTypeEnum.VIDEO.getCode())
+                .withTag(tag)
+                .withRawMaterial(raw_and_processed[0])
+                .withResult(raw_and_processed[1])
+                .withSpan(endTime - startTime)
+                .build();
+
+        historyService.post(history);
+
+        return ReturnCodeBuilder.successBuilder().addDataValue(raw_and_processed).buildMap();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> processMultiPicture(MultipartFile[] files, HttpServletResponse response, String tag, String token)
     {
+        Long startTime = System.currentTimeMillis();
+        long uid = getUid(token);
+
         if (files.length <= 0)
         {
             throw new StatusException(StatusEnum.PICTURE_NOT_UPLOAD);
@@ -215,21 +261,37 @@ public class UploadServiceImpl implements UploadService
             }
         }
 
-        ArrayList<String> processed_paths = new ArrayList<>();
+        ArrayList<String[]> raw_and_processed_paths = new ArrayList<>();
 
         for (MultipartFile file : files)
         {
-            File processed = saveSinglePicture(file, tag, token);
-            processed_paths.add(processed.getAbsolutePath());
+            String[] raw_and_processed = handleSinglePicture(file);
+            raw_and_processed_paths.add(raw_and_processed);
+
+            Long endTime = System.currentTimeMillis();
+            History history = HistoryBuilder.aHistory()
+                    .withUid(uid)
+                    .withType(MediaTypeEnum.PICTURE.getCode())
+                    .withTag(tag)
+                    .withRawMaterial(raw_and_processed[0])
+                    .withResult(raw_and_processed[1])
+                    .withSpan(endTime - startTime)
+                    .build();
+
+            historyService.post(history);
+            startTime = System.currentTimeMillis();
         }
 
-        return ReturnCodeBuilder.successBuilder().addDataValue(processed_paths).buildMap();
+        return ReturnCodeBuilder.successBuilder().addDataValue(raw_and_processed_paths).buildMap();
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> processMultiVideo(MultipartFile[] files, HttpServletResponse response, String tag, String token)
     {
+        Long startTime = System.currentTimeMillis();
+        long uid = getUid(token);
+
         if (files.length <= 0)
         {
             throw new StatusException(StatusEnum.VIDEO_NOT_UPLOAD);
@@ -245,14 +307,27 @@ public class UploadServiceImpl implements UploadService
             }
         }
 
-        ArrayList<String> processed_paths = new ArrayList<>();
+        ArrayList<String[]> raw_and_processed_paths = new ArrayList<>();
 
         for (MultipartFile file : files)
         {
-            File processed = saveSingleVideo(file, tag, token);
-            processed_paths.add(processed.getAbsolutePath());
+            String[] raw_and_processed = handleSingleVideo(file);
+            raw_and_processed_paths.add(raw_and_processed);
+
+            Long endTime = System.currentTimeMillis();
+            History history = HistoryBuilder.aHistory()
+                    .withUid(uid)
+                    .withType(MediaTypeEnum.VIDEO.getCode())
+                    .withTag(tag)
+                    .withRawMaterial(raw_and_processed[0])
+                    .withResult(raw_and_processed[1])
+                    .withSpan(endTime - startTime)
+                    .build();
+
+            historyService.post(history);
+            startTime = System.currentTimeMillis();
         }
 
-        return ReturnCodeBuilder.successBuilder().addDataValue(processed_paths).buildMap();
+        return ReturnCodeBuilder.successBuilder().addDataValue(raw_and_processed_paths).buildMap();
     }
 }
