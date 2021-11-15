@@ -26,6 +26,9 @@ video:
     raw_frame: /data/sr/test/vid/raw_frame/
     processed_frame: /data/sr/test/vid/processed_frame/
 
+avatar:
+  path: /data/sr/test/avatar/
+
 spring:
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/super_resolution_test?useUnicode=true&characterEncoding=UTF-8&useTimezone=true&serverTimezone=GMT%2B8&useSSL=false

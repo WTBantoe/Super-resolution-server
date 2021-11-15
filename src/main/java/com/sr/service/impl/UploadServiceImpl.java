@@ -3,15 +3,14 @@ package com.sr.service.impl;
 import com.sr.common.FileNameUtils;
 import com.sr.common.ReturnCodeBuilder;
 import com.sr.entity.History;
+import com.sr.entity.UserInfo;
 import com.sr.entity.builder.HistoryBuilder;
+import com.sr.entity.builder.UserInfoBuilder;
 import com.sr.enunn.MediaTypeEnum;
 import com.sr.enunn.StatusEnum;
 import com.sr.exception.StatusException;
 import com.sr.manager.RedisManager;
-import com.sr.service.HistoryService;
-import com.sr.service.SRService;
-import com.sr.service.TransferService;
-import com.sr.service.UploadService;
+import com.sr.service.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,6 +43,9 @@ public class UploadServiceImpl implements UploadService
     @Autowired
     SRService srService;
 
+    @Autowired
+    UserService userService;
+
     public static String RAW_PICTURE_FOLDER;
 
     public static String RAW_VIDEO_FOLDER;
@@ -51,6 +53,8 @@ public class UploadServiceImpl implements UploadService
     public static String PROCESSED_PICTURE_FOLDER;
 
     public static String PROCESSED_VIDEO_FOLDER;
+
+    public static String AVATAR_PATH;
 
     @Value("${picture.path.raw}")
     public void setRawPicturePath(String rawPicturePath)
@@ -76,6 +80,12 @@ public class UploadServiceImpl implements UploadService
         PROCESSED_VIDEO_FOLDER = processedVideoPath;
     }
 
+    @Value("${avatar.path}")
+    public void setAvatarPath(String avatarPath)
+    {
+        AVATAR_PATH = avatarPath;
+    }
+
     private File getSavePath(String fileName, MediaTypeEnum mediaTypeEnum)
     {
         String rawFilePath = "/";
@@ -88,6 +98,8 @@ public class UploadServiceImpl implements UploadService
             case VIDEO:
                 rawFilePath = RAW_VIDEO_FOLDER;
                 break;
+            case AVATAR:
+                rawFilePath = AVATAR_PATH;
         }
 
         return new File(rawFilePath + fileName);
@@ -329,5 +341,21 @@ public class UploadServiceImpl implements UploadService
         }
 
         return ReturnCodeBuilder.successBuilder().addDataValue(raw_and_processed_paths).buildMap();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> uploadAvatar(MultipartFile file, Long uid) {
+        String fileName = FileNameUtils.processFileName(file);
+
+        File rawPicturePath = getSavePath(fileName, MediaTypeEnum.AVATAR);
+
+        saveFile(file, rawPicturePath);
+
+        System.out.println("Image Upload Success! Saved to " + rawPicturePath.getAbsolutePath());
+
+        UserInfo userInfo = UserInfoBuilder.anUserInfo().withAvatar(rawPicturePath.getAbsolutePath()).build();
+
+        return userService.modifyUserInfo(userInfo, uid);
     }
 }
