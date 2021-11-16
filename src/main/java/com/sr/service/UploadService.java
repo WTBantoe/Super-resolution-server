@@ -20,4 +20,6 @@ public interface UploadService
     Map<String, Object> processMultiVideo(MultipartFile[] files, HttpServletResponse response, String tag, String token);
 
     Map<String, Object> uploadAvatar(MultipartFile file, Long uid);
+
+    String uploadComment(MultipartFile[] file);
 }

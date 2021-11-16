@@ -35,6 +35,7 @@ public enum StatusEnum {
     HISTORY_DELETE_FAILED(523,"HISTORY_DELETE_FAILED : 历史用户删除失败！"),
     WALLET_HASH_INCORRECT(524,"WALLET_HASH_INCORRECT : 钱包校验失败！"),
     BALANCE_NOT_ENOUGH(525,"BALANCE_NOT_ENOUGH : 钱包余额不足！"),
+    WALLET_ALREADY_EXIST(526,"WALLET_ALREADY_EXIST : 钱包账户已开通！"),
     ;
     int code;
     String description;

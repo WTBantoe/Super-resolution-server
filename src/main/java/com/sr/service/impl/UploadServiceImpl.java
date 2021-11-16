@@ -2,6 +2,7 @@ package com.sr.service.impl;
 
 import com.sr.common.FileNameUtils;
 import com.sr.common.ReturnCodeBuilder;
+import com.sr.common.StringUtil;
 import com.sr.entity.History;
 import com.sr.entity.UserInfo;
 import com.sr.entity.builder.HistoryBuilder;
@@ -21,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -55,6 +57,14 @@ public class UploadServiceImpl implements UploadService
     public static String PROCESSED_VIDEO_FOLDER;
 
     public static String AVATAR_PATH;
+
+    public static String COMMENT_PATH;
+
+    @Value("${comment.path}")
+    public void setCommentPath(String commentPath)
+    {
+        COMMENT_PATH = commentPath;
+    }
 
     @Value("${picture.path.raw}")
     public void setRawPicturePath(String rawPicturePath)
@@ -100,6 +110,10 @@ public class UploadServiceImpl implements UploadService
                 break;
             case AVATAR:
                 rawFilePath = AVATAR_PATH;
+                break;
+            case COMMENT:
+                rawFilePath = COMMENT_PATH;
+                break;
         }
 
         return new File(rawFilePath + fileName);
@@ -357,5 +371,32 @@ public class UploadServiceImpl implements UploadService
         UserInfo userInfo = UserInfoBuilder.anUserInfo().withAvatar(rawPicturePath.getAbsolutePath()).build();
 
         return userService.modifyUserInfo(userInfo, uid);
+    }
+
+    @Override
+    public String uploadComment(MultipartFile[] files) {
+        if (files.length <= 0)
+        {
+            throw new StatusException(StatusEnum.VIDEO_NOT_UPLOAD);
+        }
+        else
+        {
+            for (MultipartFile file : files)
+            {
+                if (file.isEmpty())
+                {
+                    throw new StatusException(StatusEnum.VIDEO_NOT_UPLOAD);
+                }
+            }
+        }
+        List<String> commentMedias = new ArrayList<>();
+        for (MultipartFile file : files) {
+            String fileName = FileNameUtils.processFileName(file);
+            File commentPath = getSavePath(fileName, MediaTypeEnum.COMMENT);
+            saveFile(file, commentPath);
+            commentMedias.add(commentPath.getAbsolutePath());
+        }
+
+        return StringUtil.getBindLinkSeparateByComma(commentMedias);
     }
 }

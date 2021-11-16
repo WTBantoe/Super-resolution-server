@@ -4,7 +4,9 @@ import com.sr.entity.Comment;
 import com.sr.entity.example.CommentExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface CommentMapper {
     long countByExample(CommentExample example);
 
@@ -14,7 +16,7 @@ public interface CommentMapper {
 
     int insert(Comment record);
 
-    int insertSelective(Comment record);
+    long insertSelective(Comment record);
 
     List<Comment> selectByExample(CommentExample example);
 

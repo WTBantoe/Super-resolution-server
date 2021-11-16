@@ -68,6 +68,25 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
+    public Map<String, Object> firstPost(Long uid) {
+        WalletExample walletExample = getExampleByUid(uid);
+        if(!CollectionUtils.isEmpty(walletMapper.selectByExample(walletExample))){
+            throw new StatusException(StatusEnum.WALLET_ALREADY_EXIST);
+        }
+        String hash = md5Wallet(uid, 0L, 0L, 0L);
+        Wallet wallet = WalletBuilder.aWallet()
+                .withUid(uid)
+                .withBalance(0L)
+                .withTotalIncome(0L)
+                .withTotalIoutcome(0L)
+                .withHash(hash)
+                .build();
+        long id = walletMapper.insertSelective(wallet);
+        wallet.setId(id);
+        return EntityMapConvertor.entity2Map(wallet);
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public Map<String, Object> recharge(Long uid, Long money) {
         if (CollectionUtils.isEmpty(walletMapper.selectByExample(getExampleByUid(uid)))) {
