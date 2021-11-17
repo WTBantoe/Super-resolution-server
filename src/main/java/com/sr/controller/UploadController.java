@@ -14,11 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -77,7 +75,7 @@ public class UploadController
     @PostMapping("/video/single")
     @ApiOperation("处理视频上传")
     @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> uploadVideo(@RequestParam(value = "video") MultipartFile file, @RequestParam(value = "tag") String tag, HttpServletResponse response, HttpServletRequest request)
+    public Map<String, Object> uploadVideo(@RequestParam(value = "video") MultipartFile file, @RequestParam(value = "tag", required = false) String tag, HttpServletResponse response, HttpServletRequest request)
     {
         String token = httpUtil.getToken(request);
         return uploadService.processSingleVideo(file, response, tag, token);

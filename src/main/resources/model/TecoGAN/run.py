@@ -42,7 +42,7 @@ args = parser.parse_args()
 dirstr = args.output
 input_dir = args.input
 if (not os.path.exists(dirstr)): os.makedirs(dirstr)
-cmd1 = ["python", sys.path[0] + "/main.py",
+cmd1 = ["python", sys.path[0] + "/main2.py",
         "--output_dir", dirstr,
         "--summary_dir", os.path.join(dirstr, 'log/'),
         "--input_dir_LR", input_dir,
