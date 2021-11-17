@@ -17,10 +17,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @ServletComponentScan("com.sr")
 @EnableTransactionManagement
 @MapperScan("com.sr.dao")
-public class SrApplication
-{
-    public static void main(String[] args)
-    {
+public class SrApplication {
+    public static void main(String[] args) {
         SpringApplication.run(SrApplication.class, args);
     }
 }

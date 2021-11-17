@@ -1,14 +1,15 @@
-import os
-import random as rn
 import sys
-import time
-
-from tensorflow.python.util import deprecation
-
-from lib.dataloader import inference_data_loader
 from lib.frvsr import generator_F, fnet
+from lib.dataloader import inference_data_loader
 from lib.ops import *
-
+import tensorflow.contrib.slim as slim
+import random as rn
+from tensorflow.python.util import deprecation
+import tensorflow as tf
+import numpy as np
+import os
+import time
+import numpy as np
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 deprecation._PRINT_DEPRECATION_WARNINGS = False
 
@@ -17,6 +18,7 @@ os.environ['PYTHONHASHSEED'] = '0'
 np.random.seed(42)
 rn.seed(12345)
 tf.set_random_seed(1234)
+
 
 Flags = tf.app.flags
 
@@ -39,7 +41,7 @@ Flags.DEFINE_string('checkpoint', None,
                     'If provided, the weight will be restored from the provided checkpoint')
 Flags.DEFINE_string('cudaID', '0', 'CUDA devices')
 Flags.DEFINE_integer('num_resblock', 16, 'How many residual blocks are there in the generator')
-# Flags.DEFINE_integer('max_iter', 1000000, 'The max iteration of the training')
+#Flags.DEFINE_integer('max_iter', 1000000, 'The max iteration of the training')
 
 FLAGS = Flags.FLAGS
 os.environ["CUDA_VISIBLE_DEVICES"] = FLAGS.cudaID
@@ -54,7 +56,6 @@ if not os.path.exists(FLAGS.output_dir):
     os.mkdir(FLAGS.output_dir)
 if not os.path.exists(FLAGS.summary_dir):
     os.mkdir(FLAGS.summary_dir)
-
 
 class Logger(object):
     def __init__(self):
@@ -87,7 +88,6 @@ def printVariable(scope, key=tf.GraphKeys.MODEL_VARIABLES):
 def preexec():
     os.setpgrp()
 
-
 if FLAGS.checkpoint is None:
     raise ValueError(
         'The checkpoint file is needed to performing the test.')
@@ -95,9 +95,9 @@ if FLAGS.checkpoint is None:
 # Declare the test data reader
 inference_data = inference_data_loader(FLAGS)
 input_shape = [1, ] + list(inference_data.inputs[0].shape)
-output_shape = [1, input_shape[1] * 4, input_shape[2] * 4, 3]
-oh = input_shape[1] - input_shape[1] // 8 * 8
-ow = input_shape[2] - input_shape[2] // 8 * 8
+output_shape = [1, input_shape[1]*4, input_shape[2]*4, 3]
+oh = input_shape[1] - input_shape[1]//8 * 8
+ow = input_shape[2] - input_shape[2]//8 * 8
 paddings = tf.constant([[0, 0], [0, oh], [0, ow], [0, 0]])
 print("input shape:", input_shape)
 print("output shape:", output_shape)
@@ -107,11 +107,11 @@ inputs_raw = tf.placeholder(
     tf.float32, shape=input_shape, name='inputs_raw')
 
 pre_inputs = tf.Variable(tf.zeros(input_shape),
-                         trainable=False, name='pre_inputs')
+                            trainable=False, name='pre_inputs')
 pre_gen = tf.Variable(tf.zeros(output_shape),
-                      trainable=False, name='pre_gen')
+                        trainable=False, name='pre_gen')
 pre_warp = tf.Variable(tf.zeros(output_shape),
-                       trainable=False, name='pre_warp')
+                        trainable=False, name='pre_warp')
 
 transpose_pre = tf.space_to_depth(pre_warp, 4)
 inputs_all = tf.concat((inputs_raw, transpose_pre), axis=-1)
@@ -125,8 +125,8 @@ inputs_frames = tf.concat((pre_inputs, inputs_raw), axis=-1)
 with tf.variable_scope('fnet'):
     gen_flow_lr = fnet(inputs_frames, reuse=False)
     gen_flow_lr = tf.pad(gen_flow_lr, paddings, "SYMMETRIC")
-    gen_flow = upscale_four(gen_flow_lr * 4.0)
-    gen_flow.set_shape(output_shape[:-1] + [2])
+    gen_flow = upscale_four(gen_flow_lr*4.0)
+    gen_flow.set_shape(output_shape[:-1]+[2])
 pre_warp_hi = tf.contrib.image.dense_image_warp(pre_gen, gen_flow)
 before_ops = tf.assign(pre_warp, pre_warp_hi)
 
@@ -136,7 +136,7 @@ print('Finish building the network')
 var_list = tf.get_collection(
     tf.GraphKeys.MODEL_VARIABLES, scope='generator')
 var_list = var_list + \
-           tf.get_collection(tf.GraphKeys.MODEL_VARIABLES, scope='fnet')
+    tf.get_collection(tf.GraphKeys.MODEL_VARIABLES, scope='fnet')
 
 weight_initiallizer = tf.train.Saver(var_list)
 
@@ -168,19 +168,19 @@ with tf.Session(config=config) as sess:
         input_im = np.array([inference_data.inputs[i]]).astype(np.float32)
         feed_dict = {inputs_raw: input_im}
         t0 = time.time()
-        if (i != 0):
+        if(i != 0):
             sess.run(before_ops, feed_dict=feed_dict)
         output_frame = sess.run(outputs, feed_dict=feed_dict)
-        srtime += time.time() - t0
+        srtime += time.time()-t0
 
-        if (i >= 5):
+        if(i >= 5):
             name, _ = os.path.splitext(
                 os.path.basename(str(inference_data.paths_LR[i])))
-            filename = FLAGS.output_name + '_' + name
+            filename = FLAGS.output_name+'_'+name
             print('saving image %s' % filename)
             out_path = os.path.join(image_dir, "%s.%s" %
                                     (filename, FLAGS.output_ext))
             save_img(out_path, output_frame[0])
         else:  # First 5 is a hard-coded symmetric frame padding, ignored but time added!
-            print("Warming up %d" % (5 - i))
+            print("Warming up %d" % (5-i))
 print("total time " + str(srtime) + ", frame number " + str(max_iter))

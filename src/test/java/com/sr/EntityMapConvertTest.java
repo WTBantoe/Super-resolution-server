@@ -1,18 +1,18 @@
 package com.sr;
 
+import com.sr.common.EntityMapConvertor;
 import com.sr.entity.User;
 import com.sr.entity.UserInfo;
+import com.sr.entity.dto.UserRegisterDTO;
 import org.testng.annotations.Test;
 
 /**
  * @Author cyh
  * @Date 2021/11/2 16:13
  */
-public class EntityMapConvertTest
-{
+public class EntityMapConvertTest {
     @Test
-    public void convertUserRegisterDTO2Map()
-    {
+    public void convertUserRegisterDTO2Map(){
         User user = new User();
         user.setUserName("cyh");
         user.setPassword("sdasdasfa");

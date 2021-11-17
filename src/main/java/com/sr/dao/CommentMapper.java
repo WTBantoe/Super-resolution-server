@@ -2,12 +2,10 @@ package com.sr.dao;
 
 import com.sr.entity.Comment;
 import com.sr.entity.example.CommentExample;
+import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
-
-public interface CommentMapper
-{
+public interface CommentMapper {
     long countByExample(CommentExample example);
 
     int deleteByExample(CommentExample example);
