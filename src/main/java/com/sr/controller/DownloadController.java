@@ -1,5 +1,6 @@
 package com.sr.controller;
 
+import com.sr.common.ReturnCodeBuilder;
 import com.sr.enunn.StatusEnum;
 import com.sr.exception.StatusException;
 import com.sr.service.TransferService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/download")
@@ -67,5 +69,20 @@ public class DownloadController
         response.addHeader("Content-Disposition", "attachment;fileName=" + video.getAbsolutePath());
         transferService.downloadFile(video, response);
         return "Video Download Success!";
+    }
+
+    @GetMapping("/file/isprocessed")
+    @ApiOperation("判断文件是否已经处理完毕")
+    public Map<String, Object> fileExist(@RequestParam(value = "filepath") String filepath)
+    {
+        File file = new File(filepath);
+        if (file.exists())
+        {
+            return ReturnCodeBuilder.successBuilder().addDataValue(true).buildMap();
+        }
+        else
+        {
+            return ReturnCodeBuilder.successBuilder().addDataValue(false).buildMap();
+        }
     }
 }

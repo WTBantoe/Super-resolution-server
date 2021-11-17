@@ -143,14 +143,6 @@ public class UploadServiceImpl implements UploadService
             srService.imageSuperResolution(rawPicturePath, processedPicturePath);
         }).start();
 
-//  TODO:放到下载
-//        File processed = new File((PROCESSED_PICTURE_FOLDER + fileName).trim());
-//
-//        if (!processed.exists())
-//        {
-//            throw new StatusException(StatusEnum.COULD_NOT_FIND_PROCESSED_PICTURE);
-//        }
-
         return new String[]{rawPicturePath.getAbsolutePath(), processedPicturePath.getAbsolutePath()};
     }
 
@@ -167,14 +159,6 @@ public class UploadServiceImpl implements UploadService
             System.out.println("Video Upload Success! Saved to " + rawVideoPath.getAbsolutePath());
             srService.videoSuperResolution(rawVideoPath, processedVideoPath);
         }).start();
-
-//  TODO:放到下载
-//        File processed = new File((PROCESSED_VIDEO_FOLDER + fileName).trim());
-//
-//        if (!processed.exists())
-//        {
-//            throw new StatusException(StatusEnum.COULD_NOT_FIND_PROCESSED_VIDEO);
-//        }
 
         return new String[]{rawVideoPath.getAbsolutePath(),processedVideoPath.getAbsolutePath()};
     }
