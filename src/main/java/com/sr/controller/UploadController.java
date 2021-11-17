@@ -77,7 +77,7 @@ public class UploadController
     @PostMapping("/video/single")
     @ApiOperation("处理视频上传")
     @Transactional(rollbackFor = Exception.class)
-    public Map<String, Object> uploadVideo(@RequestParam(value = "video") MultipartFile file, @RequestParam(value = "tag") String tag, HttpServletResponse response, HttpServletRequest request)
+    public Map<String, Object> uploadVideo(@RequestParam(value = "video") MultipartFile file, @RequestParam(value = "tag", required = false) String tag, HttpServletResponse response, HttpServletRequest request)
     {
         String token = httpUtil.getToken(request);
         return uploadService.processSingleVideo(file, response, tag, token);

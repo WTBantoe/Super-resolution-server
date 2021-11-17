@@ -1,6 +1,5 @@
-package com.sr.utils;
+package com.sr.common;
 
-import com.sr.common.PythonExecutionUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

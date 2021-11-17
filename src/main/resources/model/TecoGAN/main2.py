@@ -197,7 +197,7 @@ def inference_data_loader(FLAGS):
         image_LR = image_LR[5:0:-1] + image_LR
 
     Data = collections.namedtuple('Data', 'paths_LR, inputs')
-    print(image_LR)
+    # print(image_LR)
     return Data(
         paths_LR=image_list_LR,
         inputs=image_LR

@@ -15,11 +15,13 @@ tool:
     image2video: /root/TecoGAN/image2video.py
 
 picture:
+  max_volume: 250000
   path:
     processed: /data/sr/test/pic/processed/
     raw: /data/sr/test/pic/raw/
 
 video:
+  max_volume: 10000000
   path:
     processed: /data/sr/test/vid/processed/
     raw: /data/sr/test/vid/raw/
