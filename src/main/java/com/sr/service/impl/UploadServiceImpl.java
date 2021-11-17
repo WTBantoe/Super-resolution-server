@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @Author cyh
@@ -189,11 +188,12 @@ public class UploadServiceImpl implements UploadService
         String fileName = FileNameUtils.processFileName(file);
 
         File rawPicturePath = getSavePath(fileName, MediaTypeEnum.PICTURE);
-        File processedPicturePath = getProcessedPath(fileName,MediaTypeEnum.PICTURE);
+        File processedPicturePath = getProcessedPath(fileName, MediaTypeEnum.PICTURE);
 
-        if(couldHandelPicture(rawPicturePath))
+        if (couldHandelPicture(rawPicturePath))
         {
-            new Thread(()->{
+            new Thread(() ->
+            {
                 saveFile(file, rawPicturePath);
                 System.out.println("Image Upload Success! Saved to " + rawPicturePath.getAbsolutePath());
                 srService.imageSuperResolution(rawPicturePath, processedPicturePath);
@@ -203,7 +203,7 @@ public class UploadServiceImpl implements UploadService
         }
         else
         {
-            return new String[]{rawPicturePath.getAbsolutePath(),""};
+            return new String[]{rawPicturePath.getAbsolutePath(), ""};
         }
     }
 
@@ -215,19 +215,20 @@ public class UploadServiceImpl implements UploadService
         File rawVideoPath = getSavePath(fileName, MediaTypeEnum.VIDEO);
         File processedVideoPath = getProcessedPath(fileName, MediaTypeEnum.VIDEO);
 
-        if(couldHandelVideo(rawVideoPath))
+        if (couldHandelVideo(rawVideoPath))
         {
-            new Thread(() ->{
+            new Thread(() ->
+            {
                 saveFile(file, rawVideoPath);
                 System.out.println("Video Upload Success! Saved to " + rawVideoPath.getAbsolutePath());
                 srService.videoSuperResolution(rawVideoPath, processedVideoPath);
             }).start();
 
-            return new String[]{rawVideoPath.getAbsolutePath(),processedVideoPath.getAbsolutePath()};
+            return new String[]{rawVideoPath.getAbsolutePath(), processedVideoPath.getAbsolutePath()};
         }
         else
         {
-            return new String[]{rawVideoPath.getAbsolutePath(),""};
+            return new String[]{rawVideoPath.getAbsolutePath(), ""};
         }
     }
 
