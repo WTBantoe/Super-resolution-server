@@ -1,5 +1,7 @@
 package com.sr.common;
 
+import io.humble.video.Global;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -366,5 +368,22 @@ public class TimeUtil {
         calendar.setTime(origin);
         calendar.set(Calendar.MONTH,calendar.get(Calendar.MONTH)+month);
         return calendar.getTime();
+    }
+
+    /**
+     * Pretty prints a timestamp (in {@link Global.NO_PTS} units) into a string.
+     * @param duration A timestamp in {@link Global.NO_PTS} units).
+     * @return A string representing the duration.
+     */
+    public static String formatTimeStamp(long duration) {
+        if (duration == Global.NO_PTS) {
+            return "00:00:00.00";
+        }
+        double d = 1.0 * duration / Global.DEFAULT_PTS_PER_SECOND;
+        int hours = (int) (d / (60*60));
+        int mins = (int) ((d - hours*60*60) / 60);
+        int secs = (int) (d - hours*60*60 - mins*60);
+        int subsecs = (int)((d - (hours*60*60.0 + mins*60.0 + secs))*100.0);
+        return String.format("%1$02d:%2$02d:%3$02d.%4$02d", hours, mins, secs, subsecs);
     }
 }
