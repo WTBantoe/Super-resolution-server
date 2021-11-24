@@ -158,7 +158,9 @@ public class UserController {
                 .withSex(sex)
                 .withTrueName(trueName)
                 .build();
-        return userService.modifyUserInfo(userInfo,httpUtil.getUidByToken(httpUtil.getToken(request)));
+        return ReturnCodeBuilder.successBuilder()
+                .addDataValue(userService.modifyUserInfo(userInfo,httpUtil.getUidByToken(httpUtil.getToken(request))))
+                .buildMap();
     }
 
 
@@ -174,6 +176,8 @@ public class UserController {
             rollbackFor = Exception.class
     )
     public Map<String, Object> getUserInfo(HttpServletRequest request) {
-        return userService.getUserInfo(httpUtil.getUidByToken(httpUtil.getToken(request)));
+        return ReturnCodeBuilder.successBuilder()
+                .addDataValue(userService.getUserInfo(httpUtil.getUidByToken(httpUtil.getToken(request))))
+                .buildMap();
     }
 }

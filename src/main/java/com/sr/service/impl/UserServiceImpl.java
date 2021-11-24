@@ -7,6 +7,7 @@ import com.sr.dao.UserMapper;
 import com.sr.entity.User;
 import com.sr.entity.UserInfo;
 import com.sr.entity.Vip;
+import com.sr.entity.Wallet;
 import com.sr.entity.builder.UserBuilder;
 import com.sr.entity.builder.VipBuilder;
 import com.sr.entity.dto.UserRegisterDTO;
@@ -21,6 +22,7 @@ import com.sr.manager.UserManagerService;
 import com.sr.service.UserService;
 import com.sr.common.TelephoneCheck;
 import com.sr.service.VipService;
+import com.sr.service.WalletService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,6 +63,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     VipService vipService;
+
+    @Autowired
+    WalletService walletService;
 
     @Override
     public String loginByTelephoneAndPasswordAndCheckPhoneNumber (String telephone, String password) {
@@ -198,6 +203,8 @@ public class UserServiceImpl implements UserService {
         }
 
         vip.setId((long)vipId);
+
+        walletService.firstPost(uid);
 
         UserRegisterDTO userRegisterDTO = new UserRegisterDTO(user,vip);
 

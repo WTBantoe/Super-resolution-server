@@ -1,6 +1,7 @@
 package com.sr.controller;
 
 import com.sr.common.HttpUtil;
+import com.sr.common.ReturnCodeBuilder;
 import com.sr.manager.RedisManager;
 import com.sr.service.TransferService;
 import com.sr.service.UploadService;
@@ -100,9 +101,14 @@ public class UploadController
     }
 
 
-    public String uploadAvatar()
+    @PostMapping("/avatar")
+    @ApiOperation("上传头像")
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> uploadAvatar(@RequestParam(value = "avatar") MultipartFile avatar, HttpServletRequest request)
     {
-        // TODO
-        return null;
+        Long uid = httpUtil.getUidByToken(httpUtil.getToken(request));
+        return ReturnCodeBuilder.successBuilder()
+                .addDataValue(uploadService.uploadAvatar(avatar, uid))
+                .buildMap();
     }
 }

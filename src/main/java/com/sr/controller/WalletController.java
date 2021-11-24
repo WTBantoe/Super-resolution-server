@@ -30,6 +30,27 @@ public class WalletController {
     WalletService walletService;
 
     @ApiOperation(
+            value = "首次开通",
+            notes = "首次开通"
+    )
+    @RequestMapping(
+            value = "",
+            method = RequestMethod.POST
+    )
+    @Transactional(
+            rollbackFor = Exception.class
+    )
+
+    public Map<String, Object> firstPost (HttpServletRequest httpServletRequest){
+        Long uid = httpUtil.getUidByToken(httpUtil.getToken(httpServletRequest));
+        Map<String, Object> map = walletService.firstPost(uid);
+
+        return ReturnCodeBuilder.successBuilder()
+                .addDataValue(map)
+                .buildMap();
+    }
+
+    @ApiOperation(
             value = "充值",
             notes = "充值"
     )

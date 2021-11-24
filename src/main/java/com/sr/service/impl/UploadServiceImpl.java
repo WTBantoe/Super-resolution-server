@@ -3,16 +3,16 @@ package com.sr.service.impl;
 import com.sr.common.FileNameUtils;
 import com.sr.common.MediaInfoUtils;
 import com.sr.common.ReturnCodeBuilder;
+import com.sr.common.StringUtil;
 import com.sr.entity.History;
+import com.sr.entity.UserInfo;
 import com.sr.entity.builder.HistoryBuilder;
+import com.sr.entity.builder.UserInfoBuilder;
 import com.sr.enunn.MediaTypeEnum;
 import com.sr.enunn.StatusEnum;
 import com.sr.exception.StatusException;
 import com.sr.manager.RedisManager;
-import com.sr.service.HistoryService;
-import com.sr.service.SRService;
-import com.sr.service.TransferService;
-import com.sr.service.UploadService;
+import com.sr.service.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,6 +48,9 @@ public class UploadServiceImpl implements UploadService
     @Autowired
     SRService srService;
 
+    @Autowired
+    UserService userService;
+
     public static String RAW_PICTURE_FOLDER;
 
     public static String RAW_VIDEO_FOLDER;
@@ -55,6 +59,15 @@ public class UploadServiceImpl implements UploadService
 
     public static String PROCESSED_VIDEO_FOLDER;
 
+    public static String AVATAR_PATH;
+
+    public static String COMMENT_PATH;
+
+    @Value("${comment.path}")
+    public void setCommentPath(String commentPath)
+    {
+        COMMENT_PATH = commentPath;
+    }
     public static Long MAX_PICTURE_VOLUME;
 
     public static Long MAX_VIDEO_VOLUME;
@@ -83,6 +96,11 @@ public class UploadServiceImpl implements UploadService
         PROCESSED_VIDEO_FOLDER = processedVideoPath;
     }
 
+    @Value("${avatar.path}")
+    public void setAvatarPath(String avatarPath)
+    {
+        AVATAR_PATH = avatarPath;
+    }
     @Value("$picture.max_volume")
     public void setMaxPictureVolume(String maxPictureVolume)
     {
@@ -106,6 +124,12 @@ public class UploadServiceImpl implements UploadService
                 break;
             case VIDEO:
                 rawFilePath = RAW_VIDEO_FOLDER;
+                break;
+            case AVATAR:
+                rawFilePath = AVATAR_PATH;
+                break;
+            case COMMENT:
+                rawFilePath = COMMENT_PATH;
                 break;
         }
 
@@ -370,5 +394,48 @@ public class UploadServiceImpl implements UploadService
         }
 
         return ReturnCodeBuilder.successBuilder().addDataValue(raw_and_processed_paths).buildMap();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Map<String, Object> uploadAvatar(MultipartFile file, Long uid) {
+        String fileName = FileNameUtils.processFileName(file);
+
+        File rawPicturePath = getSavePath(fileName, MediaTypeEnum.AVATAR);
+
+        saveFile(file, rawPicturePath);
+
+        System.out.println("Image Upload Success! Saved to " + rawPicturePath.getAbsolutePath());
+
+        UserInfo userInfo = UserInfoBuilder.anUserInfo().withAvatar(rawPicturePath.getAbsolutePath()).build();
+
+        return userService.modifyUserInfo(userInfo, uid);
+    }
+
+    @Override
+    public String uploadComment(MultipartFile[] files) {
+        if (files.length <= 0)
+        {
+            throw new StatusException(StatusEnum.VIDEO_NOT_UPLOAD);
+        }
+        else
+        {
+            for (MultipartFile file : files)
+            {
+                if (file.isEmpty())
+                {
+                    throw new StatusException(StatusEnum.VIDEO_NOT_UPLOAD);
+                }
+            }
+        }
+        List<String> commentMedias = new ArrayList<>();
+        for (MultipartFile file : files) {
+            String fileName = FileNameUtils.processFileName(file);
+            File commentPath = getSavePath(fileName, MediaTypeEnum.COMMENT);
+            saveFile(file, commentPath);
+            commentMedias.add(commentPath.getAbsolutePath());
+        }
+
+        return StringUtil.getBindLinkSeparateByComma(commentMedias);
     }
 }

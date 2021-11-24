@@ -6,7 +6,10 @@ package com.sr.enunn;
  */
 public enum MediaTypeEnum {
     PICTURE(0,"图片"),
-    VIDEO(1,"视频");
+    VIDEO(1,"视频"),
+    AVATAR(2, "头像"),
+    COMMENT(3, "评论"),
+    ;
 
     public Integer getCode() {
         return code;
