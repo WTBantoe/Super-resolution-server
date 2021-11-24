@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <context id="mysql" targetRuntime="Mybatis3">
+        <commentGenerator>
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+        <jdbcConnection
+                driverClass="com.mysql.cj.jdbc.Driver"
+                connectionURL="jdbc:mysql://localhost:3306/super_resolution"
+                userId="root"
+                password="root">
+        </jdbcConnection>
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+        <javaModelGenerator targetPackage="com.sr.entity" targetProject="src/main/java">
+            <property name="enableSubPackages" value="false"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+        <sqlMapGenerator targetPackage="com.sr.mapper" targetProject="src/main/java">
+            <property name="enableSubPackages" value="false"/>
+        </sqlMapGenerator>
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.sr.dao" targetProject="src/main/java">
+            <property name="enableSubPackages" value="false"/>
+        </javaClientGenerator>
+        <table tableName="sr_user"
+               domainObjectName="User"
+               enableCountByExample="true"
+               enableDeleteByExample="true"
+               enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="id" sqlStatement="mysql" identity="true"></generatedKey>
+        </table>
+        <table tableName="sr_user_info"
+               domainObjectName="UserInfo"
+               enableCountByExample="true"
+               enableDeleteByExample="true"
+               enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="id" sqlStatement="mysql" identity="true"></generatedKey>
+        </table>
+        <table tableName="sr_content_history"
+               domainObjectName="History"
+               enableCountByExample="true"
+               enableDeleteByExample="true"
+               enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="id" sqlStatement="mysql" identity="true"></generatedKey>
+        </table>
+        <table tableName="sr_user_auth_third_part"
+               domainObjectName="AuthThirdParty"
+               enableCountByExample="true"
+               enableDeleteByExample="true"
+               enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="id" sqlStatement="mysql" identity="true"></generatedKey>
+        </table>
+        <table tableName="sr_login_info"
+               domainObjectName="LoginInfo"
+               enableCountByExample="true"
+               enableDeleteByExample="true"
+               enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="id" sqlStatement="mysql" identity="true"></generatedKey>
+        </table>
+        <table tableName="sr_vip"
+               domainObjectName="Vip"
+               enableCountByExample="true"
+               enableDeleteByExample="true"
+               enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="id" sqlStatement="mysql" identity="true"></generatedKey>
+        </table>
+        <table tableName="sr_wallet"
+               domainObjectName="Wallet"
+               enableCountByExample="true"
+               enableDeleteByExample="true"
+               enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="id" sqlStatement="mysql" identity="true"></generatedKey>
+        </table>
+        <table tableName="sr_comment"
+               domainObjectName="Comment"
+               enableCountByExample="true"
+               enableDeleteByExample="true"
+               enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="id" sqlStatement="mysql" identity="true"></generatedKey>
+        </table>
+        <table tableName="sr_order"
+               domainObjectName="Order"
+               enableCountByExample="true"
+               enableDeleteByExample="true"
+               enableSelectByExample="true"
+               enableUpdateByExample="true">
+            <generatedKey column="id" sqlStatement="mysql" identity="true"></generatedKey>
+        </table>
+    </context>
+</generatorConfiguration>
